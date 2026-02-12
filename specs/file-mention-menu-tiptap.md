@@ -43,12 +43,12 @@ The implementation will use:
 
 ### Phase 1: Install dependencies and verify setup
 
-- [ ] Install tiptap packages: `pnpm add tiptap-solid @tiptap/core @tiptap/starter-kit @tiptap/extension-mention @tiptap/suggestion`
-- [ ] Install positioning library: `pnpm add @floating-ui/dom`
-- [ ] Verify packages are in [package.json](file:///Users/tanishqkancharla/Documents/Projects/saffron-health/opencode-gui/package.json)
-- [ ] Run `pnpm install` successfully
-- [ ] Run `pnpm type-check` to ensure TypeScript recognizes new packages
-- [ ] Create a minimal Tiptap editor in a test component to verify the packages work
+- [x] Install tiptap packages: `pnpm add tiptap-solid @tiptap/core @tiptap/starter-kit @tiptap/extension-mention @tiptap/suggestion`
+- [x] Install positioning library: `pnpm add @floating-ui/dom`
+- [x] Verify packages are in [package.json](file:///Users/tanishqkancharla/Documents/Projects/saffron-health/opencode-gui/package.json)
+- [x] Run `pnpm install` successfully
+- [x] Run `pnpm type-check` to ensure TypeScript recognizes new packages
+- [x] Create a minimal Tiptap editor in a test component to verify the packages work
 
 ### Phase 2: Add file search handler in extension
 

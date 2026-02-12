@@ -8,6 +8,7 @@ import { FileChangesSummary } from "./components/FileChangesSummary";
 import { InputBar } from "./components/InputBar";
 import { MessageList } from "./components/MessageList";
 import { TopBar } from "./components/TopBar";
+import { TiptapEditorTest } from "./components/TiptapEditorTest";
 import { MockSyncProvider } from "./state/MockSyncProvider";
 import type { QueuedMessage } from "./App";
 import type {
@@ -541,6 +542,8 @@ function UIKit() {
     }
   };
 
+  const [showTiptapTest, setShowTiptapTest] = createSignal(false);
+
   const controlButtons = [
     { label: () => isThinking() ? "Stop Thinking" : "Start Thinking", onClick: toggleThinking },
     { label: () => "Clear Messages", onClick: clearMessages },
@@ -548,6 +551,7 @@ function UIKit() {
     { label: () => `Context % (${contextInfo().percentage.toFixed(0)}%)`, onClick: cycleContextPercentage },
     { label: () => showQueuedMessages() ? "Hide Queue" : "Show Queue", onClick: toggleQueuedMessages },
     { label: () => errorMessage() ? "Hide Error" : "Show Error", onClick: toggleError },
+    { label: () => showTiptapTest() ? "Hide Tiptap" : "Show Tiptap", onClick: () => setShowTiptapTest(!showTiptapTest()) },
   ];
 
   return (
@@ -611,6 +615,11 @@ function UIKit() {
       <div
         style={{ flex: 1, display: "flex", "flex-direction": "column" }}
       >
+        <Show when={showTiptapTest()}>
+          <div style={{ padding: "20px", "border-bottom": "1px solid var(--vscode-panel-border)" }}>
+            <TiptapEditorTest />
+          </div>
+        </Show>
         <div
           class={`app ${hasMessages() ? "app--has-messages" : ""}`}
           style={{ flex: 1, width: "320px", margin: "0 auto" }}
