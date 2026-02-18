@@ -89,16 +89,16 @@ The implementation will use:
 
 ### Phase 5: Integrate suggestion logic with Tiptap
 
-- [ ] Create `src/webview/utils/suggestionOptions.ts` for suggestion configuration
-- [ ] Implement `items` function that triggers file search on query change
-- [ ] Debounce search requests by 200ms to avoid excessive messages
-- [ ] Implement `render` function returning `{ onStart, onUpdate, onKeyDown, onExit }`
-- [ ] In `onStart`, create SolidRenderer for `FileMentionDropdown` and position it
-- [ ] In `onUpdate`, update dropdown props with new query and results
-- [ ] In `onKeyDown`, delegate to dropdown's `onKeyDown` handler
-- [ ] In `onExit`, destroy the dropdown renderer
-- [ ] Calculate cursor position using `editor.view.coordsAtPos()` from ProseMirror
-- [ ] Use `@floating-ui/dom`'s `computePosition` to position dropdown with flip/shift middleware
+- [x] Create `src/webview/utils/suggestionOptions.ts` for suggestion configuration
+- [x] Implement `items` function that triggers file search on query change
+- [x] Debounce search requests by 200ms to avoid excessive messages
+- [x] Implement `render` function returning `{ onStart, onUpdate, onKeyDown, onExit }`
+- [x] In `onStart`, create SolidRenderer for `FileMentionDropdown` and position it
+- [x] In `onUpdate`, update dropdown props with new query and results
+- [x] In `onKeyDown`, delegate to dropdown's `onKeyDown` handler
+- [x] In `onExit`, destroy the dropdown renderer
+- [x] Calculate cursor position using `editor.view.coordsAtPos()` from ProseMirror
+- [x] Use `@floating-ui/dom`'s `computePosition` to position dropdown with flip/shift middleware
 - [ ] Add unit test verifying suggestion triggers on `@` character
 - [ ] Manually verify dropdown appears when typing `@` in editor
 
