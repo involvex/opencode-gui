@@ -1,0 +1,95 @@
+.file-mention-dropdown {
+  position: absolute;
+  z-index: 1000;
+  min-width: 300px;
+  max-width: 500px;
+  max-height: 300px;
+  overflow-y: auto;
+  background: var(--vscode-quickInput-background, #252526);
+  border: 1px solid var(--vscode-quickInput-border, #454545);
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  padding: 4px 0;
+}
+
+.file-mention-dropdown__empty {
+  padding: 8px 12px;
+  color: var(--vscode-disabledForeground, #6c6c6c);
+  font-size: 13px;
+}
+
+.file-mention-dropdown__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--vscode-quickInput-foreground, #cccccc);
+  transition: background-color 0.1s ease;
+}
+
+.file-mention-dropdown__item:hover,
+.file-mention-dropdown__item--selected {
+  background: var(--vscode-quickInputList-focusBackground, #094771);
+  color: var(--vscode-quickInputList-focusForeground, #ffffff);
+}
+
+.file-mention-dropdown__icon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.file-mention-dropdown__icon.file-ts::before,
+.file-mention-dropdown__icon.file-js::before,
+.file-mention-dropdown__icon.file-json::before,
+.file-mention-dropdown__icon.file-md::before,
+.file-mention-dropdown__icon.file-css::before,
+.file-mention-dropdown__icon.file-html::before,
+.file-mention-dropdown__icon.file::before {
+  content: "📄";
+  font-size: 14px;
+}
+
+.file-mention-dropdown__icon.file-ts::before {
+  content: "TS";
+  font-size: 10px;
+  font-weight: bold;
+  color: #3178c6;
+}
+
+.file-mention-dropdown__icon.file-js::before {
+  content: "JS";
+  font-size: 10px;
+  font-weight: bold;
+  color: #f7df1e;
+}
+
+.file-mention-dropdown__icon.file-json::before {
+  content: "{}";
+  font-size: 10px;
+  font-weight: bold;
+  color: #89b761;
+}
+
+.file-mention-dropdown__name {
+  flex-shrink: 0;
+  font-weight: 500;
+}
+
+.file-mention-dropdown__path {
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--vscode-descriptionForeground, #999999);
+  font-size: 12px;
+  margin-left: auto;
+  padding-left: 12px;
+  text-align: right;
+}

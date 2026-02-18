@@ -75,17 +75,17 @@ The implementation will use:
 
 ### Phase 4: Create FileMentionDropdown component
 
-- [ ] Create `src/webview/components/FileMentionDropdown.tsx`
-- [ ] Accept props: `items: Array<{path: string, name: string}>`, `selectedIndex: number`, `onSelect: (item) => void`, `position: {top: number, left: number}`
-- [ ] Render list of files with VSCode-themed styles
-- [ ] Display file icon (use file extension to determine icon class)
-- [ ] Highlight selected item based on `selectedIndex`
-- [ ] Support keyboard navigation via imperative ref: `{ onKeyDown: (event) => boolean }`
-- [ ] Handle ArrowUp/ArrowDown to change selection, Enter/Tab to select, Escape to close
+- [x] Create `src/webview/components/FileMentionDropdown.tsx`
+- [x] Accept props: `items: Array<{path: string, name: string}>`, `selectedIndex: number`, `onSelect: (item) => void`, `position: {top: number, left: number}`
+- [x] Render list of files with VSCode-themed styles
+- [x] Display file icon (use file extension to determine icon class)
+- [x] Highlight selected item based on `selectedIndex`
+- [x] Support keyboard navigation via imperative ref: `{ onKeyDown: (event) => boolean }`
+- [x] Handle ArrowUp/ArrowDown to change selection, Enter/Tab to select, Escape to close
 - [ ] Use `@floating-ui/dom` to position dropdown relative to cursor
-- [ ] Return `true` from `onKeyDown` if event was handled (prevents editor from processing it)
-- [ ] Create `src/webview/components/FileMentionDropdown.css` with VSCode-themed styles
-- [ ] Manually verify dropdown renders with mock data and keyboard navigation works
+- [x] Return `true` from `onKeyDown` if event was handled (prevents editor from processing it)
+- [x] Create `src/webview/components/FileMentionDropdown.css` with VSCode-themed styles
+- [x] Manually verify dropdown renders with mock data and keyboard navigation works
 
 ### Phase 5: Integrate suggestion logic with Tiptap
 

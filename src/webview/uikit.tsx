@@ -9,6 +9,7 @@ import { InputBar } from "./components/InputBar";
 import { MessageList } from "./components/MessageList";
 import { TopBar } from "./components/TopBar";
 import { TiptapEditorTest } from "./components/TiptapEditorTest";
+import { FileMentionDropdown, type FileItem } from "./components/FileMentionDropdown";
 import { MockSyncProvider } from "./state/MockSyncProvider";
 import type { QueuedMessage } from "./App";
 import type {
@@ -543,6 +544,16 @@ function UIKit() {
   };
 
   const [showTiptapTest, setShowTiptapTest] = createSignal(false);
+  const [showDropdownTest, setShowDropdownTest] = createSignal(false);
+  const [dropdownSelectedIndex, setDropdownSelectedIndex] = createSignal(0);
+
+  const fakeFiles: FileItem[] = [
+    { path: "src/index.ts", name: "index.ts" },
+    { path: "src/App.tsx", name: "App.tsx" },
+    { path: "package.json", name: "package.json" },
+    { path: "src/components/InputBar.tsx", name: "InputBar.tsx" },
+    { path: "README.md", name: "README.md" },
+  ];
 
   const controlButtons = [
     { label: () => isThinking() ? "Stop Thinking" : "Start Thinking", onClick: toggleThinking },
@@ -552,6 +563,7 @@ function UIKit() {
     { label: () => showQueuedMessages() ? "Hide Queue" : "Show Queue", onClick: toggleQueuedMessages },
     { label: () => errorMessage() ? "Hide Error" : "Show Error", onClick: toggleError },
     { label: () => showTiptapTest() ? "Hide Tiptap" : "Show Tiptap", onClick: () => setShowTiptapTest(!showTiptapTest()) },
+    { label: () => showDropdownTest() ? "Hide Dropdown" : "Show Dropdown", onClick: () => setShowDropdownTest(!showDropdownTest()) },
   ];
 
   return (
@@ -618,6 +630,18 @@ function UIKit() {
         <Show when={showTiptapTest()}>
           <div style={{ padding: "20px", "border-bottom": "1px solid var(--vscode-panel-border)" }}>
             <TiptapEditorTest />
+          </div>
+        </Show>
+        <Show when={showDropdownTest()}>
+          <div style={{ padding: "20px", "border-bottom": "1px solid var(--vscode-panel-border)", position: "relative" }}>
+            <h3>FileMentionDropdown Test</h3>
+            <p>Selected: {dropdownSelectedIndex()}</p>
+            <FileMentionDropdown
+              items={fakeFiles}
+              selectedIndex={dropdownSelectedIndex()}
+              onSelect={(item) => alert(`Selected: ${item.path}`)}
+              position={{ top: 60, left: 20 }}
+            />
           </div>
         </Show>
         <div
