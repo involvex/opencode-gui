@@ -63,15 +63,15 @@ The implementation will use:
 
 ### Phase 3: Create FileMention Tiptap extension
 
-- [ ] Create `src/webview/extensions/FileMention.ts`
-- [ ] Define a Tiptap `Node` extending `@tiptap/extension-mention`
-- [ ] Configure with `char: '@'` trigger
-- [ ] Add attributes: `id` (file path), `label` (display name), `query` (original search query)
-- [ ] Set `inline: true` and `atom: true` to make mentions behave as single units
-- [ ] Implement `renderHTML` to render mention as `<span class="file-mention" data-path="{path}">@{label}</span>`
-- [ ] Implement `parseHTML` to recognize mentions when content is loaded
-- [ ] Export configured extension
-- [ ] Add unit test verifying mention node serializes/deserializes correctly
+- [x] Create `src/webview/extensions/FileMention.ts`
+- [x] Define a Tiptap `Node` extending `@tiptap/extension-mention`
+- [x] Configure with `char: '@'` trigger
+- [x] Add attributes: `id` (file path), `label` (display name), `query` (original search query)
+- [x] Set `inline: true` and `atom: true` to make mentions behave as single units
+- [x] Implement `renderHTML` to render mention as `<span class="file-mention" data-path="{path}">@{label}</span>`
+- [x] Implement `parseHTML` to recognize mentions when content is loaded
+- [x] Export configured extension
+- [x] Add unit test verifying mention node serializes/deserializes correctly
 
 ### Phase 4: Create FileMentionDropdown component
 
