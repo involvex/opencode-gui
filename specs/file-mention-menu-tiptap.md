@@ -104,19 +104,19 @@ The implementation will use:
 
 ### Phase 6: Create TiptapEditor component
 
-- [ ] Create `src/webview/components/TiptapEditor.tsx`
-- [ ] Use `createEditor` from `tiptap-solid` to initialize editor
-- [ ] Configure extensions: `Document`, `Paragraph`, `Text`, `History`, and `FileMention`
-- [ ] Add keyboard shortcuts: Enter to submit, Shift+Enter for new line, Cmd+Enter to submit
-- [ ] Prevent Enter from submitting when dropdown is open (check dropdown state)
-- [ ] Accept props: `value: string`, `onInput: (text: string) => void`, `onSubmit: () => void`, `placeholder: string`, `disabled: boolean`
-- [ ] Use `EditorContent` from `tiptap-solid` to render editor
-- [ ] Sync editor content with external state using `editor.commands.setContent(value)` when value changes
-- [ ] Extract plain text on input using `editor.getText()` and call `onInput`
-- [ ] Create `src/webview/components/TiptapEditor.css` with VSCode-themed styles
-- [ ] Style `.tiptap` editor container to match current textarea appearance
-- [ ] Style `.file-mention` to look like chips (rounded background, padding, hover states)
-- [ ] Manually verify editor renders and basic typing works
+- [x] Create `src/webview/components/TiptapEditor.tsx`
+- [x] Use `createEditor` from `tiptap-solid` to initialize editor
+- [x] Configure extensions: `Document`, `Paragraph`, `Text`, `History`, and `FileMention`
+- [x] Add keyboard shortcuts: Enter to submit, Shift+Enter for new line, Cmd+Enter to submit
+- [x] Prevent Enter from submitting when dropdown is open (check dropdown state)
+- [x] Accept props: `value: string`, `onInput: (text: string) => void`, `onSubmit: () => void`, `placeholder: string`, `disabled: boolean`
+- [x] Use `EditorContent` from `tiptap-solid` to render editor
+- [x] Sync editor content with external state using `editor.commands.setContent(value)` when value changes
+- [x] Extract plain text on input using `editor.getText()` and call `onInput`
+- [x] Create `src/webview/components/TiptapEditor.css` with VSCode-themed styles
+- [x] Style `.tiptap` editor container to match current textarea appearance
+- [x] Style `.file-mention` to look like chips (rounded background, padding, hover states)
+- [x] Manually verify editor renders and basic typing works
 
 ### Phase 7: Replace textarea in InputBar with TiptapEditor
 
