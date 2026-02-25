@@ -102,8 +102,10 @@ export function FileMentionDropdown(props: FileMentionDropdownProps & { ref?: (r
       ref={containerRef}
       class="file-mention-dropdown"
       style={{
+        position: "fixed",
         top: `${props.position.top}px`,
         left: `${props.position.left}px`,
+        "pointer-events": "auto", // Re-enable clicks on dropdown itself
       }}
     >
       <Show

@@ -1,6 +1,5 @@
 .file-mention-dropdown {
-  position: absolute;
-  z-index: 1000;
+  /* Position is set inline via style prop */
   min-width: 300px;
   max-width: 500px;
   max-height: 300px;
