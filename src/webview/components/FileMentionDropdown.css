@@ -30,7 +30,6 @@
   font-size: 12px;
   height: 24px;
   color: var(--vscode-quickInput-foreground, #cccccc);
-  transition: background-color 0.05s ease;
 }
 
 .file-mention-dropdown__item:hover,
@@ -51,7 +50,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: var(--vscode-descriptionForeground, #888888);
+  color: var(--vscode-descriptionForeground, #6c6c6c);
   font-size: 11px;
   margin-left: 4px;
 }
