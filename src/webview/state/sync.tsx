@@ -57,6 +57,8 @@ function createSync() {
     if (eventQueue.length === 0) return;
 
     const events = eventQueue.splice(0);
+    const eventTypes = events.map(e => e.type).join(", ");
+    logger.debug("Flushing event queue", { count: events.length, types: eventTypes });
     batch(() => {
       for (const event of events) {
         applyEvent(event, eventContext);
@@ -89,14 +91,27 @@ function createSync() {
   }
 
   // Derived state
+  // Important: this memo must invalidate dependents when the underlying
+  // array mutates in place (push/splice via setStore). Solid's createMemo
+  // only notifies dependents when its returned value changes by equality.
+  // Since we often mutate the existing array, we either need to always
+  // notify (equals: false) or return a new array identity. We do both for
+  // robustness and minimal surprises.
   const messages = createMemo(() => {
     const sessionId = currentSessionId();
-    if (!sessionId) return [];
-    return store.message[sessionId] ?? [];
-  });
+    if (!sessionId) {
+      console.log("[Sync] messages() - no sessionId");
+      return [] as typeof store.message[string] | [];
+    }
+    const msgs = store.message[sessionId] ?? [];
+    console.log("[Sync] messages() memo recomputed", { sessionId, count: msgs.length, firstId: msgs[0]?.id });
+    // Return a shallow copy so identity changes when content changes
+    return msgs.slice();
+  }, undefined, { equals: false });
 
-  const sessions = createMemo(() => store.sessions);
-  const agents = createMemo(() => store.agents);
+  // Use equals: false for arrays that may be mutated in place by SSE handlers
+  const sessions = createMemo(() => store.sessions.slice(), undefined, { equals: false });
+  const agents = createMemo(() => store.agents.slice(), undefined, { equals: false });
 
   const permissions = createMemo(() => {
     const sessionId = currentSessionId();
@@ -215,6 +230,9 @@ function createSync() {
   }
 
   function handleEvent(event: Event) {
+    // Log all events for debugging
+    logger.debug("SSE event received", { type: event.type, queueLength: eventQueue.length, status: store.status.status });
+    
     // Log error events prominently
     if (event.type === "session.error") {
       logger.error("SSE session.error event received", { event });
@@ -232,7 +250,10 @@ function createSync() {
     eventQueue.push(event);
 
     // If bootstrapping, don't schedule flush - will flush after commit
-    if (store.status.status === "bootstrapping") return;
+    if (store.status.status === "bootstrapping") {
+      logger.debug("Event queued during bootstrap", { type: event.type, queueLength: eventQueue.length });
+      return;
+    }
 
     scheduleFlush();
   }

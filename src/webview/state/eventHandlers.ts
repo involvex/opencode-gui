@@ -60,6 +60,9 @@ function toPermission(sdkPerm: SDKPermission): Permission {
 
 export function applyEvent(event: Event, ctx: EventHandlerContext): void {
   const { store, setStore, currentSessionId, messageToSession, sessionIdleCallbacks } = ctx;
+  
+  // Log every event being applied
+  console.log("[EventHandler] Applying event", { type: event.type, currentSessionId: currentSessionId() });
 
   switch (event.type) {
     case "message.updated": {
@@ -92,14 +95,18 @@ export function applyEvent(event: Event, ctx: EventHandlerContext): void {
       messageToSession.set(info.id, sessionId);
 
       if (!messages.length) {
+        console.log("[EventHandler] Creating message array for session", { sessionId, msgId: msg.id });
         setStore("message", sessionId, [msg]);
       } else if (result.found) {
-        setStore("message", sessionId, result.index, reconcile(msg));
+        console.log("[EventHandler] Updating existing message", { sessionId, msgId: msg.id, index: result.index });
+        // Don't use reconcile - create new object so For component detects change
+        setStore("message", sessionId, result.index, msg);
       } else {
-        // Append new messages (SSE events arrive in chronological order)
+        console.log("[EventHandler] Appending new message", { sessionId, msgId: msg.id, currentLength: messages.length });
         setStore("message", sessionId, produce((draft) => {
           draft.push(msg);
         }));
+        console.log("[EventHandler] After append, length:", store.message[sessionId]?.length);
       }
 
       // Cap messages at 100 per session (matching TUI)
@@ -158,12 +165,29 @@ export function applyEvent(event: Event, ctx: EventHandlerContext): void {
       break;
     }
 
+    case "message.part.delta": {
+      // Delta events have different structure - just log and skip for now
+      console.log("[EventHandler] message.part.delta event (ignoring)", { properties: event.properties });
+      break;
+    }
+    
     case "message.part.updated": {
-      const { part: sdkPart } = event.properties;
+      const { part: sdkPart } = event.properties as { part?: any };
+      if (!sdkPart) {
+        console.warn("[EventHandler] No part in message.part.updated event", event);
+        break;
+      }
       const part = toPart(sdkPart);
       const sessionId = sdkPart.sessionID
         ?? messageToSession.get(sdkPart.messageID)
         ?? currentSessionId();
+      
+      console.log("[EventHandler] Processing part event", { 
+        type: event.type, 
+        partId: part.id, 
+        messageId: sdkPart.messageID, 
+        sessionId 
+      });
 
       batch(() => {
         if (sessionId) {
@@ -212,6 +236,12 @@ export function applyEvent(event: Event, ctx: EventHandlerContext): void {
               setStore("message", sessionId, produce((draft) => {
                 draft.push(newMsg);
               }));
+            } else {
+              // Update the message's text from the updated parts
+              // This triggers reactivity so UI re-renders when parts stream in
+              const updatedParts = store.part[sdkPart.messageID] ?? [];
+              const newText = extractTextFromParts(updatedParts);
+              setStore("message", sessionId, msgResult.index, "text", newText);
             }
           }
         }

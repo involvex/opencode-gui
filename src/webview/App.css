@@ -199,6 +199,14 @@
   /* Padding combinations */
   --padding-button: var(--spacing-xs) var(--spacing-md);
   --padding-button-compact: var(--spacing-xs) var(--spacing-sm);
+
+  /* Shadows */
+  --shadow-subtle:
+    rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+    rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+    light-dark(rgba(38, 36, 42, 0.06), rgba(227, 226, 229, 0.06)) 0px 0px 0px 1px,
+    light-dark(rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.12)) 0px 1px 1px -0.5px,
+    light-dark(rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.12)) 0px 3px 3px -1.5px;
 }
 
 /* Use theme variables */
@@ -1182,6 +1190,7 @@ body.vscode-high-contrast {
   background: var(--input-background);
   border: 1px solid var(--border-color);
   border-radius: 4px;
+  box-shadow: var(--shadow-subtle);
   z-index: 1000;
 }
 

@@ -5,10 +5,10 @@
   max-height: 194px;
   overflow-y: auto;
   overflow-x: hidden;
-  background: var(--vscode-quickInput-background, #252526);
-  border: 1px solid var(--vscode-input-border, #3c3c3c);
+  background: var(--vscode-quickInput-background);
+  border: 1px solid var(--vscode-widget-border);
   border-radius: 3px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-subtle);
   padding: 0;
 }
 

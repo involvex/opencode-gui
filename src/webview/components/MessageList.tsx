@@ -26,6 +26,8 @@ export function MessageList(props: MessageListProps) {
   let containerRef!: HTMLDivElement;
   let contentRef!: HTMLDivElement;
   
+  console.log("[MessageList] Rendering with messages count:", props.messages.length);
+  
   const [pinned, setPinned] = createSignal(true);
   let userInteracting = false;
   let pendingRAF = false;
@@ -173,16 +175,19 @@ export function MessageList(props: MessageListProps) {
 
   // Split messages into non-queued and queued
   const nonQueuedMessages = createMemo(() => {
-    return props.messages.filter(msg => !isMessageQueued(msg.id, msg));
+    const result = props.messages.filter(msg => !isMessageQueued(msg.id, msg));
+    console.log("[MessageList] nonQueuedMessages memo recomputed", { total: props.messages.length, nonQueued: result.length });
+    return result;
   });
 
   const queuedMessages = createMemo(() => {
-    return props.messages.filter(msg => isMessageQueued(msg.id, msg));
+    const result = props.messages.filter(msg => isMessageQueued(msg.id, msg));
+    console.log("[MessageList] queuedMessages memo recomputed", { total: props.messages.length, queued: result.length });
+    return result;
   });
 
   const renderMessage = (message: Message, index: () => number) => {
-    const allMessages = props.messages;
-    const isLastMessage = () => index() === allMessages.length - 1;
+    const isLastMessage = () => index() === props.messages.length - 1;
     const isStreaming = () => isLastMessage() && props.isThinking && message.type === "assistant";
     const isEditing = () => props.editingMessageId === message.id;
     const isQueued = () => isMessageQueued(message.id, message);
@@ -220,7 +225,8 @@ export function MessageList(props: MessageListProps) {
             style={{ cursor: message.type === "user" && !props.isThinking ? "text" : "default" }}
           >
             <MessageItem 
-              message={message} 
+              message={message}
+              parts={sync.getParts(message.id)}
               workspaceRoot={props.workspaceRoot} 
               pendingPermissions={props.pendingPermissions} 
               onPermissionResponse={props.onPermissionResponse} 
@@ -242,8 +248,12 @@ export function MessageList(props: MessageListProps) {
   return (
     <div class="messages-container" ref={containerRef!} role="log" aria-label="Messages">
       <div class="messages-content" ref={contentRef!}>
-        <For each={nonQueuedMessages()}>
-          {(message, index) => renderMessage(message, index)}
+        <For each={nonQueuedMessages()} fallback={<div>No messages</div>}>
+          {(message, index) => {
+            // Log every time For creates/updates a message row
+            console.log("[MessageList] For rendering message", { id: message.id, textLen: message.text?.length });
+            return renderMessage(message, index);
+          }}
         </For>
 
         <ThinkingIndicator when={props.isThinking} />

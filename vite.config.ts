@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [solidPlugin()],
   build: {
     outDir: 'out',
+    minify: false,
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'src/webview/index.html'),

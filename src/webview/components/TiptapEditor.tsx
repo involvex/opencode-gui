@@ -12,7 +12,7 @@ export interface TiptapEditorProps {
   placeholder?: string;
   disabled?: boolean;
   searchFiles: (query: string) => Promise<string[]>;
-  ref?: (getJSON: () => any) => void;
+  ref?: (methods: { getJSON: () => any; setContent: (content: any) => void; clear: () => void }) => void;
 }
 
 export function TiptapEditor(props: TiptapEditorProps) {
@@ -62,6 +62,32 @@ export function TiptapEditor(props: TiptapEditorProps) {
         class: "tiptap-editor",
         "data-placeholder": props.placeholder || "",
       },
+      handleKeyDown: (view, event) => {
+        // Let Tiptap handle suggestion navigation first
+        // If the suggestion plugin returns true, it handled the event
+        // Otherwise, we can handle our submit shortcuts
+        
+        // Don't handle keyboard shortcuts if suggestion dropdown is active
+        if (isSuggestionActive()) {
+          return false; // Let Tiptap handle it
+        }
+
+        // Cmd/Ctrl + Enter to submit
+        if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+          event.preventDefault();
+          props.onSubmit();
+          return true; // Handled
+        }
+
+        // Enter to submit (but not when Shift is held)
+        if (event.key === "Enter" && !event.shiftKey) {
+          event.preventDefault();
+          props.onSubmit();
+          return true; // Handled
+        }
+
+        return false; // Not handled, let Tiptap continue
+      },
     },
     onUpdate: ({ editor }: any) => {
       const text = editor.getText();
@@ -86,30 +112,17 @@ export function TiptapEditor(props: TiptapEditorProps) {
     }
   });
 
-  // Expose getJSON method via ref
+  // Expose editor methods via ref
   createEffect(() => {
     const currentEditor = editor();
     if (currentEditor && props.ref) {
-      props.ref(() => currentEditor.getJSON());
+      props.ref({
+        getJSON: () => currentEditor.getJSON(),
+        setContent: (content: any) => currentEditor.commands.setContent(content),
+        clear: () => currentEditor.commands.clearContent(),
+      });
     }
   });
-
-  // Keyboard shortcuts
-  const handleKeyDown = (event: KeyboardEvent) => {
-    // Cmd/Ctrl + Enter to submit
-    if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
-      event.preventDefault();
-      props.onSubmit();
-      return;
-    }
-
-    // Enter to submit (but not when suggestion is active or Shift is held)
-    if (event.key === "Enter" && !event.shiftKey && !isSuggestionActive()) {
-      event.preventDefault();
-      props.onSubmit();
-      return;
-    }
-  };
 
   onCleanup(() => {
     const currentEditor = editor();
@@ -119,7 +132,7 @@ export function TiptapEditor(props: TiptapEditorProps) {
   });
 
   return (
-    <div class="tiptap-editor-container" onKeyDown={handleKeyDown}>
+    <div class="tiptap-editor-container">
       <EditorContent editor={editor()} />
     </div>
   );

@@ -160,6 +160,7 @@ export async function fetchBootstrapData(ctx: BootstrapContext): Promise<Bootstr
       ]);
 
       const rawMessages = messagesRes?.data ?? [];
+      console.log("[Bootstrap] Fetched messages", { count: rawMessages.length, sessionId });
 
       messageList = rawMessages
         .map((raw) => {
@@ -244,6 +245,12 @@ export async function fetchBootstrapData(ctx: BootstrapContext): Promise<Bootstr
     }
   }
 
+  console.log("[Bootstrap] Returning data", { 
+    agentCount: agents.length, 
+    sessionCount: sessions.length, 
+    messageCount: messageList.length,
+    sessionId 
+  });
   return { agents, sessions, messageList, partMap, permissionMap, sessionStatusMap, contextInfo, fileChanges };
 }
 
@@ -252,11 +259,17 @@ export function commitBootstrapData(
   sessionId: string | null,
   setStore: SetStoreFunction<SyncState>
 ): void {
+  console.log("[Bootstrap] Committing data", { 
+    messageCount: data.messageList.length, 
+    sessionId,
+    firstMsgId: data.messageList[0]?.id 
+  });
   batch(() => {
     setStore("agents", data.agents);
     setStore("sessions", data.sessions);
     if (sessionId) {
       setStore("message", sessionId, data.messageList);
+      console.log("[Bootstrap] Committed messages to store for session", sessionId);
     }
     setStore("part", reconcile(data.partMap));
     setStore("permission", reconcile(data.permissionMap));

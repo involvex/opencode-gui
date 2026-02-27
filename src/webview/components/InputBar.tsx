@@ -21,7 +21,7 @@ interface InputBarProps {
   onEditQueuedMessage: (id: string) => void;
   attachments: InputAttachment[];
   onRemoveAttachment: (id: string) => void;
-  editorRef?: (getJSON: () => any) => void;
+  editorRef?: (methods: { getJSON: () => any; setContent: (content: any) => void; clear: () => void }) => void;
 }
 
 interface InputAttachment {

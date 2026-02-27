@@ -29,10 +29,8 @@ export function createFileMentionSuggestion(
               path,
               name: path.split("/").pop() || path,
             }));
-            console.log("[FileMention] items() resolved with", items.length, "items");
             resolve(items);
           } catch (error) {
-            console.error("Failed to search files:", error);
             resolve([]);
           }
         }, 200);
@@ -48,13 +46,6 @@ export function createFileMentionSuggestion(
 
       return {
         onStart: (props) => {
-          console.log("[FileMention] onStart called", { 
-            itemCount: props.items.length,
-            items: props.items,
-            query: props.query,
-            text: props.text,
-          });
-          
           items = props.items as FileItem[];
           selectedIndex = 0;
 
@@ -67,48 +58,29 @@ export function createFileMentionSuggestion(
           container.style.left = "0";
           container.style.pointerEvents = "none"; // Allow clicks through container to dropdown
           document.body.appendChild(container);
-          
-          console.log("[FileMention] Container created and appended to body", {
-            container,
-            parentNode: container.parentNode,
-            itemsToRender: items,
-          });
 
           // Get cursor position from ProseMirror
           const { view } = props.editor;
           const { from } = props.range;
           const coords = view.coordsAtPos(from);
           
-          // Get editor element's position relative to viewport
-          const editorElement = view.dom;
-          const editorRect = editorElement.getBoundingClientRect();
-          
-          console.log("[FileMention] Raw cursor coords from ProseMirror", coords);
-          console.log("[FileMention] Editor element rect", editorRect);
-          
           // Position dropdown directly below cursor using absolute positioning
           // coords.top and coords.left are already viewport-relative
           const dropdownTop = coords.bottom; // Position below the cursor line
           const dropdownLeft = coords.left;
           
-          console.log("[FileMention] Dropdown position", { top: dropdownTop, left: dropdownLeft });
-          
           // Render the dropdown at the calculated position
           setTimeout(() => {
-            console.log("[FileMention] Attempting to render SolidJS component");
             try {
               const DropdownComponent = () => {
-                console.log("[FileMention] DropdownComponent rendering with items:", items);
                 return FileMentionDropdown({
                   items,
                   selectedIndex,
                   onSelect: (item) => {
-                    console.log("[FileMention] Item selected:", item);
                     props.command({ id: item.path, label: item.name });
                   },
                   position: { top: dropdownTop, left: dropdownLeft },
                   ref: (ref) => {
-                    console.log("[FileMention] Dropdown ref received:", ref);
                     dropdownRef = ref;
                   },
                 });
@@ -122,17 +94,13 @@ export function createFileMentionSuggestion(
               container!.style.position = "absolute";
               
               dispose = render(DropdownComponent, container!);
-              console.log("[FileMention] Render complete, dispose function:", dispose);
-              console.log("[FileMention] Container HTML:", container!.innerHTML);
-              console.log("[FileMention] Container children:", container!.children);
             } catch (err) {
-              console.error("[FileMention] Error rendering dropdown:", err);
+              // Silently fail
             }
           }, 100);
         },
 
         onUpdate: (props) => {
-          console.log("[FileMention] onUpdate called", { itemCount: props.items.length });
           selectedIndex = 0;
           items = props.items as FileItem[];
 
@@ -188,7 +156,6 @@ export function createFileMentionSuggestion(
         },
 
         onKeyDown: (props) => {
-          console.log("[FileMention] onKeyDown", props.event.key);
           if (dropdownRef && dropdownRef.onKeyDown(props.event)) {
             return true;
           }
@@ -196,7 +163,6 @@ export function createFileMentionSuggestion(
         },
 
         onExit: () => {
-          console.log("[FileMention] onExit called");
           if (dispose) {
             dispose();
             dispose = null;
