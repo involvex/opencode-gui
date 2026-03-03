@@ -100,8 +100,9 @@ function createSync() {
     return store.message[sessionId] ?? EMPTY_MESSAGES;
   };
 
-  const sessions = createMemo(() => store.sessions);
-  const agents = createMemo(() => store.agents);
+  // Use equals: false for arrays that may be mutated in place by SSE handlers
+  const sessions = createMemo(() => store.sessions.slice(), undefined, { equals: false });
+  const agents = createMemo(() => store.agents.slice(), undefined, { equals: false });
 
   const permissions = createMemo(() => {
     const sessionId = currentSessionId();
