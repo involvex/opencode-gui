@@ -181,8 +181,7 @@ export function MessageList(props: MessageListProps) {
   });
 
   const renderMessage = (message: Message, index: () => number) => {
-    const allMessages = props.messages;
-    const isLastMessage = () => index() === allMessages.length - 1;
+    const isLastMessage = () => index() === props.messages.length - 1;
     const isStreaming = () => isLastMessage() && props.isThinking && message.type === "assistant";
     const isEditing = () => props.editingMessageId === message.id;
     const isQueued = () => isMessageQueued(message.id, message);
@@ -220,7 +219,8 @@ export function MessageList(props: MessageListProps) {
             style={{ cursor: message.type === "user" && !props.isThinking ? "text" : "default" }}
           >
             <MessageItem 
-              message={message} 
+              message={message}
+              parts={sync.getParts(message.id)}
               workspaceRoot={props.workspaceRoot} 
               pendingPermissions={props.pendingPermissions} 
               onPermissionResponse={props.onPermissionResponse} 
@@ -242,7 +242,7 @@ export function MessageList(props: MessageListProps) {
   return (
     <div class="messages-container" ref={containerRef!} role="log" aria-label="Messages">
       <div class="messages-content" ref={contentRef!}>
-        <For each={nonQueuedMessages()}>
+        <For each={nonQueuedMessages()} fallback={null}>
           {(message, index) => renderMessage(message, index)}
         </For>
 
