@@ -26,6 +26,8 @@ export function MessageList(props: MessageListProps) {
   let containerRef!: HTMLDivElement;
   let contentRef!: HTMLDivElement;
   
+  console.log("[MessageList] Rendering with messages count:", props.messages.length);
+  
   const [pinned, setPinned] = createSignal(true);
   let userInteracting = false;
   let pendingRAF = false;
@@ -173,11 +175,15 @@ export function MessageList(props: MessageListProps) {
 
   // Split messages into non-queued and queued
   const nonQueuedMessages = createMemo(() => {
-    return props.messages.filter(msg => !isMessageQueued(msg.id, msg));
+    const result = props.messages.filter(msg => !isMessageQueued(msg.id, msg));
+    console.log("[MessageList] nonQueuedMessages memo recomputed", { total: props.messages.length, nonQueued: result.length });
+    return result;
   });
 
   const queuedMessages = createMemo(() => {
-    return props.messages.filter(msg => isMessageQueued(msg.id, msg));
+    const result = props.messages.filter(msg => isMessageQueued(msg.id, msg));
+    console.log("[MessageList] queuedMessages memo recomputed", { total: props.messages.length, queued: result.length });
+    return result;
   });
 
   const renderMessage = (message: Message, index: () => number) => {
