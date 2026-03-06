@@ -6,6 +6,7 @@ import { isRenderablePart } from "./MessagePartRenderer";
 import { Streamdown } from "../lib/streamdown";
 import { vscode } from "../utils/vscode";
 import { useSync } from "../state/sync";
+import { messageMarkdownComponents } from "./markdownComponents";
 
 interface MessageItemProps {
   message: Message;
@@ -101,7 +102,7 @@ export function MessageItem(props: MessageItemProps) {
                   {(attachment) => (
                     <button
                       type="button"
-                      class="message-attachment"
+                      class="file-chip message-attachment"
                       title={attachment.title ?? attachment.label}
                       onClick={(event) => {
                         event.stopPropagation();
@@ -132,7 +133,11 @@ export function MessageItem(props: MessageItemProps) {
               when={hasRenderableParts()} 
               fallback={
                 <Show when={props.message.text}>
-                  <Streamdown mode={props.isStreaming ? "streaming" : "static"} class="message-text">
+                  <Streamdown
+                    mode={props.isStreaming ? "streaming" : "static"}
+                    components={messageMarkdownComponents}
+                    class="message-text"
+                  >
                     {props.message.text!}
                   </Streamdown>
                 </Show>
