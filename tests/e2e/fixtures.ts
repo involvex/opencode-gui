@@ -111,16 +111,18 @@ async function startOpenCodeServer(
 	workspaceRoot: string,
 ): Promise<OpenCodeServer> {
 	return new Promise((resolve, reject) => {
-		console.log(`[fixture] Spawning opencode serve in ${workspaceRoot}`)
+		// Resolve the opencode binary path for Windows compatibility
+		const opencodeBin =
+			process.platform === 'win32' ? 'opencode.exe' : 'opencode'
+
+		console.log(`[fixture] Spawning ${opencodeBin} serve in ${workspaceRoot}`)
 
 		const logs: string[] = []
 
 		const serverProcess = spawn(
-			'opencode',
+			opencodeBin,
 			[
 				'serve',
-				// '--port',
-				// '5000', // Let OS pick an available port
 				'--hostname',
 				'127.0.0.1',
 				'--cors',
@@ -234,7 +236,10 @@ async function startOpenCodeServer(
 export const test = base.extend<OpenCodeFixtures, OpenCodeWorkerFixtures>({
 	// Share the server across all tests in a worker
 	opencodeServer: [
-		async ({}, use) => {
+		async (
+			_: Record<string, never>,
+			use: (r: OpenCodeServer) => Promise<void>,
+		) => {
 			// Use sandbox directory for tests by default
 			const defaultRoot = path.join(process.cwd(), 'tests', 'sandbox')
 			const workspaceRoot = process.env.OPENCODE_WORKSPACE_ROOT || defaultRoot
@@ -255,7 +260,12 @@ export const test = base.extend<OpenCodeFixtures, OpenCodeWorkerFixtures>({
 
 			// Cleanup: kill the server after tests
 			console.log(`[fixture] Stopping OpenCode server`)
-			server.process.kill('SIGTERM')
+			// Windows doesn't support SIGTERM; use 'kill' which sends SIGKILL on Windows
+			if (process.platform === 'win32') {
+				server.process.kill()
+			} else {
+				server.process.kill('SIGTERM')
+			}
 		},
 		{scope: 'worker'},
 	],
