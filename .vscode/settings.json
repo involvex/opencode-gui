@@ -26,5 +26,6 @@
 		}
 	],
 	"statusbarQuickActions.settings.performance": {"enableVirtualization": false},
-	"statusbarQuickActions.settings.debug": true
+	"statusbarQuickActions.settings.debug": true,
+	"opencode.serverUrl": "http://localhost:5000"
 }

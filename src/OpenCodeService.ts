@@ -85,7 +85,7 @@ export class OpenCodeService {
 				createOptions.url = serverUrl
 			} else {
 				createOptions.hostname = '127.0.0.1'
-				createOptions.port = 0
+				createOptions.port = 5000
 			}
 
 			// Pass API keys if provided in settings
@@ -218,7 +218,10 @@ export class OpenCodeService {
 			throw new Error(`Failed to get messages: ${JSON.stringify(result.error)}`)
 		}
 
-		return result.data || []
+		// Transform SDK response to our Message type
+		// SDK returns { info: Message; parts: Part[] }[] but we just need Message
+		const messages = result.data || []
+		return messages.map(m => m.info)
 	}
 
 	dispose(): void {

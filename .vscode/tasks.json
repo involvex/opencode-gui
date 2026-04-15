@@ -40,6 +40,13 @@
 			"group": "build",
 			"label": "build:extension",
 			"problemMatcher": []
+		},
+		{
+			"type": "bun",
+			"script": "bun run build:extension && bun run build:webview",
+			"problemMatcher": [],
+			"label": "bun: build",
+			"detail": "bun run build:extension && bun run build:webview - package.json"
 		}
 	]
 }

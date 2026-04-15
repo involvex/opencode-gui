@@ -2,7 +2,6 @@ import type {
 	Agent,
 	ContextInfo,
 	FileChangesInfo,
-	Message,
 	Permission,
 	Session,
 } from './types'
@@ -18,6 +17,7 @@ import {MessageList} from './components/MessageList'
 import {createSignal, For, Show} from 'solid-js'
 import {InputBar} from './components/InputBar'
 import {TopBar} from './components/TopBar'
+import type {MessagePart} from './types'
 import type {QueuedMessage} from './App'
 import {render} from 'solid-js/web'
 import './uikit.css'
@@ -93,7 +93,16 @@ const fakeSessions: Session[] = [
 	},
 ]
 
-const fakeMessages: Message[] = [
+// UI kit test data - uses extended type with parts for testing
+interface UikitMessage {
+	id: string
+	type: 'user' | 'assistant'
+	text?: string
+	time?: {created: number; completed?: number}
+	parts?: MessagePart[]
+}
+
+const fakeMessages: UikitMessage[] = [
 	{
 		id: 'msg-1',
 		type: 'user',

@@ -1,4 +1,5 @@
 import {OpenCodeViewProvider} from './OpenCodeViewProvider'
+import {createOpencodeServer} from '@opencode-ai/sdk/v2'
 import type {HostMessage} from './shared/messages'
 import {OpenCodeService} from './OpenCodeService'
 import * as vscode from 'vscode'
@@ -81,6 +82,14 @@ export async function activate(context: vscode.ExtensionContext) {
 			provider.sendHostMessage(message)
 		},
 	)
+	const restartServerDisposable = vscode.commands.registerCommand(
+		'opencode.restartserver',
+		async () => {
+			await createOpencodeServer()
+		},
+	)
+	context.subscriptions.push(restartServerDisposable)
+	logger.info('OpenCode server restarted')
 
 	context.subscriptions.push(addSelectionDisposable)
 
