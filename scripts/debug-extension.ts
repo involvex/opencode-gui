@@ -4,40 +4,25 @@ import {
 	downloadAndUnzipVSCode,
 	resolveCliPathFromVSCodeExecutablePath,
 } from '@vscode/test-electron'
-import {spawn, execSync} from 'child_process'
 import {chromium} from '@playwright/test'
+import {spawn} from 'child_process'
 import * as fs from 'fs/promises'
 import {Command} from 'commander'
 import * as path from 'path'
-
-const TMUX_SESSION = 'opencode-debug'
 
 const program = new Command()
 
 program
 	.name('debug-extension')
-	.description(
-		'Launch VSCode with the OpenCode extension in a background tmux session',
-	)
+	.description('Launch VSCode with the OpenCode extension for debugging')
 	.option('-w, --workspace <path>', 'Workspace to open', process.cwd())
 	.option('-p, --port <number>', 'CDP port', '9222')
 	.option('--clean', 'Clean user data before launch')
 	.option('--attach', 'Attach Playwright to the webview')
 	.option('--logs', 'Stream extension logs')
-	.option('--stop', 'Stop the running debug session')
-	.option('--foreground', 'Run in foreground (used internally by tmux)')
 	.parse()
 
 const options = program.opts()
-
-function tmuxSessionExists(): boolean {
-	try {
-		execSync(`tmux has-session -t ${TMUX_SESSION} 2>/dev/null`)
-		return true
-	} catch {
-		return false
-	}
-}
 
 async function waitForPort(port: number, timeout: number): Promise<void> {
 	const start = Date.now()
@@ -70,9 +55,10 @@ async function launchVSCode() {
 	const launchArgs = [
 		'--no-sandbox',
 		'--disable-gpu-sandbox',
-		'--disable-web-security',
-		'--disable-site-isolation-trials',
-		'--disable-features=IsolateOrigins,site-per-process',
+		// '--disable-web-security',
+		// '--disable-site-isolation-trials',
+		// '--disable-features=IsolateOrigins',
+		'site-per-process',
 		'--disable-updates',
 		'--disable-workspace-trust',
 		'--skip-welcome',
@@ -182,7 +168,7 @@ async function attachToWebview(cdpUrl: string) {
 	return browser
 }
 
-async function runForeground() {
+async function main() {
 	const session = await launchVSCode()
 
 	let stopLogs: (() => void) | null = null
@@ -200,15 +186,6 @@ async function runForeground() {
 		if (stopLogs) stopLogs()
 		if (browser) await browser.close().catch(() => {})
 		session.vscodeProcess.kill('SIGTERM')
-		// Also kill the Electron process (the CLI spawns it as a separate process)
-		try {
-			execSync(
-				`pkill -f "extensionDevelopmentPath=${path.resolve(process.cwd())}"`,
-				{stdio: 'ignore'},
-			)
-		} catch {
-			/* already dead */
-		}
 		await new Promise(resolve => setTimeout(resolve, 2000))
 		process.exit(0)
 	}
@@ -217,63 +194,6 @@ async function runForeground() {
 	process.on('SIGTERM', cleanup)
 	process.on('SIGHUP', cleanup)
 	await new Promise(() => {})
-}
-
-async function main() {
-	// --stop: kill the background session
-	if (options.stop) {
-		if (!tmuxSessionExists()) {
-			console.log('No debug session running.')
-			return
-		}
-		// Send Ctrl+C so the foreground process runs cleanup (kills VS Code)
-		execSync(`tmux send-keys -t ${TMUX_SESSION} C-c`, {stdio: 'inherit'})
-		// Wait for cleanup to finish, then kill the tmux session
-		await new Promise(resolve => setTimeout(resolve, 4000))
-		if (tmuxSessionExists()) {
-			execSync(`tmux kill-session -t ${TMUX_SESSION} 2>/dev/null`, {
-				stdio: 'inherit',
-			})
-		}
-		console.log('Session stopped.')
-		return
-	}
-
-	// --foreground: run directly (used by tmux)
-	if (options.foreground) {
-		await runForeground()
-		return
-	}
-
-	// Default: launch in tmux background
-	if (tmuxSessionExists()) {
-		console.log(`Session "${TMUX_SESSION}" already running.`)
-		console.log(`  Attach: tmux attach -t ${TMUX_SESSION}`)
-		console.log(`  Stop:   bun debug:extension --stop`)
-		process.exit(1)
-	}
-
-	// Launch VS Code in tmux
-	console.log('Starting debug session...')
-	const args = process.argv.slice(2).concat('--foreground')
-	const cmd = `cd '${process.cwd()}' && bun run scripts/debug-extension.ts ${args.join(' ')}`
-	execSync(`tmux new-session -d -s ${TMUX_SESSION} '${cmd}'`)
-
-	// Wait for it to be ready
-	const port = parseInt(options.port)
-	try {
-		await waitForPort(port, 60000)
-		console.log(`Debug session running in tmux "${TMUX_SESSION}"`)
-		console.log(`  CDP:    http://localhost:${port}`)
-		console.log(`  Attach: tmux attach -t ${TMUX_SESSION}`)
-		console.log(`  Stop:   bun debug:extension --stop`)
-	} catch {
-		console.error(
-			'Timed out waiting for VSCode to start. Check: tmux attach -t ' +
-				TMUX_SESSION,
-		)
-		process.exit(1)
-	}
 }
 
 main().catch(error => {

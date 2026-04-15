@@ -61,7 +61,7 @@ export class OpenCodeService {
 
 			logger.info('Starting OpenCode server...')
 
-			// Read configuration from VS Code settings
+			// Read configuration from VS Code settings and opencode.json
 			const config = vscode.workspace.getConfiguration('opencode')
 			const serverUrl = config.get<string>('serverUrl', '')
 			const openaiApiKey = config.get<string>('openaiApiKey', '')
@@ -75,9 +75,27 @@ export class OpenCodeService {
 			const opencodeGoApiKey = config.get<string>('opencodeGoApiKey', '')
 			const opencodeZenApiKey = config.get<string>('opencodeZenApiKey', '')
 
+			// Read server config from workspace opencode.json
+			let serverPort = 5000 // default
+			try {
+				const opencodeConfigPath = workspaceRoot
+					? path.join(workspaceRoot, 'opencode.json')
+					: null
+				if (opencodeConfigPath && fs.existsSync(opencodeConfigPath)) {
+					const opencodeConfig = JSON.parse(
+						fs.readFileSync(opencodeConfigPath, 'utf-8'),
+					)
+					if (opencodeConfig.server?.port) {
+						serverPort = opencodeConfig.server.port
+					}
+				}
+			} catch (e) {
+				logger.warn('Could not read opencode.json server port', e)
+			}
+
 			// Build options for createOpencode
 			const createOptions: Parameters<typeof createOpencode>[0] = {
-				timeout: 15000,
+				timeout: 30000, // 30 seconds timeout
 			}
 
 			// If server URL is provided, use it directly instead of spawning
@@ -85,7 +103,7 @@ export class OpenCodeService {
 				createOptions.url = serverUrl
 			} else {
 				createOptions.hostname = '127.0.0.1'
-				createOptions.port = 5000
+				createOptions.port = serverPort
 			}
 
 			// Pass API keys if provided in settings
