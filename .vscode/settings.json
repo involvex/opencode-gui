@@ -26,6 +26,5 @@
 		}
 	],
 	"statusbarQuickActions.settings.performance": {"enableVirtualization": false},
-	"statusbarQuickActions.settings.debug": true,
-	"opencode.serverUrl": ""
+	"statusbarQuickActions.settings.debug": true
 }

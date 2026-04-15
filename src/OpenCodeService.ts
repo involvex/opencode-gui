@@ -250,6 +250,11 @@ export class OpenCodeService {
 		}
 	}
 
+	async restart(): Promise<void> {
+		this.dispose()
+		await this.initialize(this.workspaceDir)
+	}
+
 	isReady(): boolean {
 		return this.opencode !== null && !this.isInitializing
 	}
