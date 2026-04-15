@@ -5,6 +5,7 @@
 ### Current React Implementation
 
 The webview is currently built with React 18 and uses:
+
 - **React hooks**: `useState`, `useEffect`, `useRef`
 - **Components**: Single `App.tsx` component (440 lines)
 - **State management**: Local component state with hooks
@@ -12,6 +13,7 @@ The webview is currently built with React 18 and uses:
 - **Entry point**: `main.tsx` using `ReactDOM.createRoot()`
 
 Key features to migrate:
+
 1. Message state management (messages array, isThinking, isReady, input)
 2. Event handling from VSCode extension via `window.addEventListener("message")`
 3. Auto-scroll behavior on message updates
@@ -23,6 +25,7 @@ Key features to migrate:
 ### Why SolidJS?
 
 SolidJS benefits:
+
 - **Fine-grained reactivity**: No virtual DOM, updates are more efficient
 - **Better performance**: Smaller bundle size (~7KB vs React's ~40KB)
 - **Simpler mental model**: Signals are more predictable than hooks
@@ -31,6 +34,7 @@ SolidJS benefits:
 ### Migration Mapping
 
 React → SolidJS equivalents:
+
 - `useState` → `createSignal`
 - `useEffect` → `createEffect` or `onMount`
 - `useRef` → direct variable (for DOM refs) or `createSignal` (for values)
@@ -41,6 +45,7 @@ React → SolidJS equivalents:
 ### Dependencies to Change
 
 Remove:
+
 - `react` (18.x)
 - `react-dom` (18.x)
 - `@types/react` (18.x)
@@ -48,32 +53,38 @@ Remove:
 - `@vitejs/plugin-react` (4.x)
 
 Add:
+
 - `solid-js` (^1.8.0)
 - `vite-plugin-solid` (^2.10.0)
 
 ### Build Configuration Changes
 
 `vite.config.ts`:
+
 - Replace `@vitejs/plugin-react` with `vite-plugin-solid`
 - Everything else stays the same
 
 ## Implementation Plan
 
 ### 1. Install SolidJS dependencies
+
 ```bash
 npm uninstall react react-dom @types/react @types/react-dom @vitejs/plugin-react
 npm install solid-js vite-plugin-solid
 ```
 
 ### 2. Update vite.config.ts
+
 - Import `solidPlugin` from `vite-plugin-solid`
 - Replace `react()` with `solidPlugin()`
 
 ### 3. Rewrite main.tsx
+
 - Replace `ReactDOM.createRoot()` with `render()` from `solid-js/web`
 - Remove `React.StrictMode` (not needed in Solid)
 
 ### 4. Rewrite App.tsx
+
 - Convert all React imports to SolidJS
 - `useState` → `createSignal`
 - `useEffect` → `createEffect` / `onMount`
@@ -85,40 +96,44 @@ npm install solid-js vite-plugin-solid
 ### 5. Key Migration Gotchas
 
 **Signal updates**: Signals return `[value, setValue]` but you call them as functions:
+
 ```tsx
-const [input, setInput] = createSignal("");
-console.log(input()); // Get value
-setInput("new"); // Set value
+const [input, setInput] = createSignal('')
+console.log(input()) // Get value
+setInput('new') // Set value
 ```
 
 **Refs**: Use `ref` attribute directly, no `useRef` needed:
+
 ```tsx
-let inputRef: HTMLTextAreaElement;
-<textarea ref={inputRef!} />
+let inputRef: HTMLTextAreaElement
+;<textarea ref={inputRef!} />
 ```
 
 **Effects**: `createEffect` tracks dependencies automatically:
+
 ```tsx
 createEffect(() => {
-  console.log(messages()); // Auto-tracks messages signal
-});
+	console.log(messages()) // Auto-tracks messages signal
+})
 ```
 
 **For loops**: Use `<For>` component for lists:
+
 ```tsx
-<For each={messages()}>
-  {(message) => <div>{message.text}</div>}
-</For>
+<For each={messages()}>{message => <div>{message.text}</div>}</For>
 ```
 
 **Conditional rendering**: Use `<Show>` component:
+
 ```tsx
 <Show when={hasMessages()}>
-  <div>Has messages!</div>
+	<div>Has messages!</div>
 </Show>
 ```
 
 ### 6. Testing
+
 - Build with `npm run build:webview`
 - Run extension in dev mode
 - Verify all interactions work (send messages, streaming, tool calls, etc.)
@@ -160,6 +175,7 @@ All migration tasks completed successfully:
 ### Migration Details
 
 **Key Changes Made:**
+
 - Signal-based reactivity for all state (input, messages, isThinking, isReady)
 - Effect tracking is automatic - no dependency arrays needed
 - Direct ref assignments instead of useRef hooks
@@ -170,6 +186,7 @@ All migration tasks completed successfully:
 - Message handling logic preserved exactly as-is
 
 **What Still Works:**
+
 - VSCode message passing (window.addEventListener)
 - Auto-scroll behavior
 - Auto-resize textarea
@@ -184,15 +201,17 @@ All migration tasks completed successfully:
 ✅ **Build passes** - Both extension and webview compile without errors
 ✅ **TypeScript checks pass** - No type errors
 ⏳ **Runtime testing needed** - Extension needs to be loaded in VSCode to verify:
-  - Message sending and receiving
-  - Streaming updates work correctly
-  - Tool calls display properly
-  - UI interactions (typing, submitting, scrolling)
-  - No regression in functionality
+
+- Message sending and receiving
+- Streaming updates work correctly
+- Tool calls display properly
+- UI interactions (typing, submitting, scrolling)
+- No regression in functionality
 
 ### Next Steps
 
 The migration is complete and ready for runtime testing. To test:
+
 1. Run `npm run watch` to start watch mode
 2. Press F5 to launch Extension Development Host
 3. Test all features: sending messages, streaming, tool calls, scrolling

@@ -18,12 +18,11 @@ Gatekeeper is a testing utility that allows you to intercept and control method 
 Use this when you want the real implementation to run without any mocking:
 
 ```typescript
-const harness = new GatekeeperHarness()
-  .add("api", () => new MyApi());
+const harness = new GatekeeperHarness().add('api', () => new MyApi())
 
-harness.lowerAllGates(); // No interception
+harness.lowerAllGates() // No interception
 
-const result = await (harness as any).api.someMethod();
+const result = await (harness as any).api.someMethod()
 // Real method was called
 ```
 
@@ -32,18 +31,18 @@ const result = await (harness as any).api.someMethod();
 Use this when you want to completely replace the implementation:
 
 ```typescript
-harness.raiseAllGates(); // Enable interception
+harness.raiseAllGates() // Enable interception
 
-const resultPromise = (harness as any).api.someMethod("arg");
+const resultPromise = (harness as any).api.someMethod('arg')
 
-const call = await (harness as any).api.waitForCall("someMethod");
-expect(call.args).toEqual(["arg"]);
+const call = await (harness as any).api.waitForCall('someMethod')
+expect(call.args).toEqual(['arg'])
 
 // Return mocked value
-await call.fulfill("mocked result");
+await call.fulfill('mocked result')
 
-const result = await resultPromise;
-expect(result).toBe("mocked result");
+const result = await resultPromise
+expect(result).toBe('mocked result')
 ```
 
 ### Pattern 3: Inspect and Proceed
@@ -51,17 +50,17 @@ expect(result).toBe("mocked result");
 Use this when you want to verify arguments but still run the real implementation:
 
 ```typescript
-harness.raiseAllGates();
+harness.raiseAllGates()
 
-const resultPromise = (harness as any).api.someMethod("arg");
+const resultPromise = (harness as any).api.someMethod('arg')
 
-const call = await (harness as any).api.waitForCall("someMethod");
-expect(call.args[0]).toBe("arg"); // Verify
+const call = await (harness as any).api.waitForCall('someMethod')
+expect(call.args[0]).toBe('arg') // Verify
 
-await call.proceed(); // Run real implementation
-await call.deliverActual(); // Return real result
+await call.proceed() // Run real implementation
+await call.deliverActual() // Return real result
 
-const result = await resultPromise;
+const result = await resultPromise
 // Real result is returned
 ```
 
@@ -74,11 +73,13 @@ const result = await resultPromise;
 ## Why Use Gatekeeper?
 
 Traditional frontend tests often require:
+
 - Setting up complex mock servers
 - Dealing with network timing issues
 - Managing state across async operations
 
 With Gatekeeper:
+
 - ✅ No network required - mock at the API boundary
 - ✅ Precise control over timing and execution
 - ✅ Easy to test error scenarios

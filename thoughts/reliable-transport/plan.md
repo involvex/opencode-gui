@@ -1,6 +1,7 @@
 # Plan: Reliable transport between webview and OpenCode server
 
 ## Phase 0 — Observability ✅ COMPLETE
+
 **Goal:** make transport failures visible and debuggable.
 
 - ✅ Add structured logs in the extension for SSE lifecycle events:
@@ -9,6 +10,7 @@
 - ✅ Add webview debug logs for connection status and event throughput.
 
 **Files:**
+
 - `src/OpenCodeViewProvider.ts`
 - `src/shared/messages.ts` (added `sseStatus` message type)
 - `src/webview/utils/proxyEventSource.ts` (added `onStatus` callback)
@@ -18,6 +20,7 @@
 ---
 
 ## Phase 1 — Extension-side SSE client (single real SSE implementation) ✅ COMPLETE
+
 **Goal:** mirror the SDK/TUI SSE reliability in the extension.
 
 - ✅ Create `src/transport/SseClient.ts`:
@@ -29,11 +32,13 @@
 - ✅ Forward parsed events to webview via `postMessage` (no SSE in webview).
 
 **Files:**
+
 - `src/transport/SseClient.ts` (new)
 - `src/transport/__tests__/SseClient.test.ts` (12 tests)
 - `src/OpenCodeViewProvider.ts`
 
 **Acceptance:**
+
 - ✅ SSE reconnects automatically after drop.
 - ✅ No duplicate events after reconnect (Last-Event-ID).
 - ✅ "fetch aborted/canceled" stops showing in normal use.
@@ -41,6 +46,7 @@
 ---
 
 ## Phase 2 — Event-sourced state in webview ✅ COMPLETE
+
 **Goal:** UI correctness comes from events + resync, not fetch timing.
 
 - ✅ Add `src/webview/state/syncStore.ts`:
@@ -53,6 +59,7 @@
 - ✅ Add `src/webview/state/useSyncStore.ts` hook for easy integration.
 
 **Files:**
+
 - `src/webview/state/syncStore.ts` (new)
 - `src/webview/state/useSyncStore.ts` (new)
 - `src/webview/state/index.ts` (new)
@@ -60,6 +67,7 @@
 - `src/webview/hooks/useOpenCode.ts` (added SSEStatus type and onStatus param)
 
 **Acceptance:**
+
 - ✅ UI fully recovers after reconnect without missing messages.
 - ✅ Events update state deterministically and idempotently.
 
@@ -69,6 +77,7 @@ its own state management. Migration can be done incrementally.
 ---
 
 ## Phase 3 — Idempotent sends + minimal outbox ✅ COMPLETE
+
 **Goal:** tolerate transport glitches without duplicating messages.
 
 - ✅ Generate `messageID` client-side before `session.prompt` (format: `msg_<uuid>`).
@@ -80,12 +89,14 @@ its own state management. Migration can be done incrementally.
 - ✅ SDK errors (non-throwing) are detected via `result.error` and displayed.
 
 **Files:**
+
 - `src/webview/App.tsx` (added `InFlightMessage`, updated handlers, error handling for SDK results)
 - `src/webview/hooks/useOpenCode.ts` (added `messageID` param to `sendPrompt`)
 - `src/webview/utils/messageUtils.ts` (fixed text extraction from parts in SSE updates)
 - `tests/e2e/outbox.spec.ts` (new e2e tests for outbox functionality)
 
 **Acceptance:**
+
 - ✅ No duplicate messages under retry (messageID is idempotent key).
 - ✅ Queue drains reliably after reconnect (session.idle triggers next message).
 - ✅ E2E tests passing: basic send, clearing thinking state, sequential messages.
@@ -94,6 +105,7 @@ its own state management. Migration can be done incrementally.
 ---
 
 ## Phase 4 — Attachment/selection parity ✅ COMPLETE
+
 **Goal:** keep selection semantics identical to TUI.
 
 - ✅ Ensure selections use `file://` with `start/end` query params.
@@ -104,17 +116,20 @@ its own state management. Migration can be done incrementally.
 - ✅ E2E tests for attachment handling.
 
 **Files:**
+
 - `src/webview/App.tsx` (updated buildSelectionParts with source metadata)
 - `src/webview/hooks/useOpenCode.ts` (exported FilePartInput and FilePartSource types)
 - `tests/e2e/attachments.spec.ts` (new - 7 tests)
 
 **Acceptance:**
+
 - ✅ Ranges expand server-side the same way as CLI/TUI.
 - ✅ Source metadata included for server-side processing parity.
 
 ---
 
 ## Phase 5 — Validation ✅ COMPLETE
+
 **Goal:** prove the reliability improvements.
 
 - ✅ Unit tests for SSE parser + retry logic (22 tests covering chunked input, retry directives, reconnection).
@@ -125,10 +140,12 @@ its own state management. Migration can be done incrementally.
   - attachment persistence through queue
 
 **Files:**
+
 - `src/transport/__tests__/SseClient.test.ts` (22 tests)
 - `thoughts/reliable-transport/VALIDATION.md` (new - manual test procedures)
 
 **Acceptance:**
+
 - ✅ SSE parser handles all edge cases (chunked input, CRLF, retry directives).
 - ✅ Reconnect with Last-Event-ID tested.
 - ✅ Manual validation guide documents how to verify reliability.

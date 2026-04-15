@@ -115,13 +115,15 @@ Do not include:
 - Verbose descriptions of capabilities
 
 <example>
-user: Should I add instructions about thinking step by step?
-assistant: No. Models reason through problems naturally. Adding such instructions wastes tokens and rarely improves output.
+	user: Should I add instructions about thinking step by step? assistant: No.
+	Models reason through problems naturally. Adding such instructions wastes
+	tokens and rarely improves output.
 </example>
 
 <example>
-user: Should I tell the agent to be helpful?
-assistant: No. Models are helpful by default. Only add constraints when you need to limit or redirect that helpfulness.
+	user: Should I tell the agent to be helpful? assistant: No. Models are helpful
+	by default. Only add constraints when you need to limit or redirect that
+	helpfulness.
 </example>
 
 ## Iteration

@@ -7,6 +7,7 @@ Extract the VS Code message bridge logic from App.tsx into a reusable composable
 ## Current State
 
 App.tsx (lines 62-212) contains:
+
 - Message event listener setup in `onMount`
 - Large switch-case handling 7 message types
 - Direct state updates for `isReady`, `agents`, `selectedAgent`, `isThinking`, `messages`
@@ -35,22 +36,22 @@ App.tsx (lines 62-212) contains:
 
 ```typescript
 interface VsCodeBridgeCallbacks {
-  onInit: (ready: boolean) => void;
-  onAgentList: (agents: Agent[]) => void;
-  onThinking: (isThinking: boolean) => void;
-  onPartUpdate: (part: MessagePart & { messageID: string }) => void;
-  onMessageUpdate: (message: {
-    id: string;
-    role?: "user" | "assistant";
-    text?: string;
-    parts?: MessagePart[];
-  }) => void;
-  onResponse: (payload: { text?: string; parts?: MessagePart[] }) => void;
-  onError: (message: string) => void;
+	onInit: (ready: boolean) => void
+	onAgentList: (agents: Agent[]) => void
+	onThinking: (isThinking: boolean) => void
+	onPartUpdate: (part: MessagePart & {messageID: string}) => void
+	onMessageUpdate: (message: {
+		id: string
+		role?: 'user' | 'assistant'
+		text?: string
+		parts?: MessagePart[]
+	}) => void
+	onResponse: (payload: {text?: string; parts?: MessagePart[]}) => void
+	onError: (message: string) => void
 }
 
 function useVsCodeBridge(callbacks: VsCodeBridgeCallbacks) {
-  // Returns: { send: (message: any) => void }
+	// Returns: { send: (message: any) => void }
 }
 ```
 
@@ -64,6 +65,7 @@ function useVsCodeBridge(callbacks: VsCodeBridgeCallbacks) {
 ### App.tsx Integration
 
 After refactoring, App.tsx will:
+
 - Define callback functions for each message type
 - Call `useVsCodeBridge({ onInit, onAgentList, ... })`
 - Use returned `send` function for outgoing messages
@@ -96,51 +98,52 @@ After refactoring, App.tsx will:
 
 ```typescript
 // src/webview/hooks/useVsCodeBridge.ts
-import { onMount, onCleanup } from "solid-js";
+import {onMount, onCleanup} from 'solid-js'
 
-declare const acquireVsCodeApi: any;
-const vscode = acquireVsCodeApi();
+declare const acquireVsCodeApi: any
+const vscode = acquireVsCodeApi()
 
 export interface VsCodeBridgeCallbacks {
-  // ... (see above)
+	// ... (see above)
 }
 
 export function useVsCodeBridge(callbacks: VsCodeBridgeCallbacks) {
-  onMount(() => {
-    const messageHandler = (event: MessageEvent) => {
-      const message = event.data;
-      
-      switch (message.type) {
-        case "init":
-          callbacks.onInit(message.ready);
-          break;
-        case "agentList":
-          callbacks.onAgentList(message.agents || []);
-          break;
-        // ... other cases
-      }
-    };
-    
-    window.addEventListener("message", messageHandler);
-    
-    // Send initialization messages
-    send({ type: "ready" });
-    send({ type: "getAgents" });
-    
-    onCleanup(() => window.removeEventListener("message", messageHandler));
-  });
-  
-  const send = (message: any) => {
-    vscode.postMessage(message);
-  };
-  
-  return { send };
+	onMount(() => {
+		const messageHandler = (event: MessageEvent) => {
+			const message = event.data
+
+			switch (message.type) {
+				case 'init':
+					callbacks.onInit(message.ready)
+					break
+				case 'agentList':
+					callbacks.onAgentList(message.agents || [])
+					break
+				// ... other cases
+			}
+		}
+
+		window.addEventListener('message', messageHandler)
+
+		// Send initialization messages
+		send({type: 'ready'})
+		send({type: 'getAgents'})
+
+		onCleanup(() => window.removeEventListener('message', messageHandler))
+	})
+
+	const send = (message: any) => {
+		vscode.postMessage(message)
+	}
+
+	return {send}
 }
 ```
 
 ## Testing
 
 After implementation:
+
 1. Run `npm run build` to ensure no TypeScript errors
 2. Launch Extension Development Host
 3. Test each message type:

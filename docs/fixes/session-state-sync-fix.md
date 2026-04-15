@@ -23,13 +23,15 @@ Extended the initialization protocol to include session state restoration:
 ### 1. Updated Type Definitions (`src/webview/types.ts`)
 
 Added session state fields to the `init` message type:
+
 - `currentSessionId?: string | null`
-- `currentSessionTitle?: string`  
+- `currentSessionTitle?: string`
 - `currentSessionMessages?: IncomingMessage[]`
 
 ### 2. Backend Changes (`src/OpenCodeViewProvider.ts`)
 
 Created a new `_handleReady()` method that:
+
 - Retrieves current session ID and title from `OpenCodeService`
 - If there's an active session, loads its messages
 - Sends all this data in the `init` message to the webview
@@ -37,6 +39,7 @@ Created a new `_handleReady()` method that:
 ### 3. Frontend Changes (`src/webview/hooks/useVsCodeBridge.ts` & `src/webview/App.tsx`)
 
 Updated the `onInit` callback to:
+
 - Accept the new session state parameters
 - Restore `currentSessionId` and `currentSessionTitle` if they exist
 - Parse and load the session messages into the UI

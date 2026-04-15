@@ -35,10 +35,10 @@ VSCode extension with SolidJS webview. Two build targets:
 
 ```ts
 // ❌ BAD — createMemo returns same proxy ref, suppresses downstream updates
-const messages = createMemo(() => store.message[sessionId()] ?? []);
+const messages = createMemo(() => store.message[sessionId()] ?? [])
 
 // ✅ GOOD — plain function, consumers track the store proxy directly
-const messages = () => store.message[sessionId()] ?? [];
+const messages = () => store.message[sessionId()] ?? []
 ```
 
 `createMemo` is fine for derived computations that produce new values (e.g. `.map()`, `new Map(...)`, arithmetic).

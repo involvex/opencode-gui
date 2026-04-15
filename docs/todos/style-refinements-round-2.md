@@ -1,7 +1,9 @@
 # Style Refinements - Round 2
 
 ## Goal
+
 Additional style refinements to improve layout flow and visual consistency:
+
 1. Remove absolute positioning from input buttons (move to document flow)
 2. Unify background to `var(--vscode-sideBar-background)`
 3. Remove divider in empty state
@@ -12,32 +14,38 @@ Additional style refinements to improve layout flow and visual consistency:
 ## Current State Analysis
 
 ### Input Buttons
+
 - Currently: `.input-buttons` uses `position: absolute; bottom: 4px; left: 4px; right: 4px;`
 - Textarea has `padding-bottom: 32px` inline style to make room for buttons
 - This causes the buttons to overlap the textarea
 
 ### Backgrounds
+
 - Body: `var(--vscode-editor-background)`
 - Input container: `var(--vscode-sideBar-background)`
 - Tool calls: `var(--vscode-sideBar-background)`
 - Need to unify to sideBar-background
 
 ### Dividers
+
 - Empty state: `.input-container` has `border-bottom: 1px solid var(--vscode-panel-border)`
 - Has-messages state: `.app--has-messages .input-container` removes border-bottom and adds border-top
 - Should remove the border-bottom in empty state
 
 ### Line Heights
+
 - Prompt input: No explicit line-height set, uses default
 - User messages: No explicit line-height set
 - Should add `line-height: 20px` to both
 
 ### Message Text Margins
+
 - `.message-text` has `margin: 4px 0;`
 - Need to remove top margin for first item (`:first-child`)
 - Need to remove bottom margin for last item (`:last-child`)
 
 ### Tool Call Background
+
 - Currently: `background-color: var(--vscode-sideBar-background);`
 - Should use: `color-mix(in oklab, var(--vscode-editor-background) 60%, transparent)`
 

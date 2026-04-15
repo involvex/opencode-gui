@@ -1,18 +1,22 @@
 # Style Refinements - Focus Border and Padding
 
 ## Goal
+
 Fine-tune focus border and padding for cleaner, more compact appearance:
+
 1. Change prompt input focus border from 2px to 1px
 2. Update padding to 4px all around for prompt input and messages
 
 ## Current State Analysis
 
 ### Focus Border
+
 - Prompt input focus-visible: `box-shadow: 0 0 0 2px var(--vscode-focusBorder) inset;`
 - Currently uses 2px inset box-shadow
 - Should change to 1px
 
 ### Padding
+
 - Prompt input: `padding: 8px 12px;` (8px vertical, 12px horizontal)
 - User messages: `padding: 8px;` (8px all around)
 - Assistant messages: `padding: 4px 0;` (4px vertical, 0 horizontal)

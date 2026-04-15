@@ -10,12 +10,12 @@ Add support for queuing messages while a response is being generated. Users can 
 
 The submit button in `InputBar` has three states based on context:
 
-| State | Button Display | Trigger |
-|-------|----------------|---------|
-| **Idle** | `⌘⏎` | No generation active |
-| **Generating, empty input** | Stop icon (square) | `isThinking=true`, no text entered |
-| **Generating, typing** | `⌘⏎` | `isThinking=true`, user started typing |
-| **Generating, typing + Shift held** | `⇧⌘⏎ Queue` | `isThinking=true`, user typing + holding Shift |
+| State                               | Button Display     | Trigger                                        |
+| ----------------------------------- | ------------------ | ---------------------------------------------- |
+| **Idle**                            | `⌘⏎`               | No generation active                           |
+| **Generating, empty input**         | Stop icon (square) | `isThinking=true`, no text entered             |
+| **Generating, typing**              | `⌘⏎`               | `isThinking=true`, user started typing         |
+| **Generating, typing + Shift held** | `⇧⌘⏎ Queue`        | `isThinking=true`, user typing + holding Shift |
 
 ### Keyboard Shortcuts
 
@@ -41,6 +41,7 @@ Queued messages appear above the input bar in a horizontal list:
 ```
 
 Each queued message:
+
 - Truncated to single line with ellipsis
 - Has an X button on the right to remove it
 - Clicking anywhere else on it:
@@ -53,35 +54,35 @@ Each queued message:
 
 ```typescript
 interface QueuedMessage {
-  id: string;
-  text: string;
-  agent: string | null;
+	id: string
+	text: string
+	agent: string | null
 }
 
 // In App.tsx state:
-const [messageQueue, setMessageQueue] = createSignal<QueuedMessage[]>([]);
+const [messageQueue, setMessageQueue] = createSignal<QueuedMessage[]>([])
 ```
 
 ### InputBar Props Changes
 
 ```typescript
 interface InputBarProps {
-  // Existing
-  value: string;
-  onInput: (value: string) => void;
-  onSubmit: () => void;
-  onCancel: () => void;
-  disabled: boolean;
-  isThinking: boolean;
-  selectedAgent: string | null;
-  agents: Agent[];
-  onAgentChange: (agentName: string) => void;
-  
-  // New
-  onQueue: () => void;  // Called when user queues a message (Shift+Cmd+Enter)
-  queuedMessages: QueuedMessage[];  // For displaying queue above input
-  onRemoveFromQueue: (id: string) => void;  // Remove specific message
-  onEditQueuedMessage: (id: string) => void;  // Click to edit (removes it + later)
+	// Existing
+	value: string
+	onInput: (value: string) => void
+	onSubmit: () => void
+	onCancel: () => void
+	disabled: boolean
+	isThinking: boolean
+	selectedAgent: string | null
+	agents: Agent[]
+	onAgentChange: (agentName: string) => void
+
+	// New
+	onQueue: () => void // Called when user queues a message (Shift+Cmd+Enter)
+	queuedMessages: QueuedMessage[] // For displaying queue above input
+	onRemoveFromQueue: (id: string) => void // Remove specific message
+	onEditQueuedMessage: (id: string) => void // Click to edit (removes it + later)
 }
 ```
 
@@ -97,7 +98,7 @@ interface InputBarProps {
 
 ### Phase 2: InputBar Keyboard Handling
 
-1. Track Shift key state with `createSignal<boolean>` 
+1. Track Shift key state with `createSignal<boolean>`
 2. Add `keydown`/`keyup` listeners on `window` for Shift detection
 3. Modify `handleKeyDown`:
    - `⌘⏎` during thinking with text → still calls `onSubmit` (which will interrupt)
@@ -131,58 +132,58 @@ interface InputBarProps {
 ```css
 /* Queued messages container */
 .queued-messages {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
-  padding-bottom: var(--spacing-xs);
-  border-bottom: 1px solid var(--border-color);
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-xs);
+	padding-bottom: var(--spacing-xs);
+	border-bottom: 1px solid var(--border-color);
 }
 
 .queued-message {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  background-color: var(--card-background);
-  border: 1px solid var(--border-color-muted);
-  border-radius: 4px;
-  cursor: pointer;
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-xs);
+	padding: var(--spacing-xs) var(--spacing-sm);
+	background-color: var(--card-background);
+	border: 1px solid var(--border-color-muted);
+	border-radius: 4px;
+	cursor: pointer;
 }
 
 .queued-message:hover {
-  background-color: var(--hover-background);
+	background-color: var(--hover-background);
 }
 
 .queued-message__text {
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: var(--font-size-small);
-  color: var(--description-foreground);
+	flex: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-size: var(--font-size-small);
+	color: var(--description-foreground);
 }
 
 .queued-message__remove {
-  flex-shrink: 0;
-  padding: 2px;
-  border: none;
-  background: transparent;
-  color: var(--description-foreground);
-  cursor: pointer;
-  line-height: 1;
+	flex-shrink: 0;
+	padding: 2px;
+	border: none;
+	background: transparent;
+	color: var(--description-foreground);
+	cursor: pointer;
+	line-height: 1;
 }
 
 .queued-message__remove:hover {
-  color: var(--foreground);
+	color: var(--foreground);
 }
 
 /* Queue button variant */
 .shortcut-button--queue {
-  gap: var(--spacing-xs);
+	gap: var(--spacing-xs);
 }
 
 .shortcut-button--queue .queue-label {
-  font-size: var(--font-size-small);
+	font-size: var(--font-size-small);
 }
 ```
 

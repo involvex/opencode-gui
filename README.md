@@ -11,6 +11,7 @@ A VSCode sidebar extension for OpenCode - the AI coding agent. Simple chat inter
 ## Prerequisites
 
 1. **OpenCode CLI must be installed**:
+
    ```bash
    curl -fsSL https://opencode.ai/install | bash
    ```
@@ -24,22 +25,26 @@ A VSCode sidebar extension for OpenCode - the AI coding agent. Simple chat inter
 ## Development Setup
 
 ### Install Dependencies
+
 ```bash
 pnpm install
 ```
 
 ### Build the Extension
+
 ```bash
 pnpm build
 ```
 
 This builds both:
+
 - Extension code → `dist/extension.js`
 - Webview UI → `out/main.js` and `out/main.css`
 
 ### Development Workflow
 
 1. **Start watch mode** (in a terminal):
+
    ```bash
    pnpm watch
    ```
@@ -96,31 +101,36 @@ This builds both:
 ### Key Components
 
 **Extension Side (TypeScript/ESM):**
+
 - `src/extension.ts`: Entry point, initializes OpenCodeService
 - `src/OpenCodeService.ts`: Manages OpenCode client/server, sessions, and prompts
 - `src/OpenCodeViewProvider.ts`: Webview provider, handles message passing
 
 **Webview Side (SolidJS):**
+
 - `src/webview/App.tsx`: Chat UI with input, message history, thinking indicator
 - `src/webview/App.css`: Styles using VSCode theme variables
 
 **Build System:**
+
 - `vite.config.extension.ts`: Bundles extension (ESM → CJS for VSCode)
 - `vite.config.ts`: Bundles webview (SolidJS)
 
 ## Configuration
 
 The extension automatically uses:
+
 1. Workspace `opencode.json` (if present in project root)
 2. Global OpenCode config at `~/.config/opencode/opencode.json`
 
 Example workspace config:
+
 ```json
 {
-  "model": "anthropic/claude-3-5-sonnet-20241022",
-  "mcp": {
-    // MCP server configurations
-  }
+	"model": "anthropic/claude-3-5-sonnet-20241022",
+	"mcp": {
+		// MCP server configurations
+	}
 }
 ```
 
@@ -188,12 +198,14 @@ To publish a new version:
 This publishes to both VS Code Marketplace and Open VSX Registry.
 
 **Note**: You'll need:
+
 - A VS Code Marketplace Personal Access Token (PAT) from Azure DevOps with "Marketplace (Manage)" scope
 - An Open VSX token set as `OVSX_PAT` environment variable
 
 ## Troubleshooting
 
 **"Failed to start OpenCode"**
+
 - Install OpenCode CLI: https://opencode.ai/install
 - Make sure OpenCode CLI is installed and on PATH:
   - macOS/Linux: `which opencode`
@@ -202,6 +214,7 @@ This publishes to both VS Code Marketplace and Open VSX Registry.
 - If you installed OpenCode recently, fully restart VS Code so the extension host gets the updated PATH
 
 **"No response received"**
+
 - Check API credentials are valid
 - Verify workspace has internet connection
 - Check VSCode Developer Console for errors (Help → Toggle Developer Tools)

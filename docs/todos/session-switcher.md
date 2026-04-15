@@ -5,6 +5,7 @@
 ## Goal
 
 Implement session switcher and new session button at the top of the extension, similar to Amp's design:
+
 - Session switcher button that shows current session title and opens a dropdown of all sessions
 - New session button to the right of the switcher
 - Top bar containing both buttons, separated from the message pane with a divider
@@ -18,6 +19,7 @@ Implement session switcher and new session button at the top of the extension, s
 The OpenCode SDK provides comprehensive session management:
 
 1. **Session Type** (from `@opencode-ai/sdk`)
+
    ```typescript
    export type Session = {
      id: string;
@@ -88,7 +90,7 @@ The OpenCode SDK provides comprehensive session management:
 - **Position**: To the right of session switcher (small gap between them)
 - **Style**: Quiet style (minimal, secondary appearance)
 - **Icon/Text**: `+` symbol
-- **Behavior**: 
+- **Behavior**:
   - Click creates new session with default title
   - Switches to the new session immediately
   - New session gets auto-generated title like "Session [timestamp]" or "Untitled Session"
@@ -96,7 +98,7 @@ The OpenCode SDK provides comprehensive session management:
 ### Top Bar
 
 - **Container**: `.top-bar` div wrapping both buttons
-- **Styling**: 
+- **Styling**:
   - Horizontal flexbox layout
   - Padding: 8px (matches input container)
   - Background: `--vscode-sideBar-background`
@@ -118,6 +120,7 @@ The OpenCode SDK provides comprehensive session management:
 ### 1. Backend Changes (OpenCodeService.ts)
 
 Add methods:
+
 ```typescript
 async listSessions(): Promise<Session[]>
 async switchSession(sessionId: string): void
@@ -131,12 +134,14 @@ getCurrentSessionTitle(): string
 Add new message types for webview ↔ extension communication:
 
 Host → Webview:
+
 ```typescript
 { type: 'session-list', sessions: Session[] }
 { type: 'session-switched', sessionId: string, title: string }
 ```
 
 Webview → Host:
+
 ```typescript
 { type: 'load-sessions' }
 { type: 'switch-session', sessionId: string }
@@ -146,11 +151,13 @@ Webview → Host:
 ### 3. UI Components (SolidJS)
 
 Create components:
+
 - `src/webview/components/TopBar.tsx` - Container for session switcher + new button
 - `src/webview/components/SessionSwitcher.tsx` - Dropdown button showing current session
 - `src/webview/components/NewSessionButton.tsx` - Simple + button
 
 Update `App.tsx`:
+
 - Add session state: `createSignal<Session[]>([])`, `createSignal<string | null>(null)`
 - Add message handlers for session-related messages
 - Render TopBar at top of view (before MessageList)
@@ -168,39 +175,39 @@ Update `App.tsx`:
 
 ```css
 .top-bar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px;
-  background: var(--vscode-sideBar-background);
-  border-bottom: 1px solid var(--vscode-panel-border);
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px;
+	background: var(--vscode-sideBar-background);
+	border-bottom: 1px solid var(--vscode-panel-border);
 }
 
 .session-switcher {
-  /* Button style similar to agent switcher */
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  /* ... */
+	/* Button style similar to agent switcher */
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	/* ... */
 }
 
 .session-dropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  max-height: 300px;
-  overflow-y: auto;
-  background: var(--vscode-dropdown-background);
-  border: 1px solid var(--vscode-dropdown-border);
-  /* ... */
+	position: absolute;
+	top: 100%;
+	left: 0;
+	right: 0;
+	max-height: 300px;
+	overflow-y: auto;
+	background: var(--vscode-dropdown-background);
+	border: 1px solid var(--vscode-dropdown-border);
+	/* ... */
 }
 
 .new-session-button {
-  /* Quiet style - minimal */
-  padding: 4px 8px;
-  /* ... */
+	/* Quiet style - minimal */
+	padding: 4px 8px;
+	/* ... */
 }
 ```
 
@@ -210,7 +217,7 @@ Update `App.tsx`:
 2. **Session creation failure**: Show error message, don't switch
 3. **Session switch during active prompt**: Should we allow? Or disable during thinking?
 4. **Deleted session**: Handle 404 errors, remove from list
-5. **Session titles**: 
+5. **Session titles**:
    - Max length for display (truncate with ellipsis)
    - Default title generation strategy
    - Allow inline editing? (future enhancement)

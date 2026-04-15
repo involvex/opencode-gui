@@ -7,311 +7,349 @@
  */
 
 export interface SseEvent {
-  id?: string;
-  event?: string;
-  data: string;
+	id?: string
+	event?: string
+	data: string
 }
 
 export interface SseClientOptions {
-  /** Initial retry delay in ms (default: 1000) */
-  initialRetryMs?: number;
-  /** Maximum retry delay in ms (default: 30000) */
-  maxRetryMs?: number;
-  /** Backoff multiplier (default: 2) */
-  backoffMultiplier?: number;
-  /** Called when an event is received */
-  onEvent: (event: SseEvent) => void;
-  /** Called when connection state changes */
-  onStateChange?: (state: SseConnectionState) => void;
-  /** Called on unrecoverable error (after retries exhausted or abort) */
-  onError?: (error: Error) => void;
-  /** Logger for debugging */
-  logger?: SseLogger;
-  /** Additional headers to send with the request */
-  headers?: Record<string, string>;
+	/** Initial retry delay in ms (default: 1000) */
+	initialRetryMs?: number
+	/** Maximum retry delay in ms (default: 30000) */
+	maxRetryMs?: number
+	/** Backoff multiplier (default: 2) */
+	backoffMultiplier?: number
+	/** Called when an event is received */
+	onEvent: (event: SseEvent) => void
+	/** Called when connection state changes */
+	onStateChange?: (state: SseConnectionState) => void
+	/** Called on unrecoverable error (after retries exhausted or abort) */
+	onError?: (error: Error) => void
+	/** Logger for debugging */
+	logger?: SseLogger
+	/** Additional headers to send with the request */
+	headers?: Record<string, string>
 }
 
 export type SseConnectionState =
-  | { status: 'connecting' }
-  | { status: 'connected' }
-  | { status: 'reconnecting'; attempt: number; nextRetryMs: number }
-  | { status: 'closed'; reason: 'aborted' | 'error' | 'manual' };
+	| {status: 'connecting'}
+	| {status: 'connected'}
+	| {status: 'reconnecting'; attempt: number; nextRetryMs: number}
+	| {status: 'closed'; reason: 'aborted' | 'error' | 'manual'}
 
 export interface SseLogger {
-  info(message: string, ...args: unknown[]): void;
-  warn(message: string, ...args: unknown[]): void;
-  error(message: string, ...args: unknown[]): void;
+	info(message: string, ...args: unknown[]): void
+	warn(message: string, ...args: unknown[]): void
+	error(message: string, ...args: unknown[]): void
 }
 
-const DEFAULT_INITIAL_RETRY_MS = 1000;
-const DEFAULT_MAX_RETRY_MS = 30000;
-const DEFAULT_BACKOFF_MULTIPLIER = 2;
+const DEFAULT_INITIAL_RETRY_MS = 1000
+const DEFAULT_MAX_RETRY_MS = 30000
+const DEFAULT_BACKOFF_MULTIPLIER = 2
 
 export class SseClient {
-  private readonly url: string;
-  private readonly options: Required<Omit<SseClientOptions, 'logger' | 'onStateChange' | 'onError' | 'headers'>> & Pick<SseClientOptions, 'logger' | 'onStateChange' | 'onError' | 'headers'>;
-  
-  private abortController: AbortController | null = null;
-  private lastEventId: string | undefined;
-  private retryMs: number;
-  private reconnectAttempt = 0;
-  private reconnectTimeout: ReturnType<typeof setTimeout> | null = null;
-  private closed = false;
+	private readonly url: string
+	private readonly options: Required<
+		Omit<SseClientOptions, 'logger' | 'onStateChange' | 'onError' | 'headers'>
+	> &
+		Pick<SseClientOptions, 'logger' | 'onStateChange' | 'onError' | 'headers'>
 
-  constructor(url: string, options: SseClientOptions) {
-    this.url = url;
-    this.options = {
-      initialRetryMs: options.initialRetryMs ?? DEFAULT_INITIAL_RETRY_MS,
-      maxRetryMs: options.maxRetryMs ?? DEFAULT_MAX_RETRY_MS,
-      backoffMultiplier: options.backoffMultiplier ?? DEFAULT_BACKOFF_MULTIPLIER,
-      onEvent: options.onEvent,
-      onStateChange: options.onStateChange,
-      onError: options.onError,
-      logger: options.logger,
-      headers: options.headers,
-    };
-    this.retryMs = this.options.initialRetryMs;
-  }
+	private abortController: AbortController | null = null
+	private lastEventId: string | undefined
+	private retryMs: number
+	private reconnectAttempt = 0
+	private reconnectTimeout: ReturnType<typeof setTimeout> | null = null
+	private closed = false
 
-  /**
-   * Start the SSE connection. Returns immediately.
-   * The connection will automatically reconnect on failure.
-   */
-  connect(): void {
-    if (this.closed) {
-      return;
-    }
-    this.reconnectAttempt = 0;
-    this.doConnect();
-  }
+	constructor(url: string, options: SseClientOptions) {
+		this.url = url
+		this.options = {
+			initialRetryMs: options.initialRetryMs ?? DEFAULT_INITIAL_RETRY_MS,
+			maxRetryMs: options.maxRetryMs ?? DEFAULT_MAX_RETRY_MS,
+			backoffMultiplier:
+				options.backoffMultiplier ?? DEFAULT_BACKOFF_MULTIPLIER,
+			onEvent: options.onEvent,
+			onStateChange: options.onStateChange,
+			onError: options.onError,
+			logger: options.logger,
+			headers: options.headers,
+		}
+		this.retryMs = this.options.initialRetryMs
+	}
 
-  /**
-   * Close the SSE connection and stop reconnecting.
-   */
-  close(): void {
-    this.closed = true;
-    if (this.reconnectTimeout) {
-      clearTimeout(this.reconnectTimeout);
-      this.reconnectTimeout = null;
-    }
-    if (this.abortController) {
-      this.abortController.abort();
-      this.abortController = null;
-    }
-    this.setState({ status: 'closed', reason: 'manual' });
-  }
+	/**
+	 * Start the SSE connection. Returns immediately.
+	 * The connection will automatically reconnect on failure.
+	 */
+	connect(): void {
+		if (this.closed) {
+			return
+		}
+		this.reconnectAttempt = 0
+		this.doConnect()
+	}
 
-  private setState(state: SseConnectionState): void {
-    this.options.onStateChange?.(state);
-  }
+	/**
+	 * Close the SSE connection and stop reconnecting.
+	 */
+	close(): void {
+		this.closed = true
+		if (this.reconnectTimeout) {
+			clearTimeout(this.reconnectTimeout)
+			this.reconnectTimeout = null
+		}
+		if (this.abortController) {
+			this.abortController.abort()
+			this.abortController = null
+		}
+		this.setState({status: 'closed', reason: 'manual'})
+	}
 
-  private log(level: 'info' | 'warn' | 'error', message: string, ...args: unknown[]): void {
-    this.options.logger?.[level](`[SseClient] ${message}`, ...args);
-  }
+	private setState(state: SseConnectionState): void {
+		this.options.onStateChange?.(state)
+	}
 
-  private async doConnect(): Promise<void> {
-    if (this.closed) {
-      return;
-    }
+	private log(
+		level: 'info' | 'warn' | 'error',
+		message: string,
+		...args: unknown[]
+	): void {
+		this.options.logger?.[level](`[SseClient] ${message}`, ...args)
+	}
 
-    this.abortController = new AbortController();
-    const isReconnect = this.reconnectAttempt > 0;
+	private async doConnect(): Promise<void> {
+		if (this.closed) {
+			return
+		}
 
-    if (isReconnect) {
-      this.setState({ status: 'reconnecting', attempt: this.reconnectAttempt, nextRetryMs: this.retryMs });
-    } else {
-      this.setState({ status: 'connecting' });
-    }
+		this.abortController = new AbortController()
+		const isReconnect = this.reconnectAttempt > 0
 
-    const headers: Record<string, string> = {
-      Accept: 'text/event-stream',
-      'Cache-Control': 'no-cache',
-      ...this.options.headers,
-    };
-    if (this.lastEventId) {
-      headers['Last-Event-ID'] = this.lastEventId;
-    }
+		if (isReconnect) {
+			this.setState({
+				status: 'reconnecting',
+				attempt: this.reconnectAttempt,
+				nextRetryMs: this.retryMs,
+			})
+		} else {
+			this.setState({status: 'connecting'})
+		}
 
-    this.log('info', `${isReconnect ? 'Reconnecting' : 'Connecting'} to ${this.url}`, {
-      attempt: this.reconnectAttempt,
-      lastEventId: this.lastEventId,
-    });
+		const headers: Record<string, string> = {
+			Accept: 'text/event-stream',
+			'Cache-Control': 'no-cache',
+			...this.options.headers,
+		}
+		if (this.lastEventId) {
+			headers['Last-Event-ID'] = this.lastEventId
+		}
 
-    try {
-      const response = await fetch(this.url, {
-        headers,
-        signal: this.abortController.signal,
-      });
+		this.log(
+			'info',
+			`${isReconnect ? 'Reconnecting' : 'Connecting'} to ${this.url}`,
+			{
+				attempt: this.reconnectAttempt,
+				lastEventId: this.lastEventId,
+			},
+		)
 
-      if (!response.ok) {
-        throw new Error(`SSE connection failed: ${response.status} ${response.statusText}`);
-      }
+		try {
+			const response = await fetch(this.url, {
+				headers,
+				signal: this.abortController.signal,
+			})
 
-      if (!response.body) {
-        throw new Error('SSE response has no body');
-      }
+			if (!response.ok) {
+				throw new Error(
+					`SSE connection failed: ${response.status} ${response.statusText}`,
+				)
+			}
 
-      // Connection successful - reset retry state
-      this.reconnectAttempt = 0;
-      this.retryMs = this.options.initialRetryMs;
-      this.setState({ status: 'connected' });
-      this.log('info', 'Connected successfully');
+			if (!response.body) {
+				throw new Error('SSE response has no body')
+			}
 
-      await this.processStream(response.body);
+			// Connection successful - reset retry state
+			this.reconnectAttempt = 0
+			this.retryMs = this.options.initialRetryMs
+			this.setState({status: 'connected'})
+			this.log('info', 'Connected successfully')
 
-      // Stream ended normally - attempt reconnect
-      if (!this.closed) {
-        this.log('info', 'Stream ended, reconnecting...');
-        this.scheduleReconnect();
-      }
-    } catch (error) {
-      if (this.closed) {
-        return;
-      }
+			await this.processStream(response.body)
 
-      if ((error as Error).name === 'AbortError') {
-        this.setState({ status: 'closed', reason: 'aborted' });
-        return;
-      }
+			// Stream ended normally - attempt reconnect
+			if (!this.closed) {
+				this.log('info', 'Stream ended, reconnecting...')
+				this.scheduleReconnect()
+			}
+		} catch (error) {
+			if (this.closed) {
+				return
+			}
 
-      this.log('error', 'Connection error', error);
-      this.scheduleReconnect();
-    }
-  }
+			if ((error as Error).name === 'AbortError') {
+				this.setState({status: 'closed', reason: 'aborted'})
+				return
+			}
 
-  private scheduleReconnect(): void {
-    if (this.closed) {
-      return;
-    }
+			this.log('error', 'Connection error', error)
+			this.scheduleReconnect()
+		}
+	}
 
-    this.reconnectAttempt++;
-    const delay = this.retryMs;
+	private scheduleReconnect(): void {
+		if (this.closed) {
+			return
+		}
 
-    this.log('info', `Scheduling reconnect attempt ${this.reconnectAttempt} in ${delay}ms`);
-    this.setState({ status: 'reconnecting', attempt: this.reconnectAttempt, nextRetryMs: delay });
+		this.reconnectAttempt++
+		const delay = this.retryMs
 
-    // Exponential backoff
-    this.retryMs = Math.min(this.retryMs * this.options.backoffMultiplier, this.options.maxRetryMs);
+		this.log(
+			'info',
+			`Scheduling reconnect attempt ${this.reconnectAttempt} in ${delay}ms`,
+		)
+		this.setState({
+			status: 'reconnecting',
+			attempt: this.reconnectAttempt,
+			nextRetryMs: delay,
+		})
 
-    this.reconnectTimeout = setTimeout(() => {
-      this.reconnectTimeout = null;
-      this.doConnect();
-    }, delay);
-  }
+		// Exponential backoff
+		this.retryMs = Math.min(
+			this.retryMs * this.options.backoffMultiplier,
+			this.options.maxRetryMs,
+		)
 
-  private async processStream(body: ReadableStream<Uint8Array>): Promise<void> {
-    const reader = body.getReader();
-    const decoder = new TextDecoder();
-    let buffer = '';
+		this.reconnectTimeout = setTimeout(() => {
+			this.reconnectTimeout = null
+			this.doConnect()
+		}, delay)
+	}
 
-    // SSE event fields (accumulated across lines)
-    let eventType: string | undefined;
-    let eventData: string[] = [];
-    let eventId: string | undefined;
+	private async processStream(body: ReadableStream<Uint8Array>): Promise<void> {
+		const reader = body.getReader()
+		const decoder = new TextDecoder()
+		let buffer = ''
 
-    try {
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) {
-          break;
-        }
+		// SSE event fields (accumulated across lines)
+		let eventType: string | undefined
+		let eventData: string[] = []
+		let eventId: string | undefined
 
-        buffer += decoder.decode(value, { stream: true });
+		try {
+			while (true) {
+				const {done, value} = await reader.read()
+				if (done) {
+					break
+				}
 
-        // Process complete lines
-        let newlineIndex: number;
-        while ((newlineIndex = buffer.indexOf('\n')) !== -1) {
-          const line = buffer.slice(0, newlineIndex);
-          buffer = buffer.slice(newlineIndex + 1);
+				buffer += decoder.decode(value, {stream: true})
 
-          // Remove trailing \r if present (for \r\n line endings)
-          const cleanLine = line.endsWith('\r') ? line.slice(0, -1) : line;
+				// Process complete lines
+				let newlineIndex: number
+				while ((newlineIndex = buffer.indexOf('\n')) !== -1) {
+					const line = buffer.slice(0, newlineIndex)
+					buffer = buffer.slice(newlineIndex + 1)
 
-          this.processLine(cleanLine, eventType, eventData, eventId, (type, data, id) => {
-            eventType = type;
-            eventData = data;
-            eventId = id;
-          });
-        }
-      }
-    } finally {
-      reader.releaseLock();
-    }
-  }
+					// Remove trailing \r if present (for \r\n line endings)
+					const cleanLine = line.endsWith('\r') ? line.slice(0, -1) : line
 
-  private processLine(
-    line: string,
-    eventType: string | undefined,
-    eventData: string[],
-    eventId: string | undefined,
-    setState: (type: string | undefined, data: string[], id: string | undefined) => void
-  ): void {
-    // Empty line = dispatch event
-    if (line === '') {
-      if (eventData.length > 0) {
-        const event: SseEvent = {
-          data: eventData.join('\n'),
-        };
-        if (eventType) {
-          event.event = eventType;
-        }
-        if (eventId) {
-          event.id = eventId;
-          this.lastEventId = eventId;
-        }
-        this.options.onEvent(event);
-      }
-      // Reset for next event
-      setState(undefined, [], undefined);
-      return;
-    }
+					this.processLine(
+						cleanLine,
+						eventType,
+						eventData,
+						eventId,
+						(type, data, id) => {
+							eventType = type
+							eventData = data
+							eventId = id
+						},
+					)
+				}
+			}
+		} finally {
+			reader.releaseLock()
+		}
+	}
 
-    // Comment line
-    if (line.startsWith(':')) {
-      return;
-    }
+	private processLine(
+		line: string,
+		eventType: string | undefined,
+		eventData: string[],
+		eventId: string | undefined,
+		setState: (
+			type: string | undefined,
+			data: string[],
+			id: string | undefined,
+		) => void,
+	): void {
+		// Empty line = dispatch event
+		if (line === '') {
+			if (eventData.length > 0) {
+				const event: SseEvent = {
+					data: eventData.join('\n'),
+				}
+				if (eventType) {
+					event.event = eventType
+				}
+				if (eventId) {
+					event.id = eventId
+					this.lastEventId = eventId
+				}
+				this.options.onEvent(event)
+			}
+			// Reset for next event
+			setState(undefined, [], undefined)
+			return
+		}
 
-    // Parse field
-    const colonIndex = line.indexOf(':');
-    let field: string;
-    let value: string;
+		// Comment line
+		if (line.startsWith(':')) {
+			return
+		}
 
-    if (colonIndex === -1) {
-      field = line;
-      value = '';
-    } else {
-      field = line.slice(0, colonIndex);
-      // Skip optional space after colon
-      value = line.slice(colonIndex + 1);
-      if (value.startsWith(' ')) {
-        value = value.slice(1);
-      }
-    }
+		// Parse field
+		const colonIndex = line.indexOf(':')
+		let field: string
+		let value: string
 
-    switch (field) {
-      case 'event':
-        setState(value, eventData, eventId);
-        break;
-      case 'data':
-        eventData.push(value);
-        setState(eventType, eventData, eventId);
-        break;
-      case 'id':
-        // Per spec, ignore if contains null character
-        if (!value.includes('\0')) {
-          setState(eventType, eventData, value);
-        }
-        break;
-      case 'retry':
-        const retryValue = parseInt(value, 10);
-        if (!isNaN(retryValue) && retryValue >= 0) {
-          this.retryMs = retryValue;
-          this.log('info', `Server set retry interval to ${retryValue}ms`);
-        }
-        break;
-      default:
-        // Unknown field - ignore per spec
-        break;
-    }
-  }
+		if (colonIndex === -1) {
+			field = line
+			value = ''
+		} else {
+			field = line.slice(0, colonIndex)
+			// Skip optional space after colon
+			value = line.slice(colonIndex + 1)
+			if (value.startsWith(' ')) {
+				value = value.slice(1)
+			}
+		}
+
+		switch (field) {
+			case 'event':
+				setState(value, eventData, eventId)
+				break
+			case 'data':
+				eventData.push(value)
+				setState(eventType, eventData, eventId)
+				break
+			case 'id':
+				// Per spec, ignore if contains null character
+				if (!value.includes('\0')) {
+					setState(eventType, eventData, value)
+				}
+				break
+			case 'retry':
+				const retryValue = parseInt(value, 10)
+				if (!isNaN(retryValue) && retryValue >= 0) {
+					this.retryMs = retryValue
+					this.log('info', `Server set retry interval to ${retryValue}ms`)
+				}
+				break
+			default:
+				// Unknown field - ignore per spec
+				break
+		}
+	}
 }

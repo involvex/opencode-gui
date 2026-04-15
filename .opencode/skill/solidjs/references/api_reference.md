@@ -20,21 +20,22 @@ interface SignalOptions<T> {
 ```
 
 **Examples:**
+
 ```tsx
-const [count, setCount] = createSignal(0);
-const [user, setUser] = createSignal<User | null>(null);
+const [count, setCount] = createSignal(0)
+const [user, setUser] = createSignal<User | null>(null)
 
 // Always update
-const [data, setData] = createSignal(obj, { equals: false });
+const [data, setData] = createSignal(obj, {equals: false})
 
 // Custom equality
 const [items, setItems] = createSignal([], {
-  equals: (a, b) => a.length === b.length
-});
+	equals: (a, b) => a.length === b.length,
+})
 
 // Setter forms
-setCount(5);                      // Direct value
-setCount(prev => prev + 1);       // Functional update
+setCount(5) // Direct value
+setCount(prev => prev + 1) // Functional update
 ```
 
 ### createEffect
@@ -51,24 +52,25 @@ interface EffectOptions {
 ```
 
 **Examples:**
+
 ```tsx
 // Basic
 createEffect(() => {
-  console.log("Count:", count());
-});
+	console.log('Count:', count())
+})
 
 // With previous value
-createEffect((prev) => {
-  console.log("Changed from", prev, "to", count());
-  return count();
-}, count());
+createEffect(prev => {
+	console.log('Changed from', prev, 'to', count())
+	return count()
+}, count())
 
 // With cleanup
 createEffect(() => {
-  const handler = () => {};
-  window.addEventListener("resize", handler);
-  onCleanup(() => window.removeEventListener("resize", handler));
-});
+	const handler = () => {}
+	window.addEventListener('resize', handler)
+	onCleanup(() => window.removeEventListener('resize', handler))
+})
 ```
 
 ### createMemo
@@ -86,12 +88,13 @@ interface MemoOptions<T> {
 ```
 
 **Examples:**
+
 ```tsx
-const doubled = createMemo(() => count() * 2);
-const filtered = createMemo(() => items().filter(i => i.active));
+const doubled = createMemo(() => count() * 2)
+const filtered = createMemo(() => items().filter(i => i.active))
 
 // Previous value
-const delta = createMemo((prev) => count() - prev, 0);
+const delta = createMemo(prev => count() - prev, 0)
 ```
 
 ### createResource
@@ -124,23 +127,24 @@ interface ResourceOptions<T> {
 ```
 
 **Examples:**
+
 ```tsx
 // Without source
-const [users] = createResource(fetchUsers);
+const [users] = createResource(fetchUsers)
 
 // With source
-const [user] = createResource(userId, fetchUser);
+const [user] = createResource(userId, fetchUser)
 
 // With options
 const [data] = createResource(id, fetchData, {
-  initialValue: [],
-  deferStream: true
-});
+	initialValue: [],
+	deferStream: true,
+})
 
 // Actions
-mutate(newValue);           // Update locally
-refetch();                  // Re-fetch
-refetch(customInfo);        // Pass to fetcher's info.refetching
+mutate(newValue) // Update locally
+refetch() // Re-fetch
+refetch(customInfo) // Pass to fetcher's info.refetching
 ```
 
 ## Stores
@@ -148,90 +152,98 @@ refetch(customInfo);        // Pass to fetcher's info.refetching
 ### createStore
 
 ```tsx
-import { createStore } from "solid-js/store";
+import {createStore} from 'solid-js/store'
 
-const [store, setStore] = createStore<T>(initialValue);
+const [store, setStore] = createStore<T>(initialValue)
 ```
 
 **Update patterns:**
+
 ```tsx
 const [state, setState] = createStore({
-  user: { name: "John", age: 30 },
-  todos: [{ id: 1, text: "Learn Solid", done: false }]
-});
+	user: {name: 'John', age: 30},
+	todos: [{id: 1, text: 'Learn Solid', done: false}],
+})
 
 // Path syntax
-setState("user", "name", "Jane");
-setState("user", "age", a => a + 1);
-setState("todos", 0, "done", true);
+setState('user', 'name', 'Jane')
+setState('user', 'age', a => a + 1)
+setState('todos', 0, 'done', true)
 
 // Array operations
-setState("todos", t => [...t, newTodo]);
-setState("todos", todos.length, newTodo);
+setState('todos', t => [...t, newTodo])
+setState('todos', todos.length, newTodo)
 
 // Multiple paths
-setState("todos", { from: 0, to: 2 }, "done", true);
-setState("todos", [0, 2, 4], "done", true);
-setState("todos", i => i.done, "done", false);
+setState('todos', {from: 0, to: 2}, 'done', true)
+setState('todos', [0, 2, 4], 'done', true)
+setState('todos', i => i.done, 'done', false)
 
 // Object merge (shallow)
-setState("user", { age: 31 }); // Keeps other properties
+setState('user', {age: 31}) // Keeps other properties
 ```
 
 ### produce
 
 ```tsx
-import { produce } from "solid-js/store";
+import {produce} from 'solid-js/store'
 
-setState(produce(draft => {
-  draft.user.age++;
-  draft.todos.push({ id: 2, text: "New", done: false });
-  draft.todos[0].done = true;
-}));
+setState(
+	produce(draft => {
+		draft.user.age++
+		draft.todos.push({id: 2, text: 'New', done: false})
+		draft.todos[0].done = true
+	}),
+)
 ```
 
 ### reconcile
 
 ```tsx
-import { reconcile } from "solid-js/store";
+import {reconcile} from 'solid-js/store'
 
 // Replace with diff (minimal updates)
-setState("todos", reconcile(newTodosFromAPI));
+setState('todos', reconcile(newTodosFromAPI))
 
 // Options
-reconcile(data, { key: "id", merge: true });
+reconcile(data, {key: 'id', merge: true})
 ```
 
 ### unwrap
 
 ```tsx
-import { unwrap } from "solid-js/store";
+import {unwrap} from 'solid-js/store'
 
-const raw = unwrap(store);  // Non-reactive plain object
+const raw = unwrap(store) // Non-reactive plain object
 ```
 
 ### createMutable
 
 ```tsx
-import { createMutable } from "solid-js/store";
+import {createMutable} from 'solid-js/store'
 
 const state = createMutable({
-  count: 0,
-  user: { name: "John" }
-});
+	count: 0,
+	user: {name: 'John'},
+})
 
 // Direct mutation (like MobX)
-state.count++;
-state.user.name = "Jane";
+state.count++
+state.user.name = 'Jane'
 ```
 
 ### modifyMutable
 
 ```tsx
-import { modifyMutable, reconcile, produce } from "solid-js/store";
+import {modifyMutable, reconcile, produce} from 'solid-js/store'
 
-modifyMutable(state, reconcile(newData));
-modifyMutable(state, produce(s => { s.count++ }));
+modifyMutable(state, reconcile(newData))
+modifyMutable(
+	state,
+	produce(s => {
+		s.count++
+	}),
+)
 ```
 
 ## Component APIs
@@ -239,13 +251,13 @@ modifyMutable(state, produce(s => { s.count++ }));
 ### children
 
 ```tsx
-import { children } from "solid-js";
+import {children} from 'solid-js'
 
-const resolved = children(() => props.children);
+const resolved = children(() => props.children)
 
 // Access
-resolved();           // JSX.Element | JSX.Element[]
-resolved.toArray();   // Always array
+resolved() // JSX.Element | JSX.Element[]
+resolved.toArray() // Always array
 ```
 
 ### createContext / useContext
@@ -267,21 +279,21 @@ const value = useContext(MyContext);
 ### createUniqueId
 
 ```tsx
-import { createUniqueId } from "solid-js";
+import {createUniqueId} from 'solid-js'
 
-const id = createUniqueId();  // "0", "1", etc.
+const id = createUniqueId() // "0", "1", etc.
 ```
 
 ### lazy
 
 ```tsx
-import { lazy } from "solid-js";
+import {lazy} from 'solid-js'
 
-const LazyComponent = lazy(() => import("./Component"));
+const LazyComponent = lazy(() => import('./Component'))
 
 // Use with Suspense
-<Suspense fallback={<Loading />}>
-  <LazyComponent />
+;<Suspense fallback={<Loading />}>
+	<LazyComponent />
 </Suspense>
 ```
 
@@ -290,29 +302,29 @@ const LazyComponent = lazy(() => import("./Component"));
 ### onMount
 
 ```tsx
-import { onMount } from "solid-js";
+import {onMount} from 'solid-js'
 
 onMount(() => {
-  // Runs once after initial render
-  console.log("Mounted");
-});
+	// Runs once after initial render
+	console.log('Mounted')
+})
 ```
 
 ### onCleanup
 
 ```tsx
-import { onCleanup } from "solid-js";
+import {onCleanup} from 'solid-js'
 
 // In component
 onCleanup(() => {
-  console.log("Cleaning up");
-});
+	console.log('Cleaning up')
+})
 
 // In effect
 createEffect(() => {
-  const sub = subscribe();
-  onCleanup(() => sub.unsubscribe());
-});
+	const sub = subscribe()
+	onCleanup(() => sub.unsubscribe())
+})
 ```
 
 ## Reactive Utilities
@@ -320,152 +332,160 @@ createEffect(() => {
 ### batch
 
 ```tsx
-import { batch } from "solid-js";
+import {batch} from 'solid-js'
 
 batch(() => {
-  setA(1);
-  setB(2);
-  setC(3);
-  // Effects run once after batch
-});
+	setA(1)
+	setB(2)
+	setC(3)
+	// Effects run once after batch
+})
 ```
 
 ### untrack
 
 ```tsx
-import { untrack } from "solid-js";
+import {untrack} from 'solid-js'
 
 createEffect(() => {
-  console.log(a());              // Tracked
-  console.log(untrack(() => b())); // Not tracked
-});
+	console.log(a()) // Tracked
+	console.log(untrack(() => b())) // Not tracked
+})
 ```
 
 ### on
 
 ```tsx
-import { on } from "solid-js";
+import {on} from 'solid-js'
 
 // Explicit dependencies
-createEffect(on(count, (value, prev) => {
-  console.log("Count changed:", prev, "->", value);
-}));
+createEffect(
+	on(count, (value, prev) => {
+		console.log('Count changed:', prev, '->', value)
+	}),
+)
 
 // Multiple dependencies
-createEffect(on([a, b], ([a, b], [prevA, prevB]) => {
-  console.log("Changed");
-}));
+createEffect(
+	on([a, b], ([a, b], [prevA, prevB]) => {
+		console.log('Changed')
+	}),
+)
 
 // Defer first run
-createEffect(on(count, (v) => console.log(v), { defer: true }));
+createEffect(on(count, v => console.log(v), {defer: true}))
 ```
 
 ### mergeProps
 
 ```tsx
-import { mergeProps } from "solid-js";
+import {mergeProps} from 'solid-js'
 
 const merged = mergeProps(
-  { size: "medium", color: "blue" },  // Defaults
-  props                                 // Overrides
-);
+	{size: 'medium', color: 'blue'}, // Defaults
+	props, // Overrides
+)
 ```
 
 ### splitProps
 
 ```tsx
-import { splitProps } from "solid-js";
+import {splitProps} from 'solid-js'
 
-const [local, others] = splitProps(props, ["class", "onClick"]);
+const [local, others] = splitProps(props, ['class', 'onClick'])
 // local.class, local.onClick
 // others contains everything else
 
-const [a, b, rest] = splitProps(props, ["foo"], ["bar"]);
+const [a, b, rest] = splitProps(props, ['foo'], ['bar'])
 ```
 
 ### createRoot
 
 ```tsx
-import { createRoot } from "solid-js";
+import {createRoot} from 'solid-js'
 
-const dispose = createRoot((dispose) => {
-  const [count, setCount] = createSignal(0);
-  // Use signals...
-  return dispose;
-});
+const dispose = createRoot(dispose => {
+	const [count, setCount] = createSignal(0)
+	// Use signals...
+	return dispose
+})
 
 // Later
-dispose();
+dispose()
 ```
 
 ### getOwner / runWithOwner
 
 ```tsx
-import { getOwner, runWithOwner } from "solid-js";
+import {getOwner, runWithOwner} from 'solid-js'
 
-const owner = getOwner();
+const owner = getOwner()
 
 // Later, in async code
 runWithOwner(owner, () => {
-  createEffect(() => {
-    // This effect has proper ownership
-  });
-});
+	createEffect(() => {
+		// This effect has proper ownership
+	})
+})
 ```
 
 ### mapArray
 
 ```tsx
-import { mapArray } from "solid-js";
+import {mapArray} from 'solid-js'
 
 const mapped = mapArray(
-  () => items(),
-  (item, index) => ({ ...item, doubled: item.value * 2 })
-);
+	() => items(),
+	(item, index) => ({...item, doubled: item.value * 2}),
+)
 ```
 
 ### indexArray
 
 ```tsx
-import { indexArray } from "solid-js";
+import {indexArray} from 'solid-js'
 
 const mapped = indexArray(
-  () => items(),
-  (item, index) => <div>{index}: {item().name}</div>
-);
+	() => items(),
+	(item, index) => (
+		<div>
+			{index}: {item().name}
+		</div>
+	),
+)
 ```
 
 ### observable
 
 ```tsx
-import { observable } from "solid-js";
+import {observable} from 'solid-js'
 
-const obs = observable(signal);
-obs.subscribe((value) => console.log(value));
+const obs = observable(signal)
+obs.subscribe(value => console.log(value))
 ```
 
 ### from
 
 ```tsx
-import { from } from "solid-js";
+import {from} from 'solid-js'
 
 // Convert observable/subscribable to signal
-const signal = from(rxObservable);
-const signal = from((set) => {
-  const unsub = subscribe(set);
-  return unsub;
-});
+const signal = from(rxObservable)
+const signal = from(set => {
+	const unsub = subscribe(set)
+	return unsub
+})
 ```
 
 ### catchError
 
 ```tsx
-import { catchError } from "solid-js";
+import {catchError} from 'solid-js'
 
 catchError(
-  () => riskyOperation(),
-  (err) => console.error("Error:", err)
-);
+	() => riskyOperation(),
+	err => console.error('Error:', err),
+)
 ```
 
 ## Secondary Primitives
@@ -473,61 +493,57 @@ catchError(
 ### createComputed
 
 ```tsx
-import { createComputed } from "solid-js";
+import {createComputed} from 'solid-js'
 
 // Like createEffect but runs during render phase
 createComputed(() => {
-  setDerived(source() * 2);
-});
+	setDerived(source() * 2)
+})
 ```
 
 ### createRenderEffect
 
 ```tsx
-import { createRenderEffect } from "solid-js";
+import {createRenderEffect} from 'solid-js'
 
 // Runs before paint (for DOM measurements)
 createRenderEffect(() => {
-  const height = element.offsetHeight;
-});
+	const height = element.offsetHeight
+})
 ```
 
 ### createDeferred
 
 ```tsx
-import { createDeferred } from "solid-js";
+import {createDeferred} from 'solid-js'
 
 // Returns value after idle time
 const deferred = createDeferred(() => expensiveComputation(), {
-  timeoutMs: 1000
-});
+	timeoutMs: 1000,
+})
 ```
 
 ### createReaction
 
 ```tsx
-import { createReaction } from "solid-js";
+import {createReaction} from 'solid-js'
 
 const track = createReaction(() => {
-  console.log("Something changed");
-});
+	console.log('Something changed')
+})
 
-track(() => count()); // Start tracking
+track(() => count()) // Start tracking
 ```
 
 ### createSelector
 
 ```tsx
-import { createSelector } from "solid-js";
+import {createSelector} from 'solid-js'
 
-const isSelected = createSelector(selectedId);
+const isSelected = createSelector(selectedId)
 
-<For each={items()}>
-  {(item) => (
-    <div class={isSelected(item.id) ? "selected" : ""}>
-      {item.name}
-    </div>
-  )}
+;<For each={items()}>
+	{item => <div class={isSelected(item.id) ? 'selected' : ''}>{item.name}</div>}
 </For>
 ```
 
@@ -549,16 +565,26 @@ const isSelected = createSelector(selectedId);
 ### For
 
 ```tsx
-<For each={items()} fallback={<Empty />}>
-  {(item, index) => <div>{index()}: {item.name}</div>}
+<For
+	each={items()}
+	fallback={<Empty />}
+>
+	{(item, index) => (
+		<div>
+			{index()}: {item.name}
+		</div>
+	)}
 </For>
 ```
 
 ### Index
 
 ```tsx
-<Index each={items()} fallback={<Empty />}>
-  {(item, index) => <input value={item().text} />}
+<Index
+	each={items()}
+	fallback={<Empty />}
+>
+	{(item, index) => <input value={item().text} />}
 </Index>
 ```
 
@@ -566,12 +592,12 @@ const isSelected = createSelector(selectedId);
 
 ```tsx
 <Switch fallback={<Default />}>
-  <Match when={state() === "loading"}>
-    <Loading />
-  </Match>
-  <Match when={state() === "error"}>
-    <Error />
-  </Match>
+	<Match when={state() === 'loading'}>
+		<Loading />
+	</Match>
+	<Match when={state() === 'error'}>
+		<Error />
+	</Match>
 </Switch>
 ```
 
@@ -587,23 +613,24 @@ import { Dynamic } from "solid-js/web";
 ### Portal
 
 ```tsx
-import { Portal } from "solid-js/web";
-
-<Portal mount={document.body}>
-  <Modal />
+import {Portal} from 'solid-js/web'
+;<Portal mount={document.body}>
+	<Modal />
 </Portal>
 ```
 
 ### ErrorBoundary
 
 ```tsx
-<ErrorBoundary fallback={(err, reset) => (
-  <div>
-    <p>Error: {err.message}</p>
-    <button onClick={reset}>Retry</button>
-  </div>
-)}>
-  <Content />
+<ErrorBoundary
+	fallback={(err, reset) => (
+		<div>
+			<p>Error: {err.message}</p>
+			<button onClick={reset}>Retry</button>
+		</div>
+	)}
+>
+	<Content />
 </ErrorBoundary>
 ```
 
@@ -611,17 +638,26 @@ import { Portal } from "solid-js/web";
 
 ```tsx
 <Suspense fallback={<Loading />}>
-  <AsyncContent />
+	<AsyncContent />
 </Suspense>
 ```
 
 ### SuspenseList
 
 ```tsx
-<SuspenseList revealOrder="forwards" tail="collapsed">
-  <Suspense fallback={<Loading />}><Item1 /></Suspense>
-  <Suspense fallback={<Loading />}><Item2 /></Suspense>
-  <Suspense fallback={<Loading />}><Item3 /></Suspense>
+<SuspenseList
+	revealOrder="forwards"
+	tail="collapsed"
+>
+	<Suspense fallback={<Loading />}>
+		<Item1 />
+	</Suspense>
+	<Suspense fallback={<Loading />}>
+		<Item2 />
+	</Suspense>
+	<Suspense fallback={<Loading />}>
+		<Item3 />
+	</Suspense>
 </SuspenseList>
 ```
 
@@ -630,54 +666,54 @@ import { Portal } from "solid-js/web";
 ### render
 
 ```tsx
-import { render } from "solid-js/web";
+import {render} from 'solid-js/web'
 
-const dispose = render(() => <App />, document.getElementById("root")!);
+const dispose = render(() => <App />, document.getElementById('root')!)
 
 // Cleanup
-dispose();
+dispose()
 ```
 
 ### hydrate
 
 ```tsx
-import { hydrate } from "solid-js/web";
+import {hydrate} from 'solid-js/web'
 
-hydrate(() => <App />, document.getElementById("root")!);
+hydrate(() => <App />, document.getElementById('root')!)
 ```
 
 ### renderToString
 
 ```tsx
-import { renderToString } from "solid-js/web";
+import {renderToString} from 'solid-js/web'
 
-const html = renderToString(() => <App />);
+const html = renderToString(() => <App />)
 ```
 
 ### renderToStringAsync
 
 ```tsx
-import { renderToStringAsync } from "solid-js/web";
+import {renderToStringAsync} from 'solid-js/web'
 
-const html = await renderToStringAsync(() => <App />);
+const html = await renderToStringAsync(() => <App />)
 ```
 
 ### renderToStream
 
 ```tsx
-import { renderToStream } from "solid-js/web";
+import {renderToStream} from 'solid-js/web'
 
-const stream = renderToStream(() => <App />);
-stream.pipe(res);
+const stream = renderToStream(() => <App />)
+stream.pipe(res)
 ```
 
 ### isServer
 
 ```tsx
-import { isServer } from "solid-js/web";
+import {isServer} from 'solid-js/web'
 
 if (isServer) {
-  // Server-only code
+	// Server-only code
 }
 ```
 
@@ -694,7 +730,7 @@ let el: HTMLDivElement;
 ### classList
 
 ```tsx
-<div classList={{ active: isActive(), disabled: isDisabled() }} />
+<div classList={{active: isActive(), disabled: isDisabled()}} />
 ```
 
 ### style
@@ -715,26 +751,26 @@ let el: HTMLDivElement;
 
 ```tsx
 function clickOutside(el: HTMLElement, accessor: () => () => void) {
-  const handler = (e: MouseEvent) => {
-    if (!el.contains(e.target as Node)) accessor()();
-  };
-  document.addEventListener("click", handler);
-  onCleanup(() => document.removeEventListener("click", handler));
+	const handler = (e: MouseEvent) => {
+		if (!el.contains(e.target as Node)) accessor()()
+	}
+	document.addEventListener('click', handler)
+	onCleanup(() => document.removeEventListener('click', handler))
 }
 
-<div use:clickOutside={() => setOpen(false)} />
+;<div use:clickOutside={() => setOpen(false)} />
 ```
 
 ### prop:property
 
 ```tsx
-<input prop:value={value()} />  // Set as property, not attribute
+<input prop:value={value()} /> // Set as property, not attribute
 ```
 
 ### attr:attribute
 
 ```tsx
-<div attr:data-custom={value()} />  // Force attribute
+<div attr:data-custom={value()} /> // Force attribute
 ```
 
 ### bool:attribute
@@ -746,32 +782,32 @@ function clickOutside(el: HTMLElement, accessor: () => () => void) {
 ### @once
 
 ```tsx
-<div title={/*@once*/ staticValue} />  // Never updates
+<div title={/*@once*/ staticValue} /> // Never updates
 ```
 
 ## Types
 
 ```tsx
 import type {
-  Component,
-  ParentComponent,
-  FlowComponent,
-  VoidComponent,
-  JSX,
-  Accessor,
-  Setter,
-  Signal,
-  Resource,
-  Owner
-} from "solid-js";
+	Component,
+	ParentComponent,
+	FlowComponent,
+	VoidComponent,
+	JSX,
+	Accessor,
+	Setter,
+	Signal,
+	Resource,
+	Owner,
+} from 'solid-js'
 
 // Component types
-const MyComponent: Component<Props> = (props) => <div />;
-const Parent: ParentComponent<Props> = (props) => <div>{props.children}</div>;
-const Flow: FlowComponent<Props, Item> = (props) => props.children(item);
-const Void: VoidComponent<Props> = (props) => <input />;
+const MyComponent: Component<Props> = props => <div />
+const Parent: ParentComponent<Props> = props => <div>{props.children}</div>
+const Flow: FlowComponent<Props, Item> = props => props.children(item)
+const Void: VoidComponent<Props> = props => <input />
 
 // Event types
-type Handler = JSX.EventHandler<HTMLButtonElement, MouseEvent>;
-type ChangeHandler = JSX.ChangeEventHandler<HTMLInputElement>;
+type Handler = JSX.EventHandler<HTMLButtonElement, MouseEvent>
+type ChangeHandler = JSX.ChangeEventHandler<HTMLInputElement>
 ```

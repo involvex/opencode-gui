@@ -52,9 +52,8 @@ Tests:
 ## Usage
 
 ```tsx
-import { Streamdown } from "./lib/streamdown";
-
-<Streamdown mode="streaming">{aiResponseText}</Streamdown>
+import {Streamdown} from './lib/streamdown'
+;<Streamdown mode="streaming">{aiResponseText}</Streamdown>
 ```
 
 ## Next Steps

@@ -1,5 +1,5 @@
 #!/usr/bin/env tsx
 
-const { runPlaywrightCLI } = require("../.agents/skills/playwright/cli.ts");
+const {runPlaywrightCLI} = require('../.agents/skills/playwright/cli.ts')
 
-runPlaywrightCLI();
+runPlaywrightCLI()

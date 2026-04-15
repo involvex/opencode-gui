@@ -1,31 +1,36 @@
 # Button Spacing and Positioning Refinements
 
 ## Goal
+
 Refine the action button layout:
+
 1. Reduce spacing between buttons and prompt input from 8px to 4px
 2. Move buttons above the prompt input when in has-messages state (bottom position)
 
 ## Current State Analysis
 
 ### Button Spacing
+
 - `.input-buttons` has `margin-top: 8px`
 - Buttons appear below the textarea in document flow
 - Should reduce to 4px for tighter spacing
 
 ### Button Positioning
+
 - Currently buttons always appear below textarea
 - Empty state: Input at top, buttons below
 - Has-messages state: Input at bottom, buttons still below
 - Should move buttons above textarea when at bottom
 
 ### Current HTML Structure
+
 ```tsx
 <form class="input-container">
-  <textarea class="prompt-input" />
-  <div class="input-buttons">
-    <AgentSwitcher />
-    <button>⌘⏎</button>
-  </div>
+	<textarea class="prompt-input" />
+	<div class="input-buttons">
+		<AgentSwitcher />
+		<button>⌘⏎</button>
+	</div>
 </form>
 ```
 
@@ -47,17 +52,17 @@ Refine the action button layout:
 
 ```css
 .input-buttons {
-  margin-top: 4px;
+	margin-top: 4px;
 }
 
 .app--has-messages .input-container {
-  display: flex;
-  flex-direction: column-reverse;
+	display: flex;
+	flex-direction: column-reverse;
 }
 
 .app--has-messages .input-buttons {
-  margin-top: 0;
-  margin-bottom: 4px;
+	margin-top: 0;
+	margin-bottom: 4px;
 }
 ```
 

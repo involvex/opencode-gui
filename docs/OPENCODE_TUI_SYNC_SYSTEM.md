@@ -50,6 +50,7 @@ This document provides a comprehensive analysis of the OpenCode TUI's real-time 
 ```
 
 **Key Components:**
+
 - **SDKProvider**: Manages SSE connection, event batching, HTTP client
 - **SyncProvider**: Maintains reactive store, handles all event types
 - **Solid.js Store**: Fine-grained reactive state with `createStore()`
@@ -63,39 +64,40 @@ This document provides a comprehensive analysis of the OpenCode TUI's real-time 
 
 ```typescript
 interface SyncStore {
-  status: "loading" | "partial" | "complete"
-  
-  // Providers & Config
-  provider: Provider[]
-  provider_default: Record<string, string>
-  provider_auth: Record<string, ProviderAuthMethod[]>
-  agent: Agent[]
-  command: Command[]
-  config: Config
-  
-  // Sessions
-  session: Session[]                              // Sorted by ID
-  session_status: { [sessionID: string]: SessionStatus }
-  session_diff: { [sessionID: string]: FileDiff[] }
-  
-  // Messages & Parts (indexed by parent ID)
-  message: { [sessionID: string]: Message[] }     // Sorted by ID within session
-  part: { [messageID: string]: Part[] }           // Sorted by ID within message
-  
-  // Permissions & Questions (per session)
-  permission: { [sessionID: string]: PermissionRequest[] }
-  question: { [sessionID: string]: QuestionRequest[] }
-  
-  // Misc
-  todo: { [sessionID: string]: Todo[] }
-  lsp: LspStatus[]
-  mcp: { [key: string]: McpStatus }
-  vcs: VcsInfo | undefined
-  path: Path
+	status: 'loading' | 'partial' | 'complete'
+
+	// Providers & Config
+	provider: Provider[]
+	provider_default: Record<string, string>
+	provider_auth: Record<string, ProviderAuthMethod[]>
+	agent: Agent[]
+	command: Command[]
+	config: Config
+
+	// Sessions
+	session: Session[] // Sorted by ID
+	session_status: {[sessionID: string]: SessionStatus}
+	session_diff: {[sessionID: string]: FileDiff[]}
+
+	// Messages & Parts (indexed by parent ID)
+	message: {[sessionID: string]: Message[]} // Sorted by ID within session
+	part: {[messageID: string]: Part[]} // Sorted by ID within message
+
+	// Permissions & Questions (per session)
+	permission: {[sessionID: string]: PermissionRequest[]}
+	question: {[sessionID: string]: QuestionRequest[]}
+
+	// Misc
+	todo: {[sessionID: string]: Todo[]}
+	lsp: LspStatus[]
+	mcp: {[key: string]: McpStatus}
+	vcs: VcsInfo | undefined
+	path: Path
 }
 ```
 
 **Design Principles:**
+
 - **Nested indexing**: Messages indexed by `sessionID`, parts by `messageID` for O(1) parent lookup
 - **Sorted arrays**: All arrays sorted by ID for O(log n) binary search
 - **Status tracking**: Three-phase loading (loading → partial → complete)
@@ -123,63 +125,68 @@ Examples:
 
 ```typescript
 const prefixes = {
-  session: "ses",
-  message: "msg",
-  permission: "per",
-  question: "que",
-  part: "prt",
-  // ...
+	session: 'ses',
+	message: 'msg',
+	permission: 'per',
+	question: 'que',
+	part: 'prt',
+	// ...
 }
 
 let lastTimestamp = 0
 let counter = 0
 
-function create(prefix: keyof typeof prefixes, descending: boolean, timestamp?: number): string {
-  const currentTimestamp = timestamp ?? Date.now()
+function create(
+	prefix: keyof typeof prefixes,
+	descending: boolean,
+	timestamp?: number,
+): string {
+	const currentTimestamp = timestamp ?? Date.now()
 
-  // Monotonic counter: increment within same millisecond
-  if (currentTimestamp !== lastTimestamp) {
-    lastTimestamp = currentTimestamp
-    counter = 0
-  }
-  counter++
+	// Monotonic counter: increment within same millisecond
+	if (currentTimestamp !== lastTimestamp) {
+		lastTimestamp = currentTimestamp
+		counter = 0
+	}
+	counter++
 
-  // Encode timestamp + counter in 48 bits (6 bytes)
-  let now = BigInt(currentTimestamp) * BigInt(0x1000) + BigInt(counter)
+	// Encode timestamp + counter in 48 bits (6 bytes)
+	let now = BigInt(currentTimestamp) * BigInt(0x1000) + BigInt(counter)
 
-  // Optionally invert for descending sort order
-  now = descending ? ~now : now
+	// Optionally invert for descending sort order
+	now = descending ? ~now : now
 
-  // Convert to 12 hex characters
-  const timeBytes = Buffer.alloc(6)
-  for (let i = 0; i < 6; i++) {
-    timeBytes[i] = Number((now >> BigInt(40 - 8 * i)) & BigInt(0xff))
-  }
+	// Convert to 12 hex characters
+	const timeBytes = Buffer.alloc(6)
+	for (let i = 0; i < 6; i++) {
+		timeBytes[i] = Number((now >> BigInt(40 - 8 * i)) & BigInt(0xff))
+	}
 
-  return prefixes[prefix] + "_" + timeBytes.toString("hex") + randomBase62(13)
+	return prefixes[prefix] + '_' + timeBytes.toString('hex') + randomBase62(13)
 }
 
 // Two modes:
-export const ascending = (prefix) => create(prefix, false)   // Newer IDs sort after older
-export const descending = (prefix) => create(prefix, true)   // Newer IDs sort before older
+export const ascending = prefix => create(prefix, false) // Newer IDs sort after older
+export const descending = prefix => create(prefix, true) // Newer IDs sort before older
 ```
 
 ### Why This Matters
 
-| Property | UUID v4 | OpenCode ID |
-|----------|---------|-------------|
-| Sortable by time | ❌ Random | ✅ Yes |
-| Binary search works | ❌ No | ✅ Yes |
-| Collision resistant | ✅ Yes | ✅ Yes (timestamp + counter + random) |
-| Extractable timestamp | ❌ No | ✅ Yes |
+| Property              | UUID v4   | OpenCode ID                           |
+| --------------------- | --------- | ------------------------------------- |
+| Sortable by time      | ❌ Random | ✅ Yes                                |
+| Binary search works   | ❌ No     | ✅ Yes                                |
+| Collision resistant   | ✅ Yes    | ✅ Yes (timestamp + counter + random) |
+| Extractable timestamp | ❌ No     | ✅ Yes                                |
 
 **Extracting timestamp from ID:**
+
 ```typescript
 export function timestamp(id: string): number {
-  const prefix = id.split("_")[0]
-  const hex = id.slice(prefix.length + 1, prefix.length + 13)
-  const encoded = BigInt("0x" + hex)
-  return Number(encoded / BigInt(0x1000))
+	const prefix = id.split('_')[0]
+	const hex = id.slice(prefix.length + 1, prefix.length + 13)
+	const encoded = BigInt('0x' + hex)
+	return Number(encoded / BigInt(0x1000))
 }
 ```
 
@@ -193,19 +200,19 @@ export function timestamp(id: string): number {
 
 ```typescript
 while (true) {
-  if (abort.signal.aborted) break
-  
-  // Connect to /event endpoint
-  const events = await sdk.event.subscribe({}, { signal: abort.signal })
-  
-  // Process events as they arrive
-  for await (const event of events.stream) {
-    handleEvent(event)
-  }
-  
-  // Stream ended (disconnected) - loop will reconnect
-  if (timer) clearTimeout(timer)
-  if (queue.length > 0) flush()
+	if (abort.signal.aborted) break
+
+	// Connect to /event endpoint
+	const events = await sdk.event.subscribe({}, {signal: abort.signal})
+
+	// Process events as they arrive
+	for await (const event of events.stream) {
+		handleEvent(event)
+	}
+
+	// Stream ended (disconnected) - loop will reconnect
+	if (timer) clearTimeout(timer)
+	if (queue.length > 0) flush()
 }
 ```
 
@@ -214,37 +221,37 @@ while (true) {
 **Source**: [`packages/opencode/src/server/routes/global.ts`](https://github.com/anomalyco/opencode/blob/main/packages/opencode/src/server/routes/global.ts#L65-L104)
 
 ```typescript
-streamSSE(c, async (stream) => {
-  // Send initial connection event
-  stream.writeSSE({
-    data: JSON.stringify({
-      payload: { type: "server.connected", properties: {} }
-    })
-  })
+streamSSE(c, async stream => {
+	// Send initial connection event
+	stream.writeSSE({
+		data: JSON.stringify({
+			payload: {type: 'server.connected', properties: {}},
+		}),
+	})
 
-  // Subscribe to GlobalBus and forward events
-  async function handler(event: any) {
-    await stream.writeSSE({ data: JSON.stringify(event) })
-  }
-  GlobalBus.on("event", handler)
+	// Subscribe to GlobalBus and forward events
+	async function handler(event: any) {
+		await stream.writeSSE({data: JSON.stringify(event)})
+	}
+	GlobalBus.on('event', handler)
 
-  // Heartbeat every 30s (prevents WKWebView 60s timeout)
-  const heartbeat = setInterval(() => {
-    stream.writeSSE({
-      data: JSON.stringify({
-        payload: { type: "server.heartbeat", properties: {} }
-      })
-    })
-  }, 30000)
+	// Heartbeat every 30s (prevents WKWebView 60s timeout)
+	const heartbeat = setInterval(() => {
+		stream.writeSSE({
+			data: JSON.stringify({
+				payload: {type: 'server.heartbeat', properties: {}},
+			}),
+		})
+	}, 30000)
 
-  // Cleanup on disconnect
-  await new Promise<void>((resolve) => {
-    stream.onAbort(() => {
-      clearInterval(heartbeat)
-      GlobalBus.off("event", handler)
-      resolve()
-    })
-  })
+	// Cleanup on disconnect
+	await new Promise<void>(resolve => {
+		stream.onAbort(() => {
+			clearInterval(heartbeat)
+			GlobalBus.off('event', handler)
+			resolve()
+		})
+	})
 })
 ```
 
@@ -259,41 +266,42 @@ The TUI uses **adaptive batching** to balance latency vs. render efficiency:
 ```typescript
 let queue: Event[] = []
 let timer: Timer | undefined
-let last = 0  // Timestamp of last flush
+let last = 0 // Timestamp of last flush
 
 const flush = () => {
-  if (queue.length === 0) return
-  const events = queue
-  queue = []
-  timer = undefined
-  last = Date.now()
-  
-  // Process all events in a single Solid.js batch
-  batch(() => {
-    for (const event of events) {
-      emitter.emit(event.type, event)
-    }
-  })
+	if (queue.length === 0) return
+	const events = queue
+	queue = []
+	timer = undefined
+	last = Date.now()
+
+	// Process all events in a single Solid.js batch
+	batch(() => {
+		for (const event of events) {
+			emitter.emit(event.type, event)
+		}
+	})
 }
 
 const handleEvent = (event: Event) => {
-  queue.push(event)
-  const elapsed = Date.now() - last
-  
-  if (timer) return  // Already have a pending flush
-  
-  if (elapsed < 16) {
-    // Flushed recently - batch with upcoming events
-    timer = setTimeout(flush, 16)
-    return
-  }
-  
-  // Been a while - flush immediately for responsiveness
-  flush()
+	queue.push(event)
+	const elapsed = Date.now() - last
+
+	if (timer) return // Already have a pending flush
+
+	if (elapsed < 16) {
+		// Flushed recently - batch with upcoming events
+		timer = setTimeout(flush, 16)
+		return
+	}
+
+	// Been a while - flush immediately for responsiveness
+	flush()
 }
 ```
 
 **Why 16ms?**
+
 - 60 FPS = 16.67ms per frame
 - Events within same frame are batched together
 - Immediate flush if >16ms since last batch (avoids latency)
@@ -306,50 +314,50 @@ const handleEvent = (event: Event) => {
 
 ### Complete Event Type Reference
 
-| Event | Description | Handler Action |
-|-------|-------------|----------------|
-| `server.connected` | SSE connection established | Log to console |
-| `server.heartbeat` | Keep-alive (30s interval) | No-op |
-| `server.instance.disposed` | Server instance cleanup | Full bootstrap |
-| `session.created` | New session | Insert with binary search |
-| `session.updated` | Session modified | Update or insert |
-| `session.deleted` | Session removed | Remove from array |
-| `session.status` | Status changed (idle, busy) | Update status map |
-| `session.diff` | File diffs computed | Update diff map |
-| `message.updated` | Message created/changed | Insert + memory limit |
-| `message.removed` | Message deleted | Remove + clean parts |
-| `message.part.updated` | Part created/changed | Insert at sorted position |
-| `message.part.removed` | Part deleted | Remove from array |
-| `permission.asked` | Permission needed | Insert with binary search |
-| `permission.replied` | Permission answered | Remove from array |
-| `question.asked` | Question asked | Insert with binary search |
-| `question.replied` | Question answered | Remove from array |
-| `todo.updated` | Todos changed | Replace array |
-| `lsp.updated` | LSP status changed | Refetch from server |
-| `vcs.branch.updated` | Git branch changed | Update VCS info |
+| Event                      | Description                 | Handler Action            |
+| -------------------------- | --------------------------- | ------------------------- |
+| `server.connected`         | SSE connection established  | Log to console            |
+| `server.heartbeat`         | Keep-alive (30s interval)   | No-op                     |
+| `server.instance.disposed` | Server instance cleanup     | Full bootstrap            |
+| `session.created`          | New session                 | Insert with binary search |
+| `session.updated`          | Session modified            | Update or insert          |
+| `session.deleted`          | Session removed             | Remove from array         |
+| `session.status`           | Status changed (idle, busy) | Update status map         |
+| `session.diff`             | File diffs computed         | Update diff map           |
+| `message.updated`          | Message created/changed     | Insert + memory limit     |
+| `message.removed`          | Message deleted             | Remove + clean parts      |
+| `message.part.updated`     | Part created/changed        | Insert at sorted position |
+| `message.part.removed`     | Part deleted                | Remove from array         |
+| `permission.asked`         | Permission needed           | Insert with binary search |
+| `permission.replied`       | Permission answered         | Remove from array         |
+| `question.asked`           | Question asked              | Insert with binary search |
+| `question.replied`         | Question answered           | Remove from array         |
+| `todo.updated`             | Todos changed               | Replace array             |
+| `lsp.updated`              | LSP status changed          | Refetch from server       |
+| `vcs.branch.updated`       | Git branch changed          | Update VCS info           |
 
 ### Example: message.updated Handler
 
 ```typescript
 case "message.updated": {
   const messages = store.message[event.properties.info.sessionID]
-  
+
   if (!messages) {
     // First message for this session
     setStore("message", event.properties.info.sessionID, [event.properties.info])
     break
   }
-  
+
   // Binary search for existing or insertion point
   const result = Binary.search(messages, event.properties.info.id, (m) => m.id)
-  
+
   if (result.found) {
     // Update existing message
-    setStore("message", event.properties.info.sessionID, result.index, 
+    setStore("message", event.properties.info.sessionID, result.index,
              reconcile(event.properties.info))
     break
   }
-  
+
   // Insert at correct sorted position
   setStore(
     "message",
@@ -358,13 +366,13 @@ case "message.updated": {
       draft.splice(result.index, 0, event.properties.info)
     })
   )
-  
+
   // Memory optimization: keep only last 100 messages
   const updated = store.message[event.properties.info.sessionID]
   if (updated.length > 100) {
     const oldest = updated[0]
     batch(() => {
-      setStore("message", event.properties.info.sessionID, 
+      setStore("message", event.properties.info.sessionID,
                produce((draft) => { draft.shift() }))
       setStore("part", produce((draft) => { delete draft[oldest.id] }))
     })
@@ -386,23 +394,23 @@ Bootstrap uses a **two-phase loading strategy**:
 ```typescript
 async function bootstrap() {
   const start = Date.now() - 30 * 24 * 60 * 60 * 1000  // 30 days ago
-  
+
   // Start all requests in parallel
   const sessionListPromise = sdk.client.session.list({ start })
   const providersPromise = sdk.client.config.providers()
   const agentsPromise = sdk.client.app.agents()
   const configPromise = sdk.client.config.get()
-  
+
   // Wait for critical data
   await Promise.all([providersPromise, agentsPromise, configPromise])
-  
+
   // Update store in single batch
   batch(() => {
     setStore("provider", reconcile(providers))
     setStore("agent", reconcile(agents))
     setStore("config", reconcile(config))
   })
-  
+
   setStore("status", "partial")  // UI can now render
 ```
 
@@ -424,6 +432,7 @@ async function bootstrap() {
 ```
 
 **Status Progression:**
+
 1. `loading` → Initial state, show loading indicator
 2. `partial` → Core data ready, UI can render
 3. `complete` → All data loaded
@@ -436,30 +445,30 @@ async function bootstrap() {
 
 ```typescript
 export namespace Binary {
-  export function search<T>(
-    array: T[],
-    id: string,
-    compare: (item: T) => string
-  ): { found: boolean; index: number } {
-    let left = 0
-    let right = array.length - 1
+	export function search<T>(
+		array: T[],
+		id: string,
+		compare: (item: T) => string,
+	): {found: boolean; index: number} {
+		let left = 0
+		let right = array.length - 1
 
-    while (left <= right) {
-      const mid = Math.floor((left + right) / 2)
-      const midId = compare(array[mid])
+		while (left <= right) {
+			const mid = Math.floor((left + right) / 2)
+			const midId = compare(array[mid])
 
-      if (midId === id) {
-        return { found: true, index: mid }
-      } else if (midId < id) {
-        left = mid + 1
-      } else {
-        right = mid - 1
-      }
-    }
+			if (midId === id) {
+				return {found: true, index: mid}
+			} else if (midId < id) {
+				left = mid + 1
+			} else {
+				right = mid - 1
+			}
+		}
 
-    // Not found: 'left' is the insertion point
-    return { found: false, index: left }
-  }
+		// Not found: 'left' is the insertion point
+		return {found: false, index: left}
+	}
 }
 ```
 
@@ -480,6 +489,7 @@ if (result.found) {
 ```
 
 **Complexity:**
+
 - Search: O(log n)
 - Insert: O(log n) search + O(n) splice
 - Update: O(log n) search + O(1) update
@@ -494,13 +504,24 @@ if (result.found) {
 // After inserting new message
 const updated = store.message[sessionID]
 if (updated.length > 100) {
-  const oldest = updated[0]
-  batch(() => {
-    // Remove oldest message
-    setStore("message", sessionID, produce((draft) => { draft.shift() }))
-    // Clean up associated parts
-    setStore("part", produce((draft) => { delete draft[oldest.id] }))
-  })
+	const oldest = updated[0]
+	batch(() => {
+		// Remove oldest message
+		setStore(
+			'message',
+			sessionID,
+			produce(draft => {
+				draft.shift()
+			}),
+		)
+		// Clean up associated parts
+		setStore(
+			'part',
+			produce(draft => {
+				delete draft[oldest.id]
+			}),
+		)
+	})
 }
 ```
 
@@ -508,7 +529,7 @@ if (updated.length > 100) {
 
 ```typescript
 const start = Date.now() - 30 * 24 * 60 * 60 * 1000
-const sessions = await sdk.client.session.list({ start })
+const sessions = await sdk.client.session.list({start})
 ```
 
 ### Reconciliation for Deep Merging
@@ -516,7 +537,7 @@ const sessions = await sdk.client.session.list({ start })
 Solid.js `reconcile()` performs efficient deep merging, only updating changed properties:
 
 ```typescript
-setStore("session", result.index, reconcile(event.properties.info))
+setStore('session', result.index, reconcile(event.properties.info))
 // Only re-renders components that depend on changed fields
 ```
 
@@ -530,12 +551,12 @@ The SSE loop automatically reconnects when the stream ends:
 
 ```typescript
 while (true) {
-  if (abort.signal.aborted) break
-  const events = await sdk.event.subscribe({}, { signal: abort.signal })
-  for await (const event of events.stream) {
-    handleEvent(event)
-  }
-  // Stream ended - loop continues and reconnects
+	if (abort.signal.aborted) break
+	const events = await sdk.event.subscribe({}, {signal: abort.signal})
+	for await (const event of events.stream) {
+		handleEvent(event)
+	}
+	// Stream ended - loop continues and reconnects
 }
 ```
 
@@ -579,11 +600,13 @@ UUIDs are NOT lexicographically sortable, so binary search produced wrong insert
 ### Solutions
 
 **Option A: Use linear search + append (current fix)**
+
 - Replace `binarySearch` with `findById` for messages/parts
 - Append new items with `push()` instead of `splice()`
 - Works because SSE events arrive in order
 
 **Option B: Implement sortable IDs (matches TUI)**
+
 - Port the ID generation from `packages/opencode/src/id/id.ts`
 - Client-generated IDs would be sortable
 - Binary search would work correctly
@@ -591,6 +614,7 @@ UUIDs are NOT lexicographically sortable, so binary search produced wrong insert
 ### Recommendation
 
 For now, **Option A is sufficient** because:
+
 1. The server-generated IDs ARE sortable
 2. Client-generated IDs are only used for optimistic UI
 3. SSE events arrive in chronological order

@@ -9,9 +9,11 @@ description: Stage ALL changes, commit, and push. Create or update PR with appro
 **Existing PR:** !`gh pr view --json number -q '.number' 2>/dev/null || echo "None"`
 
 ### All Uncommitted Changes (staged and unstaged)
+
 !`git status --short`
 
 ### Recent Commits (not on main)
+
 !`git log main..HEAD --oneline 2>/dev/null || echo "On main or no commits ahead"`
 
 ---

@@ -9,6 +9,7 @@ Users currently cannot easily reference specific files from their workspace when
 Replace the current textarea-based chat input with a Tiptap rich-text editor that supports inline @-mentions. When users type `@` in the editor, a dropdown menu will appear showing workspace files filtered by fuzzy search. Selected files will appear as inline "mention chips" (similar to Slack or GitHub mentions) that can be deleted as a single unit. When submitting a message, the editor will extract both the text and the mentioned files to send as attachments.
 
 The implementation will use:
+
 1. **tiptap-solid**: Community SolidJS bindings for Tiptap
 2. **@tiptap/extension-mention**: Official mention extension
 3. **@tiptap/suggestion**: Suggestion plugin for dropdown logic
@@ -18,6 +19,7 @@ The implementation will use:
 ## Important Files/Docs for Implementation
 
 ### Existing Files to Modify
+
 - [src/webview/components/InputBar.tsx](file:///Users/tanishqkancharla/Documents/Projects/saffron-health/opencode-gui/src/webview/components/InputBar.tsx) - Replace textarea with Tiptap editor
 - [src/webview/App.tsx](file:///Users/tanishqkancharla/Documents/Projects/saffron-health/opencode-gui/src/webview/App.tsx) - Extract mentions from editor content on submit
 - [src/OpenCodeViewProvider.ts](file:///Users/tanishqkancharla/Documents/Projects/saffron-health/opencode-gui/src/OpenCodeViewProvider.ts) - Add file search message handler
@@ -25,6 +27,7 @@ The implementation will use:
 - [package.json](file:///Users/tanishqkancharla/Documents/Projects/saffron-health/opencode-gui/package.json) - Add new dependencies
 
 ### New Files to Create
+
 - `src/webview/components/TiptapEditor.tsx` - Main Tiptap editor component
 - `src/webview/components/FileMentionDropdown.tsx` - Dropdown showing file results
 - `src/webview/components/TiptapEditor.css` - Tiptap editor styles
@@ -32,6 +35,7 @@ The implementation will use:
 - `src/webview/utils/editorContent.ts` - Utilities to extract mentions from editor JSON
 
 ### External Documentation
+
 - [Tiptap Mention Extension](https://tiptap.dev/docs/editor/extensions/nodes/mention)
 - [Tiptap Suggestion Utility](https://tiptap.dev/docs/editor/api/utilities/suggestion)
 - [tiptap-solid GitHub](https://github.com/andi23rosca/tiptap-solid)
@@ -54,7 +58,7 @@ The implementation will use:
 
 - [x] Add `searchFiles` message handler in [OpenCodeViewProvider.ts](file:///Users/tanishqkancharla/Documents/Projects/saffron-health/opencode-gui/src/OpenCodeViewProvider.ts)
 - [x] Accept `{ type: 'searchFiles', query: string }` message from webview
-- [x] Implement search using `vscode.workspace.findFiles(\`**/*\${query}*\`, excludePattern, 50)`
+- [x] Implement search using `vscode.workspace.findFiles(\`\*_/_\${query}\*\`, excludePattern, 50)`
 - [x] Exclude patterns: `**/node_modules/**`, `**/.git/**`, `**/dist/**`, `**/out/**`, `**/.vscode/**`
 - [x] Return `{ type: 'searchFilesResult', files: string[] }` with relative paths
 - [x] Use `workspace.asRelativePath(uri)` to convert URIs to relative paths
@@ -139,7 +143,7 @@ The implementation will use:
 - [x] Get editor JSON using `editor.getJSON()` before submit
 - [x] Call `extractMentions(json)` to get list of mentioned file paths
 - [x] Convert file paths to `SelectionAttachment` objects with full file URLs
-- [x] Merge mentioned files with existing `selectionAttachments` 
+- [x] Merge mentioned files with existing `selectionAttachments`
 - [x] Build `FilePartInput` array from merged attachments
 - [x] Add integration test verifying mentions are converted to attachments
 - [ ] Manually verify mentioned files are sent with the message
@@ -221,6 +225,7 @@ The implementation will use:
 ### Bundle Size Impact
 
 Expected additions to bundle:
+
 - `@tiptap/core`: ~45KB gzipped
 - `@tiptap/starter-kit`: ~10KB gzipped
 - `@tiptap/extension-mention` + `@tiptap/suggestion`: ~15KB gzipped
@@ -243,6 +248,7 @@ Expected additions to bundle:
 ### Migration Strategy
 
 To minimize risk:
+
 1. Keep old textarea-based InputBar as `InputBarLegacy.tsx` initially
 2. Add feature flag or environment variable to toggle between old/new
 3. Test new editor thoroughly before removing legacy code

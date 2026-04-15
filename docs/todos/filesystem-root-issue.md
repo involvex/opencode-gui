@@ -32,12 +32,12 @@ The `createOpencodeServer()` function in `@opencode-ai/sdk` does not accept a `c
 
 ```typescript
 export type ServerOptions = {
-    hostname?: string;
-    port?: number;
-    signal?: AbortSignal;
-    timeout?: number;
-    config?: Config;
-};
+	hostname?: string
+	port?: number
+	signal?: AbortSignal
+	timeout?: number
+	config?: Config
+}
 ```
 
 Notice: No `cwd` or `workingDirectory` option.
@@ -45,21 +45,27 @@ Notice: No `cwd` or `workingDirectory` option.
 ## Solution Options
 
 ### Option 1: Patch the SDK (Not Recommended)
+
 We could manually patch `node_modules/@opencode-ai/sdk` to add cwd support, but this would be lost on every npm install.
 
 ### Option 2: Fork and Modify SDK (Heavy)
+
 Fork the `@opencode-ai/sdk` package and add `cwd` support. This requires maintaining a fork.
 
 ### Option 3: Change Process Working Directory Before Initialization (Hacky)
+
 Use `process.chdir()` before calling `createOpencode()`, but this affects the entire extension host process and could break other extensions.
 
 ### Option 4: Set Environment Variable (Possible)
+
 Check if the `opencode serve` command respects an environment variable for working directory. Need to investigate the OpenCode CLI.
 
 ### Option 5: Request SDK Enhancement (Long-term)
+
 File an issue/PR with `@opencode-ai/sdk` to add `cwd` support to `ServerOptions`. This is the proper solution but takes time.
 
 ### Option 6: Workaround - Use `project` Parameter
+
 Looking at the TUI options, there's a `project` parameter. Let me check if this can be used with the server or if the config can specify a working directory.
 
 ## Investigation Needed
@@ -71,6 +77,7 @@ Looking at the TUI options, there's a `project` parameter. Let me check if this 
 ## Additional Research from OpenCode Docs
 
 From https://opencode.ai/docs/:
+
 - **Project Context Discovery**: "When OpenCode starts up, it looks for a config file in the current directory or traverse up to the nearest Git directory."
 - **Server Command**: `opencode serve` has `--hostname` and `--port` flags, but NO `--project` flag
 - OpenCode determines its project context from the **current working directory** where the command is executed
@@ -87,6 +94,7 @@ This confirms that the spawned `opencode serve` process needs to have the correc
 4. In finally block, restore the original cwd
 
 **Why this approach:**
+
 - Simple, minimal code change
 - OpenCode server spawns with correct project context
 - cwd change is extremely short-lived (only during spawn)
@@ -94,17 +102,20 @@ This confirms that the spawned `opencode serve` process needs to have the correc
 - Already have initialization guard (`isInitializing`) to prevent re-entrancy
 
 **Risks mitigated:**
+
 - Short-lived global state change (only during createOpencode call)
 - Always restore in finally block
 - Existing `isInitializing` flag prevents concurrent calls
 
 **Future improvement:**
+
 - Submit PR to @opencode-ai/sdk to add `cwd` option to ServerOptions
 - Once SDK supports it, replace this workaround
 
 ## Implementation
 
 Modified `src/OpenCodeService.ts`:
+
 1. Capture current working directory before initialization
 2. Check if workspace root exists and is valid
 3. Temporarily `process.chdir(workspaceRoot)` before calling `createOpencode()`
@@ -115,6 +126,7 @@ The fix ensures the OpenCode server spawns with the correct working directory, a
 ## Testing
 
 To test:
+
 1. Open a workspace in VSCode
 2. Activate the extension
 3. The OpenCode server should now run in the workspace directory instead of filesystem root

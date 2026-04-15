@@ -7,17 +7,17 @@
 The OpenCode SDK (`@opencode-ai/sdk@0.15.18`) returns messages with a `parts` array. Each part can be one of several types:
 
 ```typescript
-export type Part = 
-  | TextPart 
-  | ReasoningPart 
-  | FilePart 
-  | ToolPart 
-  | StepStartPart 
-  | StepFinishPart 
-  | SnapshotPart 
-  | PatchPart 
-  | AgentPart 
-  | RetryPart;
+export type Part =
+	| TextPart
+	| ReasoningPart
+	| FilePart
+	| ToolPart
+	| StepStartPart
+	| StepFinishPart
+	| SnapshotPart
+	| PatchPart
+	| AgentPart
+	| RetryPart
 ```
 
 ### Tool Part Structure
@@ -26,21 +26,21 @@ The most important type for this task is `ToolPart`:
 
 ```typescript
 export type ToolPart = {
-  id: string;
-  sessionID: string;
-  messageID: string;
-  type: "tool";
-  callID: string;
-  tool: string;  // Tool name
-  state: ToolState;
-  metadata?: { [key: string]: unknown };
-};
+	id: string
+	sessionID: string
+	messageID: string
+	type: 'tool'
+	callID: string
+	tool: string // Tool name
+	state: ToolState
+	metadata?: {[key: string]: unknown}
+}
 
-export type ToolState = 
-  | ToolStatePending    // { status: "pending" }
-  | ToolStateRunning    // { status: "running", input, title?, metadata?, time }
-  | ToolStateCompleted  // { status: "completed", input, output, title, metadata, time, attachments? }
-  | ToolStateError;     // { status: "error", input, error, metadata?, time }
+export type ToolState =
+	| ToolStatePending // { status: "pending" }
+	| ToolStateRunning // { status: "running", input, title?, metadata?, time }
+	| ToolStateCompleted // { status: "completed", input, output, title, metadata, time, attachments? }
+	| ToolStateError // { status: "error", input, error, metadata?, time }
 ```
 
 ### Other Relevant Parts
@@ -76,19 +76,19 @@ Extend the `Message` interface in `App.tsx` to support different part types:
 
 ```typescript
 interface Message {
-  id: string;
-  type: 'user' | 'assistant';
-  parts: MessagePart[];
+	id: string
+	type: 'user' | 'assistant'
+	parts: MessagePart[]
 }
 
 interface MessagePart {
-  id: string;
-  type: 'text' | 'reasoning' | 'tool' | 'file' | 'step-start' | 'step-finish';
-  // Type-specific fields
-  text?: string;
-  tool?: string;
-  toolState?: ToolState;
-  // ... etc
+	id: string
+	type: 'text' | 'reasoning' | 'tool' | 'file' | 'step-start' | 'step-finish'
+	// Type-specific fields
+	text?: string
+	tool?: string
+	toolState?: ToolState
+	// ... etc
 }
 ```
 
@@ -131,6 +131,7 @@ Tool calls should be styled as collapsible `<details>` blocks similar to thinkin
 ## Progress
 
 ### Completed
+
 - ✅ Researched OpenCode SDK message part types
 - ✅ Confirmed tool calls are already being made by the backend
 - ✅ Identified that tool parts are being filtered out in display
@@ -147,6 +148,7 @@ Tool calls should be styled as collapsible `<details>` blocks similar to thinkin
 ### Implementation Details
 
 **Files Modified:**
+
 1. `src/webview/App.tsx`:
    - Added `ToolState` and `MessagePart` interfaces
    - Updated `Message` interface to support both legacy `text` and new `parts` fields
@@ -165,6 +167,7 @@ Tool calls should be styled as collapsible `<details>` blocks similar to thinkin
    - Styled tool status badges, input/output sections, and error states
 
 ### What Works
+
 - Tool calls now display as collapsible details blocks
 - Shows tool name, status icon, and status badge
 - Displays input parameters as formatted JSON
@@ -183,11 +186,13 @@ The OpenCode SDK's `session.messages()` endpoint returns compacted history (step
 This is by design - tool calls are considered operational telemetry and are compacted into steps for storage efficiency.
 
 **Current Implementation:**
+
 - Shows "🔧 Using tools..." indicator when step-start appears
 - This lets users know tools were used during that step
 - The actual tool call details (input/output) are not available in the persisted history
 
 ### Next Steps (Optional Enhancements)
+
 1. **Implement SSE streaming** to show real-time tool calls as they execute:
    - Subscribe to session SSE events when sending a prompt
    - Listen for tool-call events and display them live

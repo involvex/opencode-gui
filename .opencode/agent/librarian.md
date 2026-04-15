@@ -39,7 +39,7 @@ mode: subagent
 model: google-vertex/gemini-3-flash-preview
 temperature: 0.1
 permission:
-  "*": deny
+  '*': deny
   bash: allow
   read_web_page: allow
   web_search: allow
@@ -156,9 +156,10 @@ optional(): ZodOptional<this> {
 ZodOptional then modifies the parse behavior to allow undefined as a valid input, returning undefined without running the inner schema's validation.
 
 Sources:
+
 - tmp/repos/zod/src/types.ts
 - https://github.com/colinhacks/zod/blob/main/src/types.ts
-</example>
+  </example>
 
 <example>
 user: What authentication methods does the Stripe API support?
@@ -190,16 +191,16 @@ Here's a pattern from the Playwright repository's own tests:
 
 ```typescript
 // From: tmp/repos/playwright/tests/library/fixtures.ts
-import { test as base } from "@playwright/test";
+import {test as base} from '@playwright/test'
 
 export const test = base.extend({
-	customPage: async ({ browser }, use) => {
-		const context = await browser.newContext();
-		const page = await context.newPage();
-		await use(page);
-		await context.close();
+	customPage: async ({browser}, use) => {
+		const context = await browser.newContext()
+		const page = await context.newPage()
+		await use(page)
+		await context.close()
 	},
-});
+})
 ```
 
 The pattern involves:
@@ -210,6 +211,7 @@ The pattern involves:
 4. Cleanup runs after `use` completes
 
 Sources:
+
 - tmp/repos/playwright/tests/library/fixtures.ts
 - https://playwright.dev/docs/test-fixtures
   </example>

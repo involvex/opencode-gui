@@ -5,6 +5,7 @@ Complete guide to building full-stack applications with SolidStart, the SolidJS 
 ## Overview
 
 SolidStart is built on:
+
 - **Solid** — Fine-grained reactive UI library
 - **Vinxi** — Framework bundler (Vite + Nitro)
 - **File-based routing** — via Solid Router
@@ -47,73 +48,77 @@ my-app/
 ## Configuration
 
 **app.config.ts:**
+
 ```ts
-import { defineConfig } from "@solidjs/start/config";
+import {defineConfig} from '@solidjs/start/config'
 
 export default defineConfig({
-  server: {
-    preset: "node-server", // or "vercel", "netlify", "cloudflare-pages"
-    // prerender: { routes: ["/", "/about"] }
-  },
-  vite: {
-    // Vite options
-  }
-});
+	server: {
+		preset: 'node-server', // or "vercel", "netlify", "cloudflare-pages"
+		// prerender: { routes: ["/", "/about"] }
+	},
+	vite: {
+		// Vite options
+	},
+})
 ```
 
 ## Rendering Modes
 
 ### SSR (Default)
+
 ```ts
 // app.config.ts
 export default defineConfig({
-  server: {
-    preset: "node-server"
-  }
-});
+	server: {
+		preset: 'node-server',
+	},
+})
 ```
 
 ### Static Site Generation (SSG)
+
 ```ts
 export default defineConfig({
-  server: {
-    prerender: {
-      routes: ["/", "/about", "/posts"],
-      // or crawl from root
-      crawlLinks: true
-    }
-  }
-});
+	server: {
+		prerender: {
+			routes: ['/', '/about', '/posts'],
+			// or crawl from root
+			crawlLinks: true,
+		},
+	},
+})
 ```
 
 ### Client-Side Only (SPA)
+
 ```ts
 export default defineConfig({
-  ssr: false
-});
+	ssr: false,
+})
 ```
 
 ## File-Based Routing
 
 ### Basic Routes
 
-| File | Route |
-|------|-------|
-| `routes/index.tsx` | `/` |
-| `routes/about.tsx` | `/about` |
-| `routes/blog/index.tsx` | `/blog` |
-| `routes/blog/[slug].tsx` | `/blog/:slug` |
-| `routes/[...all].tsx` | `/*all` (catch-all) |
+| File                     | Route               |
+| ------------------------ | ------------------- |
+| `routes/index.tsx`       | `/`                 |
+| `routes/about.tsx`       | `/about`            |
+| `routes/blog/index.tsx`  | `/blog`             |
+| `routes/blog/[slug].tsx` | `/blog/:slug`       |
+| `routes/[...all].tsx`    | `/*all` (catch-all) |
 
 ### Dynamic Routes
 
 ```tsx
 // routes/users/[id].tsx
-import { useParams } from "@solidjs/router";
+import {useParams} from '@solidjs/router'
 
 export default function User() {
-  const params = useParams();
-  return <div>User: {params.id}</div>;
+	const params = useParams()
+	return <div>User: {params.id}</div>
 }
 ```
 
@@ -135,12 +140,12 @@ routes/
 ```tsx
 // routes/(dashboard).tsx — Layout for dashboard group
 export default function DashboardLayout(props) {
-  return (
-    <div class="dashboard">
-      <Sidebar />
-      <main>{props.children}</main>
-    </div>
-  );
+	return (
+		<div class="dashboard">
+			<Sidebar />
+			<main>{props.children}</main>
+		</div>
+	)
 }
 ```
 
@@ -149,7 +154,7 @@ export default function DashboardLayout(props) {
 ```tsx
 // routes/[...404].tsx
 export default function NotFound() {
-  return <div>Page Not Found</div>;
+	return <div>Page Not Found</div>
 }
 ```
 
@@ -159,61 +164,57 @@ export default function NotFound() {
 
 ```tsx
 // routes/users/[id].tsx
-import { cache, createAsync } from "@solidjs/router";
-import { getRequestEvent } from "solid-js/web";
+import {cache, createAsync} from '@solidjs/router'
+import {getRequestEvent} from 'solid-js/web'
 
 const getUser = cache(async (id: string) => {
-  "use server";
-  const response = await fetch(`https://api.example.com/users/${id}`);
-  return response.json();
-}, "user");
+	'use server'
+	const response = await fetch(`https://api.example.com/users/${id}`)
+	return response.json()
+}, 'user')
 
 export const route = {
-  preload: ({ params }) => getUser(params.id)
-};
+	preload: ({params}) => getUser(params.id),
+}
 
 export default function User() {
-  const params = useParams();
-  const user = createAsync(() => getUser(params.id));
-  
-  return (
-    <Show when={user()}>
-      {(user) => <h1>{user().name}</h1>}
-    </Show>
-  );
+	const params = useParams()
+	const user = createAsync(() => getUser(params.id))
+
+	return <Show when={user()}>{user => <h1>{user().name}</h1>}</Show>
 }
 ```
 
 ### createAsync
 
 ```tsx
-import { createAsync } from "@solidjs/router";
+import {createAsync} from '@solidjs/router'
 
 const data = createAsync(() => fetchData(), {
-  initialValue: [],
-  deferStream: true // Wait for data before streaming
-});
+	initialValue: [],
+	deferStream: true, // Wait for data before streaming
+})
 ```
 
 ### Error Handling
 
 ```tsx
-import { ErrorBoundary } from "solid-js";
+import {ErrorBoundary} from 'solid-js'
 
 export default function Page() {
-  const data = createAsync(async () => {
-    const res = await fetch("/api/data");
-    if (!res.ok) throw new Error("Failed");
-    return res.json();
-  });
-  
-  return (
-    <ErrorBoundary fallback={(err) => <div>Error: {err.message}</div>}>
-      <Suspense fallback={<Loading />}>
-        <DataView data={data()} />
-      </Suspense>
-    </ErrorBoundary>
-  );
+	const data = createAsync(async () => {
+		const res = await fetch('/api/data')
+		if (!res.ok) throw new Error('Failed')
+		return res.json()
+	})
+
+	return (
+		<ErrorBoundary fallback={err => <div>Error: {err.message}</div>}>
+			<Suspense fallback={<Loading />}>
+				<DataView data={data()} />
+			</Suspense>
+		</ErrorBoundary>
+	)
 }
 ```
 
@@ -223,18 +224,18 @@ export default function Page() {
 
 ```tsx
 // routes/api/hello.ts
-import { APIEvent } from "@solidjs/start/server";
+import {APIEvent} from '@solidjs/start/server'
 
 export function GET(event: APIEvent) {
-  return new Response(JSON.stringify({ message: "Hello" }), {
-    headers: { "Content-Type": "application/json" }
-  });
+	return new Response(JSON.stringify({message: 'Hello'}), {
+		headers: {'Content-Type': 'application/json'},
+	})
 }
 
 export function POST(event: APIEvent) {
-  const body = await event.request.json();
-  // Process body
-  return new Response(JSON.stringify({ success: true }));
+	const body = await event.request.json()
+	// Process body
+	return new Response(JSON.stringify({success: true}))
 }
 ```
 
@@ -243,9 +244,9 @@ export function POST(event: APIEvent) {
 ```tsx
 // routes/api/users/[id].ts
 export async function GET(event: APIEvent) {
-  const id = event.params.id;
-  const user = await db.users.find(id);
-  return Response.json(user);
+	const id = event.params.id
+	const user = await db.users.find(id)
+	return Response.json(user)
 }
 ```
 
@@ -253,17 +254,17 @@ export async function GET(event: APIEvent) {
 
 ```tsx
 export async function GET(event: APIEvent) {
-  const url = new URL(event.request.url);
-  const searchParams = url.searchParams;
-  const headers = event.request.headers;
-  const cookies = event.request.headers.get("cookie");
-  
-  // Set cookies
-  return new Response(data, {
-    headers: {
-      "Set-Cookie": "session=abc123; HttpOnly"
-    }
-  });
+	const url = new URL(event.request.url)
+	const searchParams = url.searchParams
+	const headers = event.request.headers
+	const cookies = event.request.headers.get('cookie')
+
+	// Set cookies
+	return new Response(data, {
+		headers: {
+			'Set-Cookie': 'session=abc123; HttpOnly',
+		},
+	})
 }
 ```
 
@@ -274,38 +275,44 @@ export async function GET(event: APIEvent) {
 ```tsx
 // Can be in any file
 async function saveUser(data: FormData) {
-  "use server";
-  // Runs only on server
-  const name = data.get("name");
-  await db.users.create({ name });
-  return { success: true };
+	'use server'
+	// Runs only on server
+	const name = data.get('name')
+	await db.users.create({name})
+	return {success: true}
 }
 ```
 
 ### Server Actions
 
 ```tsx
-import { action, useAction, useSubmission } from "@solidjs/router";
+import {action, useAction, useSubmission} from '@solidjs/router'
 
 const addTodo = action(async (formData: FormData) => {
-  "use server";
-  const title = formData.get("title");
-  await db.todos.create({ title });
-  throw redirect("/todos"); // Redirect after action
-}, "addTodo");
+	'use server'
+	const title = formData.get('title')
+	await db.todos.create({title})
+	throw redirect('/todos') // Redirect after action
+}, 'addTodo')
 
 function AddTodoForm() {
-  const submission = useSubmission(addTodo);
-  
-  return (
-    <form action={addTodo} method="post">
-      <input name="title" required />
-      <button disabled={submission.pending}>
-        {submission.pending ? "Adding..." : "Add Todo"}
-      </button>
-      {submission.error && <p>Error: {submission.error.message}</p>}
-    </form>
-  );
+	const submission = useSubmission(addTodo)
+
+	return (
+		<form
+			action={addTodo}
+			method="post"
+		>
+			<input
+				name="title"
+				required
+			/>
+			<button disabled={submission.pending}>
+				{submission.pending ? 'Adding...' : 'Add Todo'}
+			</button>
+			{submission.error && <p>Error: {submission.error.message}</p>}
+		</form>
+	)
 }
 ```
 
@@ -314,9 +321,15 @@ function AddTodoForm() {
 Forms work without JavaScript:
 
 ```tsx
-<form action={submitForm} method="post">
-  <input name="email" type="email" />
-  <button>Submit</button>
+<form
+	action={submitForm}
+	method="post"
+>
+	<input
+		name="email"
+		type="email"
+	/>
+	<button>Submit</button>
 </form>
 ```
 
@@ -324,31 +337,32 @@ Forms work without JavaScript:
 
 ```tsx
 // src/middleware.ts
-import { createMiddleware } from "@solidjs/start/middleware";
+import {createMiddleware} from '@solidjs/start/middleware'
 
 export default createMiddleware({
-  onRequest: [
-    async (event) => {
-      console.log("Request:", event.request.url);
-      // Return Response to short-circuit
-      // Return undefined to continue
-    }
-  ],
-  onBeforeResponse: [
-    async (event, response) => {
-      // Modify response
-      return response;
-    }
-  ]
-});
+	onRequest: [
+		async event => {
+			console.log('Request:', event.request.url)
+			// Return Response to short-circuit
+			// Return undefined to continue
+		},
+	],
+	onBeforeResponse: [
+		async (event, response) => {
+			// Modify response
+			return response
+		},
+	],
+})
 ```
 
 Register in config:
+
 ```ts
 // app.config.ts
 export default defineConfig({
-  middleware: "./src/middleware.ts"
-});
+	middleware: './src/middleware.ts',
+})
 ```
 
 ## Authentication
@@ -357,37 +371,37 @@ export default defineConfig({
 
 ```tsx
 // lib/session.ts
-import { useSession } from "@solidjs/start/server";
+import {useSession} from '@solidjs/start/server'
 
 export function getSession() {
-  "use server";
-  return useSession({
-    password: process.env.SESSION_SECRET!,
-    cookie: {
-      name: "session",
-      secure: process.env.NODE_ENV === "production",
-      httpOnly: true,
-      maxAge: 60 * 60 * 24 * 7 // 1 week
-    }
-  });
+	'use server'
+	return useSession({
+		password: process.env.SESSION_SECRET!,
+		cookie: {
+			name: 'session',
+			secure: process.env.NODE_ENV === 'production',
+			httpOnly: true,
+			maxAge: 60 * 60 * 24 * 7, // 1 week
+		},
+	})
 }
 
 // Usage in server function
 async function login(formData: FormData) {
-  "use server";
-  const session = await getSession();
-  
-  // Validate credentials...
-  
-  await session.update({ userId: user.id });
-  throw redirect("/dashboard");
+	'use server'
+	const session = await getSession()
+
+	// Validate credentials...
+
+	await session.update({userId: user.id})
+	throw redirect('/dashboard')
 }
 
 async function logout() {
-  "use server";
-  const session = await getSession();
-  await session.clear();
-  throw redirect("/");
+	'use server'
+	const session = await getSession()
+	await session.clear()
+	throw redirect('/')
 }
 ```
 
@@ -395,39 +409,48 @@ async function logout() {
 
 ```tsx
 // routes/(protected).tsx
-import { getSession } from "~/lib/session";
-import { redirect } from "@solidjs/router";
+import {redirect} from '@solidjs/router'
+import {getSession} from '~/lib/session'
 
 export const route = {
-  preload: async () => {
-    const session = await getSession();
-    if (!session.data.userId) {
-      throw redirect("/login");
-    }
-  }
-};
+	preload: async () => {
+		const session = await getSession()
+		if (!session.data.userId) {
+			throw redirect('/login')
+		}
+	},
+}
 
 export default function ProtectedLayout(props) {
-  return props.children;
+	return props.children
 }
 ```
 
 ## Head & Meta
 
 ```tsx
-import { Title, Meta, Link } from "@solidjs/meta";
+import {Title, Meta, Link} from '@solidjs/meta'
 
 export default function Page() {
-  return (
-    <>
-      <Title>Page Title</Title>
-      <Meta name="description" content="Page description" />
-      <Meta property="og:title" content="OG Title" />
-      <Link rel="canonical" href="https://example.com/page" />
-      
-      <div>Content</div>
-    </>
-  );
+	return (
+		<>
+			<Title>Page Title</Title>
+			<Meta
+				name="description"
+				content="Page description"
+			/>
+			<Meta
+				property="og:title"
+				content="OG Title"
+			/>
+			<Link
+				rel="canonical"
+				href="https://example.com/page"
+			/>
+
+			<div>Content</div>
+		</>
+	)
 }
 ```
 
@@ -441,15 +464,16 @@ VITE_API_URL=https://api.example.com  # Exposed to client
 
 ```tsx
 // Server only
-const dbUrl = process.env.DATABASE_URL;
+const dbUrl = process.env.DATABASE_URL
 
 // Client (must start with VITE_)
-const apiUrl = import.meta.env.VITE_API_URL;
+const apiUrl = import.meta.env.VITE_API_URL
 ```
 
 ## Static Assets
 
 Place in `public/`:
+
 ```
 public/
 ├── favicon.ico
@@ -459,8 +483,12 @@ public/
 ```
 
 Access at root:
+
 ```tsx
-<img src="/images/logo.png" alt="Logo" />
+<img
+	src="/images/logo.png"
+	alt="Logo"
+/>
 ```
 
 ## CSS & Styling
@@ -469,15 +497,14 @@ Access at root:
 
 ```tsx
 // routes/index.tsx or root layout
-import "./global.css";
+import './global.css'
 ```
 
 ### CSS Modules
 
 ```tsx
-import styles from "./Button.module.css";
-
-<button class={styles.primary}>Click</button>
+import styles from './Button.module.css'
+;<button class={styles.primary}>Click</button>
 ```
 
 ### Tailwind CSS
@@ -490,8 +517,8 @@ npx tailwindcss init -p
 ```ts
 // tailwind.config.js
 export default {
-  content: ["./src/**/*.{js,jsx,ts,tsx}"]
-};
+	content: ['./src/**/*.{js,jsx,ts,tsx}'],
+}
 ```
 
 ```css
@@ -515,56 +542,56 @@ node .output/server/index.mjs
 ```ts
 // app.config.ts
 export default defineConfig({
-  server: { preset: "vercel" }
-});
+	server: {preset: 'vercel'},
+})
 ```
 
 ### Netlify
 
 ```ts
 export default defineConfig({
-  server: { preset: "netlify" }
-});
+	server: {preset: 'netlify'},
+})
 ```
 
 ### Cloudflare Pages
 
 ```ts
 export default defineConfig({
-  server: { preset: "cloudflare-pages" }
-});
+	server: {preset: 'cloudflare-pages'},
+})
 ```
 
 ## WebSocket Endpoints
 
 ```tsx
 // routes/api/ws.ts
-import { defineWebSocket } from "@solidjs/start/server";
+import {defineWebSocket} from '@solidjs/start/server'
 
 export const GET = defineWebSocket({
-  open(peer) {
-    console.log("Connected:", peer.id);
-  },
-  message(peer, message) {
-    peer.send(`Echo: ${message}`);
-  },
-  close(peer) {
-    console.log("Disconnected:", peer.id);
-  }
-});
+	open(peer) {
+		console.log('Connected:', peer.id)
+	},
+	message(peer, message) {
+		peer.send(`Echo: ${message}`)
+	},
+	close(peer) {
+		console.log('Disconnected:', peer.id)
+	},
+})
 ```
 
 ## Request Event in Components
 
 ```tsx
-import { getRequestEvent } from "solid-js/web";
+import {getRequestEvent} from 'solid-js/web'
 
 async function getData() {
-  "use server";
-  const event = getRequestEvent();
-  const url = new URL(event.request.url);
-  const userAgent = event.request.headers.get("user-agent");
-  return { url: url.pathname, userAgent };
+	'use server'
+	const event = getRequestEvent()
+	const url = new URL(event.request.url)
+	const userAgent = event.request.headers.get('user-agent')
+	return {url: url.pathname, userAgent}
 }
 ```
 
@@ -572,16 +599,16 @@ async function getData() {
 
 ```tsx
 // Type for route params
-import type { RouteDefinition } from "@solidjs/router";
+import type {RouteDefinition} from '@solidjs/router'
 
 export const route: RouteDefinition = {
-  preload: ({ params }) => getUser(params.id)
-};
+	preload: ({params}) => getUser(params.id),
+}
 
 // Type for API routes
-import type { APIEvent } from "@solidjs/start/server";
+import type {APIEvent} from '@solidjs/start/server'
 
 export async function GET(event: APIEvent) {
-  // event is fully typed
+	// event is fully typed
 }
 ```

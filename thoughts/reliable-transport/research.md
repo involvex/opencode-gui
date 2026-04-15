@@ -1,9 +1,11 @@
 # Reliable transport between webview and OpenCode server
 
 ## Goal
+
 Understand how the OpenCode TUI handles reliable client/server messaging and compare with this VS Code webview extension. Identify patterns we should adopt.
 
 ## Findings from OpenCode repo (TUI + SDK)
+
 - **SSE client reliability is built into the SDK**
   - The generated SSE client tracks `Last-Event-ID`, supports `retry:` directives, and retries with exponential backoff + caps.
   - Source: `/tmp/opencode/packages/sdk/js/src/v2/gen/core/serverSentEvents.gen.ts`.
@@ -35,6 +37,7 @@ Understand how the OpenCode TUI handles reliable client/server messaging and com
   - Sources: `/tmp/opencode/packages/opencode/src/cli/cmd/tui/component/prompt/autocomplete.tsx`, `/tmp/opencode/packages/opencode/src/session/prompt.ts`.
 
 ## Current extension/webview behavior
+
 - **OpenCode server is started by the extension**
   - Server is launched on `127.0.0.1` with a random port via `createOpencode`.
   - Source: `src/OpenCodeService.ts`.
@@ -54,7 +57,7 @@ Understand how the OpenCode TUI handles reliable client/server messaging and com
   - Source: `src/webview/App.tsx` (`buildSelectionParts`).
 
 ## Implications
+
 - The extension currently lacks the reliability features that the OpenCode TUI gets “for free” from the SDK SSE client.
 - Most “fetch aborted/canceled” symptoms likely come from the simple proxy SSE implementation + missing reconnection.
 - Keeping a single real SSE client in the extension (not the webview) avoids CORS/CSP issues and matches TUI behavior.
-

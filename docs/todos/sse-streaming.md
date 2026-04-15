@@ -10,9 +10,9 @@ The OpenCode SDK (`@opencode-ai/sdk@0.15.18`) provides built-in SSE (Server-Sent
 
 ```typescript
 class Event {
-  subscribe<ThrowOnError extends boolean = false>(
-    options?: Options<EventSubscribeData, ThrowOnError>
-  ): Promise<ServerSentEventsResult<EventSubscribeResponses, unknown>>;
+	subscribe<ThrowOnError extends boolean = false>(
+		options?: Options<EventSubscribeData, ThrowOnError>,
+	): Promise<ServerSentEventsResult<EventSubscribeResponses, unknown>>
 }
 ```
 
@@ -21,25 +21,25 @@ class Event {
 The SDK streams various event types through SSE:
 
 ```typescript
-export type Event = 
-  | EventInstallationUpdated
-  | EventLspClientDiagnostics
-  | EventMessageUpdated         // Message-level updates
-  | EventMessageRemoved
-  | EventMessagePartUpdated     // 🔑 Real-time part updates (tool calls, text, reasoning)
-  | EventMessagePartRemoved
-  | EventSessionCompacted
-  | EventPermissionUpdated
-  | EventPermissionReplied
-  | EventFileEdited
-  | EventFileWatcherUpdated
-  | EventTodoUpdated
-  | EventSessionIdle
-  | EventSessionUpdated
-  | EventSessionDeleted
-  | EventSessionError
-  | EventServerConnected
-  | EventIdeInstalled;
+export type Event =
+	| EventInstallationUpdated
+	| EventLspClientDiagnostics
+	| EventMessageUpdated // Message-level updates
+	| EventMessageRemoved
+	| EventMessagePartUpdated // 🔑 Real-time part updates (tool calls, text, reasoning)
+	| EventMessagePartRemoved
+	| EventSessionCompacted
+	| EventPermissionUpdated
+	| EventPermissionReplied
+	| EventFileEdited
+	| EventFileWatcherUpdated
+	| EventTodoUpdated
+	| EventSessionIdle
+	| EventSessionUpdated
+	| EventSessionDeleted
+	| EventSessionError
+	| EventServerConnected
+	| EventIdeInstalled
 ```
 
 #### Key Event: `EventMessagePartUpdated`
@@ -48,28 +48,30 @@ This is the critical event for real-time tool call display:
 
 ```typescript
 export type EventMessagePartUpdated = {
-  type: "message.part.updated";
-  properties: {
-    part: Part;        // The actual part (ToolPart, TextPart, ReasoningPart, etc.)
-    delta?: string;    // Text delta for streaming text parts
-  };
-};
+	type: 'message.part.updated'
+	properties: {
+		part: Part // The actual part (ToolPart, TextPart, ReasoningPart, etc.)
+		delta?: string // Text delta for streaming text parts
+	}
+}
 ```
 
 #### SSE Stream API
 
 ```typescript
 export type ServerSentEventsResult<TData, TReturn, TNext> = {
-  stream: AsyncGenerator<TData extends Record<string, unknown> 
-    ? TData[keyof TData] 
-    : TData, TReturn, TNext>;
-};
+	stream: AsyncGenerator<
+		TData extends Record<string, unknown> ? TData[keyof TData] : TData,
+		TReturn,
+		TNext
+	>
+}
 
 export interface StreamEvent<TData> {
-  data: TData;
-  event?: string;
-  id?: string;
-  retry?: number;
+	data: TData
+	event?: string
+	id?: string
+	retry?: number
 }
 ```
 
@@ -77,21 +79,22 @@ export interface StreamEvent<TData> {
 
 ```typescript
 export type ServerSentEventsOptions<TData> = {
-  onSseError?: (error: unknown) => void;
-  onSseEvent?: (event: StreamEvent<TData>) => void;
-  sseDefaultRetryDelay?: number;      // Default: 3000ms
-  sseMaxRetryAttempts?: number;
-  sseMaxRetryDelay?: number;          // Default: 30000ms
-  sseSleepFn?: (ms: number) => Promise<void>;
-  url: string;
-};
+	onSseError?: (error: unknown) => void
+	onSseEvent?: (event: StreamEvent<TData>) => void
+	sseDefaultRetryDelay?: number // Default: 3000ms
+	sseMaxRetryAttempts?: number
+	sseMaxRetryDelay?: number // Default: 30000ms
+	sseSleepFn?: (ms: number) => Promise<void>
+	url: string
+}
 ```
 
 ### RivetKit Research
 
-RivetKit (https://www.rivet.dev/docs/actors/) returned a 404 error, indicating the documentation may have moved or the project is no longer active. 
+RivetKit (https://www.rivet.dev/docs/actors/) returned a 404 error, indicating the documentation may have moved or the project is no longer active.
 
 **Decision**: RivetKit is not needed. The OpenCode SDK already provides comprehensive SSE support with:
+
 - Async generator API for consuming events
 - Built-in error handling and retry logic
 - Event type safety through TypeScript
@@ -103,7 +106,7 @@ RivetKit (https://www.rivet.dev/docs/actors/) returned a 404 error, indicating t
 
 We'll implement streaming using a three-layer architecture:
 
-1. **OpenCodeService** (Extension side): 
+1. **OpenCodeService** (Extension side):
    - Subscribe to SSE events when sending a prompt
    - Filter events for the current session
    - Forward relevant events to the webview
@@ -122,6 +125,7 @@ We'll implement streaming using a three-layer architecture:
 #### 1. Update OpenCodeService
 
 Add a new method `sendPromptStreaming()` that:
+
 - Calls `session.prompt()` to initiate the prompt
 - Immediately subscribes to SSE events via `client.event.subscribe()`
 - Filters events for:
@@ -177,7 +181,7 @@ async sendPromptStreaming(
       if ('properties' in event && 'sessionID' in event.properties) {
         if (event.properties.sessionID === sid) {
           onEvent(event as Event);
-          
+
           // Stop streaming when session goes idle
           if (event.type === 'session.idle') {
             break;
@@ -246,7 +250,7 @@ private _handleStreamEvent(event: Event) {
 Add new message types for streaming:
 
 ```typescript
-type WebviewMessage = 
+type WebviewMessage =
   | { type: 'part-update'; part: Part; delta?: string }
   | { type: 'message-update'; message: Message }
   | // ... existing types
@@ -257,86 +261,91 @@ type WebviewMessage =
 Modify `App.tsx` to handle streaming updates:
 
 ```typescript
-const [messages, setMessages] = useState<Message[]>([]);
-const [streamingMessageId, setStreamingMessageId] = useState<string | null>(null);
+const [messages, setMessages] = useState<Message[]>([])
+const [streamingMessageId, setStreamingMessageId] = useState<string | null>(
+	null,
+)
 
 useEffect(() => {
-  const handleMessage = (event: MessageEvent) => {
-    const message = event.data;
-    
-    switch (message.type) {
-      case 'part-update': {
-        const { part, delta } = message;
-        
-        setMessages(prev => {
-          // Find or create the message for this part
-          const messageIndex = prev.findIndex(m => m.id === part.messageID);
-          
-          if (messageIndex === -1) {
-            // New message - create it
-            return [...prev, {
-              id: part.messageID,
-              type: 'assistant',
-              parts: [part]
-            }];
-          } else {
-            // Update existing message
-            const updated = [...prev];
-            const msg = { ...updated[messageIndex] };
-            const partIndex = msg.parts.findIndex(p => p.id === part.id);
-            
-            if (partIndex === -1) {
-              // New part - append it
-              msg.parts = [...msg.parts, part];
-            } else {
-              // Update existing part
-              msg.parts = [...msg.parts];
-              msg.parts[partIndex] = part;
-              
-              // Handle text deltas for streaming text
-              if (delta && part.type === 'text') {
-                msg.parts[partIndex] = {
-                  ...part,
-                  text: (msg.parts[partIndex].text || '') + delta
-                };
-              }
-            }
-            
-            updated[messageIndex] = msg;
-            return updated;
-          }
-        });
-        
-        setStreamingMessageId(part.messageID);
-        break;
-      }
-      
-      case 'message-update': {
-        // Final message state - use this to ensure consistency
-        const { message: finalMessage } = message;
-        
-        setMessages(prev => {
-          const index = prev.findIndex(m => m.id === finalMessage.id);
-          if (index === -1) {
-            return [...prev, finalMessage];
-          } else {
-            const updated = [...prev];
-            updated[index] = finalMessage;
-            return updated;
-          }
-        });
-        
-        setStreamingMessageId(null);
-        break;
-      }
-      
-      // ... other message types
-    }
-  };
+	const handleMessage = (event: MessageEvent) => {
+		const message = event.data
 
-  window.addEventListener('message', handleMessage);
-  return () => window.removeEventListener('message', handleMessage);
-}, []);
+		switch (message.type) {
+			case 'part-update': {
+				const {part, delta} = message
+
+				setMessages(prev => {
+					// Find or create the message for this part
+					const messageIndex = prev.findIndex(m => m.id === part.messageID)
+
+					if (messageIndex === -1) {
+						// New message - create it
+						return [
+							...prev,
+							{
+								id: part.messageID,
+								type: 'assistant',
+								parts: [part],
+							},
+						]
+					} else {
+						// Update existing message
+						const updated = [...prev]
+						const msg = {...updated[messageIndex]}
+						const partIndex = msg.parts.findIndex(p => p.id === part.id)
+
+						if (partIndex === -1) {
+							// New part - append it
+							msg.parts = [...msg.parts, part]
+						} else {
+							// Update existing part
+							msg.parts = [...msg.parts]
+							msg.parts[partIndex] = part
+
+							// Handle text deltas for streaming text
+							if (delta && part.type === 'text') {
+								msg.parts[partIndex] = {
+									...part,
+									text: (msg.parts[partIndex].text || '') + delta,
+								}
+							}
+						}
+
+						updated[messageIndex] = msg
+						return updated
+					}
+				})
+
+				setStreamingMessageId(part.messageID)
+				break
+			}
+
+			case 'message-update': {
+				// Final message state - use this to ensure consistency
+				const {message: finalMessage} = message
+
+				setMessages(prev => {
+					const index = prev.findIndex(m => m.id === finalMessage.id)
+					if (index === -1) {
+						return [...prev, finalMessage]
+					} else {
+						const updated = [...prev]
+						updated[index] = finalMessage
+						return updated
+					}
+				})
+
+				setStreamingMessageId(null)
+				break
+			}
+
+			// ... other message types
+		}
+	}
+
+	window.addEventListener('message', handleMessage)
+	return () => window.removeEventListener('message', handleMessage)
+}, [])
 ```
 
 ### Benefits of SSE Streaming
@@ -366,6 +375,7 @@ useEffect(() => {
 ## Progress
 
 ### Completed
+
 - ✅ Researched OpenCode SDK SSE capabilities
 - ✅ Identified key event types (`message.part.updated`, `session.idle`)
 - ✅ Evaluated RivetKit (not needed - OpenCode SDK has built-in SSE support)

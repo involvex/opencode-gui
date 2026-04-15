@@ -22,18 +22,18 @@ They can defined:
 The easiest way to create tools is using the `tool()` helper which provides type-safety and validation.
 
 ```ts title=".opencode/tool/database.ts" {1}
-import { tool } from "@opencode-ai/plugin";
+import {tool} from '@opencode-ai/plugin'
 
 export default tool({
-	description: "Query the project database",
+	description: 'Query the project database',
 	args: {
-		query: tool.schema.string().describe("SQL query to execute"),
+		query: tool.schema.string().describe('SQL query to execute'),
 	},
 	async execute(args) {
 		// Your database logic here
-		return `Executed query: ${args.query}`;
+		return `Executed query: ${args.query}`
 	},
-});
+})
 ```
 
 The **filename** becomes the **tool name**. The above creates a `database` tool.
@@ -46,25 +46,25 @@ You can use `tool.schema`, which is just [Zod](https://zod.dev), to define argum
 
 ```ts "tool.schema"
 args: {
-	query: tool.schema.string().describe("SQL query to execute");
+	query: tool.schema.string().describe('SQL query to execute')
 }
 ```
 
 You can also import [Zod](https://zod.dev) directly and return a plain object:
 
 ```ts {6}
-import { z } from "zod";
+import {z} from 'zod'
 
 export default {
-	description: "Tool description",
+	description: 'Tool description',
 	args: {
-		param: z.string().describe("Parameter description"),
+		param: z.string().describe('Parameter description'),
 	},
 	async execute(args, context) {
 		// Tool implementation
-		return "result";
+		return 'result'
 	},
-};
+}
 ```
 
 ---
@@ -74,17 +74,17 @@ export default {
 Tools receive context about the current session:
 
 ```ts title=".opencode/tool/project.ts" {8}
-import { tool } from "@opencode-ai/plugin";
+import {tool} from '@opencode-ai/plugin'
 
 export default tool({
-	description: "Get project information",
+	description: 'Get project information',
 	args: {},
 	async execute(args, context) {
 		// Access context information
-		const { agent, sessionID, messageID } = context;
-		return `Agent: ${agent}, Session: ${sessionID}, Message: ${messageID}`;
+		const {agent, sessionID, messageID} = context
+		return `Agent: ${agent}, Session: ${sessionID}, Message: ${messageID}`
 	},
-});
+})
 ```
 
 ---
@@ -94,29 +94,29 @@ export default tool({
 You can also export multiple tools from a single file. Each export becomes **a separate tool** with the name **`<filename>_<exportname>`**:
 
 ```ts title=".opencode/tool/math.ts"
-import { tool } from "@opencode-ai/plugin";
+import {tool} from '@opencode-ai/plugin'
 
 export const add = tool({
-	description: "Add two numbers",
+	description: 'Add two numbers',
 	args: {
-		a: tool.schema.number().describe("First number"),
-		b: tool.schema.number().describe("Second number"),
+		a: tool.schema.number().describe('First number'),
+		b: tool.schema.number().describe('Second number'),
 	},
 	async execute(args) {
-		return args.a + args.b;
+		return args.a + args.b
 	},
-});
+})
 
 export const multiply = tool({
-	description: "Multiply two numbers",
+	description: 'Multiply two numbers',
 	args: {
-		a: tool.schema.number().describe("First number"),
-		b: tool.schema.number().describe("Second number"),
+		a: tool.schema.number().describe('First number'),
+		b: tool.schema.number().describe('Second number'),
 	},
 	async execute(args) {
-		return args.a * args.b;
+		return args.a * args.b
 	},
-});
+})
 ```
 
 This creates two tools: `math_add` and `math_multiply`.

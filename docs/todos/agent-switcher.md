@@ -23,11 +23,11 @@ Add an agent switcher UI component that allows users to toggle between different
 3. **Config Structure**: Agents are defined in `opencode.json` under the `agents` key:
    ```json
    {
-     "agents": {
-       "general": { "description": "General purpose", "mode": "primary" },
-       "build": { "description": "Build focused", "mode": "primary" },
-       "plan": { "description": "Planning", "mode": "primary" }
-     }
+   	"agents": {
+   		"general": {"description": "General purpose", "mode": "primary"},
+   		"build": {"description": "Build focused", "mode": "primary"},
+   		"plan": {"description": "Planning", "mode": "primary"}
+   	}
    }
    ```
 
@@ -60,7 +60,7 @@ async getAgents(): Promise<Agent[]> {
   }
 
   const result = await this.opencode.client.app.agents();
-  
+
   if (result.error) {
     throw new Error(`Failed to get agents: ${JSON.stringify(result.error)}`);
   }
@@ -69,15 +69,15 @@ async getAgents(): Promise<Agent[]> {
   this.agents = (result.data || []).filter(
     (agent) => agent.mode === 'primary' || agent.mode === 'all'
   );
-  
+
   return this.agents;
 }
 
 // Update prompt methods to include agent parameter
 async sendPrompt(text: string, sessionId?: string, agent?: string): Promise<...>
 async sendPromptStreaming(
-  text: string, 
-  onEvent: (event: Event) => void, 
+  text: string,
+  onEvent: (event: Event) => void,
   sessionId?: string,
   agent?: string
 ): Promise<void>
@@ -89,13 +89,13 @@ Modify both `sendPrompt` and `sendPromptStreaming` to include the agent paramete
 
 ```typescript
 const result = await this.opencode.client.session.prompt({
-  path: { id: sid },
-  body: {
-    model: { providerID, modelID },
-    parts: [{ type: 'text', text }],
-    agent: agent || undefined, // Add agent if specified
-  },
-});
+	path: {id: sid},
+	body: {
+		model: {providerID, modelID},
+		parts: [{type: 'text', text}],
+		agent: agent || undefined, // Add agent if specified
+	},
+})
 ```
 
 ### 2. Backend Changes (OpenCodeViewProvider.ts)
@@ -103,15 +103,16 @@ const result = await this.opencode.client.session.prompt({
 #### Handle New Messages
 
 Add handling for agent-related messages:
+
 - `getAgents` - request to fetch available agents
 - `setAgent` - update the selected agent
 
 ```typescript
 case 'getAgents':
   const agents = await this.openCodeService.getAgents();
-  this._view.webview.postMessage({ 
-    type: 'agentList', 
-    agents: agents 
+  this._view.webview.postMessage({
+    type: 'agentList',
+    agents: agents
   });
   break;
 
@@ -138,14 +139,14 @@ case 'sendPrompt':
 #### Add State for Agents
 
 ```typescript
-const [agents, setAgents] = createSignal<Agent[]>([]);
-const [selectedAgent, setSelectedAgent] = createSignal<string | null>(null);
+const [agents, setAgents] = createSignal<Agent[]>([])
+const [selectedAgent, setSelectedAgent] = createSignal<string | null>(null)
 
 interface Agent {
-  name: string;
-  description?: string;
-  mode: "subagent" | "primary" | "all";
-  builtIn: boolean;
+	name: string
+	description?: string
+	mode: 'subagent' | 'primary' | 'all'
+	builtIn: boolean
 }
 ```
 
@@ -167,11 +168,11 @@ Request agents on mount:
 
 ```typescript
 onMount(() => {
-  // ... existing message handler setup ...
-  
-  // Request agent list
-  vscode.postMessage({ type: 'getAgents' });
-});
+	// ... existing message handler setup ...
+
+	// Request agent list
+	vscode.postMessage({type: 'getAgents'})
+})
 ```
 
 #### Update Submit Handler
@@ -180,17 +181,17 @@ Include selected agent when sending prompt:
 
 ```typescript
 const handleSubmit = (e: Event) => {
-  e.preventDefault();
-  if (!input().trim() || isThinking()) return;
+	e.preventDefault()
+	if (!input().trim() || isThinking()) return
 
-  vscode.postMessage({
-    type: 'sendPrompt',
-    text: input(),
-    agent: selectedAgent(), // Include selected agent
-  });
+	vscode.postMessage({
+		type: 'sendPrompt',
+		text: input(),
+		agent: selectedAgent(), // Include selected agent
+	})
 
-  setInput("");
-};
+	setInput('')
+}
 ```
 
 #### Update Input Rendering
@@ -235,12 +236,12 @@ const renderInput = () => (
 ```typescript
 const AgentSwitcher = () => {
   const [isOpen, setIsOpen] = createSignal(false);
-  
+
   const currentAgent = () => {
     const name = selectedAgent();
     return agents().find(a => a.name === name);
   };
-  
+
   return (
     <div class="agent-switcher">
       <button
@@ -285,45 +286,47 @@ const AgentSwitcher = () => {
 ```css
 /* Make room for button row at bottom */
 .textarea-wrapper {
-  position: relative;
-  width: 100%;
+	position: relative;
+	width: 100%;
 }
 
 .prompt-input {
-  /* Keep existing styles */
-  padding-bottom: 32px; /* Room for buttons */
+	/* Keep existing styles */
+	padding-bottom: 32px; /* Room for buttons */
 }
 
 /* Button row at bottom of input */
 .input-buttons {
-  position: absolute;
-  bottom: 4px;
-  left: 4px;
-  right: 4px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
+	position: absolute;
+	bottom: 4px;
+	left: 4px;
+	right: 4px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 8px;
 }
 
 /* Shortcut button - secondary style */
 .shortcut-button--secondary {
-  margin-left: auto; /* Push to right */
-  padding: 4px 8px;
-  border: 1px solid var(--vscode-button-border);
-  border-radius: 3px;
-  background-color: var(--vscode-button-secondaryBackground);
-  color: var(--vscode-button-secondaryForeground);
-  font-family: var(--vscode-font-family);
-  font-size: 11px;
-  cursor: pointer;
-  opacity: 0.8;
-  transition: opacity 0.15s, background-color 0.15s;
+	margin-left: auto; /* Push to right */
+	padding: 4px 8px;
+	border: 1px solid var(--vscode-button-border);
+	border-radius: 3px;
+	background-color: var(--vscode-button-secondaryBackground);
+	color: var(--vscode-button-secondaryForeground);
+	font-family: var(--vscode-font-family);
+	font-size: 11px;
+	cursor: pointer;
+	opacity: 0.8;
+	transition:
+		opacity 0.15s,
+		background-color 0.15s;
 }
 
 .shortcut-button--secondary:hover:not(:disabled) {
-  opacity: 1;
-  background-color: var(--vscode-button-secondaryHoverBackground);
+	opacity: 1;
+	background-color: var(--vscode-button-secondaryHoverBackground);
 }
 ```
 
@@ -332,76 +335,78 @@ const AgentSwitcher = () => {
 ```css
 /* Agent switcher - quiet style */
 .agent-switcher {
-  position: relative;
+	position: relative;
 }
 
 .agent-switcher-button {
-  padding: 4px 8px;
-  border: none;
-  border-radius: 3px;
-  background-color: transparent;
-  color: var(--vscode-foreground);
-  font-family: var(--vscode-font-family);
-  font-size: 11px;
-  cursor: pointer;
-  opacity: 0.6;
-  transition: opacity 0.15s, background-color 0.15s;
+	padding: 4px 8px;
+	border: none;
+	border-radius: 3px;
+	background-color: transparent;
+	color: var(--vscode-foreground);
+	font-family: var(--vscode-font-family);
+	font-size: 11px;
+	cursor: pointer;
+	opacity: 0.6;
+	transition:
+		opacity 0.15s,
+		background-color 0.15s;
 }
 
 .agent-switcher-button:hover {
-  opacity: 1;
-  background-color: var(--vscode-list-hoverBackground);
+	opacity: 1;
+	background-color: var(--vscode-list-hoverBackground);
 }
 
 /* Dropdown */
 .agent-dropdown {
-  position: absolute;
-  bottom: 100%;
-  left: 0;
-  margin-bottom: 4px;
-  min-width: 200px;
-  max-height: 300px;
-  overflow-y: auto;
-  background-color: var(--vscode-dropdown-background);
-  border: 1px solid var(--vscode-dropdown-border);
-  border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  z-index: 1000;
+	position: absolute;
+	bottom: 100%;
+	left: 0;
+	margin-bottom: 4px;
+	min-width: 200px;
+	max-height: 300px;
+	overflow-y: auto;
+	background-color: var(--vscode-dropdown-background);
+	border: 1px solid var(--vscode-dropdown-border);
+	border-radius: 4px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+	z-index: 1000;
 }
 
 .agent-option {
-  width: 100%;
-  padding: 8px 12px;
-  border: none;
-  background-color: transparent;
-  color: var(--vscode-dropdown-foreground);
-  font-family: var(--vscode-font-family);
-  font-size: 13px;
-  text-align: left;
-  cursor: pointer;
-  transition: background-color 0.15s;
+	width: 100%;
+	padding: 8px 12px;
+	border: none;
+	background-color: transparent;
+	color: var(--vscode-dropdown-foreground);
+	font-family: var(--vscode-font-family);
+	font-size: 13px;
+	text-align: left;
+	cursor: pointer;
+	transition: background-color 0.15s;
 }
 
 .agent-option:hover {
-  background-color: var(--vscode-list-hoverBackground);
+	background-color: var(--vscode-list-hoverBackground);
 }
 
 .agent-option.selected {
-  background-color: var(--vscode-list-activeSelectionBackground);
-  color: var(--vscode-list-activeSelectionForeground);
+	background-color: var(--vscode-list-activeSelectionBackground);
+	color: var(--vscode-list-activeSelectionForeground);
 }
 
 .agent-option-name {
-  font-weight: 500;
-  margin-bottom: 2px;
+	font-weight: 500;
+	margin-bottom: 2px;
 }
 
 .agent-option-description {
-  font-size: 11px;
-  opacity: 0.8;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+	font-size: 11px;
+	opacity: 0.8;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 ```
 
@@ -419,18 +424,19 @@ const AgentSwitcher = () => {
 ## Testing Strategy
 
 1. Create a test workspace with `opencode.json` containing multiple agents:
+
    ```json
    {
-     "agents": {
-       "general": {
-         "description": "General purpose assistant",
-         "mode": "primary"
-       },
-       "code": {
-         "description": "Code-focused assistant", 
-         "mode": "primary"
-       }
-     }
+   	"agents": {
+   		"general": {
+   			"description": "General purpose assistant",
+   			"mode": "primary"
+   		},
+   		"code": {
+   			"description": "Code-focused assistant",
+   			"mode": "primary"
+   		}
+   	}
    }
    ```
 
@@ -460,6 +466,7 @@ const AgentSwitcher = () => {
 ## What Was Implemented
 
 ### Backend (OpenCodeService.ts)
+
 - Added `agents: Agent[]` property to track available agents
 - Added `getAgents()` method that:
   - Calls `app.agents()` API
@@ -470,6 +477,7 @@ const AgentSwitcher = () => {
 - Both methods now include agent in the prompt body when specified
 
 ### Backend (OpenCodeViewProvider.ts)
+
 - Added `getAgents` message handler that:
   - Calls `getAgents()` from service
   - Sends agent list to webview via `agentList` message
@@ -477,6 +485,7 @@ const AgentSwitcher = () => {
 - Updated `sendPrompt` message handler to pass `message.agent` to service
 
 ### Frontend (App.tsx)
+
 - Added `Agent` interface with name, description, mode, builtIn properties
 - Added `agents` and `selectedAgent` signals for state management
 - Added `agentList` message handler that:
@@ -497,6 +506,7 @@ const AgentSwitcher = () => {
 - Added `getAgents` request on mount
 
 ### CSS (App.css)
+
 - Added `.input-buttons` class for absolute-positioned button row
 - Updated `.shortcut-button` to use margin-left: auto
 - Added `.shortcut-button--secondary` with VSCode secondary button styling

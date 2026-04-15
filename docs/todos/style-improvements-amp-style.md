@@ -1,7 +1,9 @@
 # Style Improvements: Amp-Style Updates
 
 ## Goal
+
 Apply style improvements inspired by Amp's extension to make the UI cleaner and more professional:
+
 1. Reduce horizontal padding on messages
 2. Remove placeholder text from prompt editor
 3. Remove welcome/intro message
@@ -11,6 +13,7 @@ Apply style improvements inspired by Amp's extension to make the UI cleaner and 
 ## Current State Analysis
 
 ### Current Padding
+
 - `.messages-container`: 16px padding
 - `.message--user .message-content`: 8px 12px padding
 - `.message--assistant .message-content`: 4px 0 padding (no horizontal padding)
@@ -18,17 +21,21 @@ Apply style improvements inspired by Amp's extension to make the UI cleaner and 
 - `.input-container`: 12px padding
 
 ### Current Placeholder & Welcome Message
+
 - Placeholder text in App.tsx line 390: "Ask OpenCode anything..." / "Initializing OpenCode..."
 - Welcome message in App.tsx lines 421-427: Shows when no messages exist
 
 ### Section Heading
+
 - Need to check if there's a "Chat" heading in the VSCode view title or webview
 - The `OpenCodeViewProvider.viewType = 'opencode.chatView'` might show a title in VSCode
 
 ## Tailwind to CSS Conversion
 
 ### Tool Call Styles (from Amp)
+
 **Outer card:**
+
 ```
 Tailwind: max-w-[100%] w-full rounded-md overflow-hidden border border-border/80
 CSS equivalent:
@@ -40,6 +47,7 @@ CSS equivalent:
 ```
 
 **Inner card:**
+
 ```
 Tailwind: flex flex-col gap-1.5 font-normal bg-card/60 p-1.5
 CSS equivalent:
@@ -52,6 +60,7 @@ CSS equivalent:
 ```
 
 ### Main Scroll Pane (from Amp)
+
 ```
 Tailwind: overflow-auto relative h-full max-h-full scroll-p-2 p-2
 CSS equivalent:
@@ -100,6 +109,7 @@ CSS equivalent:
 ## VSCode Theme Variables to Use
 
 For borders with opacity, we'll need to work with existing VSCode variables:
+
 - `var(--vscode-panel-border)` for borders
 - `var(--vscode-input-border)` for subtle borders
 - May need to use rgba() or adjust opacity with CSS filters
