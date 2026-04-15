@@ -43,7 +43,7 @@ If the script doesn't work or you prefer manual control:
 ### 1. Build Everything
 
 ```bash
-npm run build
+bun run build
 ```
 
 ### 2. Start Watch Mode
@@ -51,7 +51,7 @@ npm run build
 Open a terminal and run:
 
 ```bash
-npm run watch
+bun run watch
 ```
 
 **Keep this terminal open!** It will automatically rebuild when you make changes.
@@ -75,7 +75,7 @@ In the Extension Development Host window:
 
 ### I pressed F5 but nothing happened
 
-1. Check if the terminal shows "Starting incremental compilation..." - if not, `npm run watch` isn't running
+1. Check if the terminal shows "Starting incremental compilation..." - if not, `bun run watch` isn't running
 2. Try the manual steps above instead
 
 ### The Extension Development Host opened but I don't see the OpenCode icon
@@ -90,7 +90,7 @@ In the Extension Development Host window:
 1. Open Developer Tools: Command Palette > "Developer: Toggle Developer Tools"
 2. Check Console for errors
 3. Verify `out/main.js` and `out/main.css` exist
-4. Try rebuilding: `npm run clean && npm run build`
+4. Try rebuilding: `bun run clean && bun run build`
 
 ### Hot reload isn't working
 

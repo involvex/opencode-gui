@@ -2,13 +2,13 @@
 
 ## Commands
 
-- **Build**: `pnpm build` (builds extension + webview)
-- **Watch**: `pnpm watch` (dev mode with hot reload)
-- **Test**: `pnpm test` (runs vitest)
-- **Single test**: `pnpm test -- path/to/file.test.ts`
-- **E2E Tests**: `pnpm test:e2e` (runs playwright e2e tests with AI generation)
-- **Package**: `pnpm package` (creates .vsix)
-- **UI Kit**: `pnpm uikit` (opens component playground)
+- **Build**: `bun run build` (builds extension + webview)
+- **Watch**: `bun run watch` (dev mode with hot reload)
+- **Test**: `bun run test` (runs vitest)
+- **Single test**: `bun run test -- path/to/file.test.ts`
+- **E2E Tests**: `bun run test:e2e` (runs playwright e2e tests with AI generation)
+- **Package**: `bun run package` (creates .vsix)
+- **UI Kit**: `bun run uikit` (opens component playground)
 
 ## Architecture
 
@@ -45,7 +45,7 @@ const messages = () => store.message[sessionId()] ?? []
 
 ## Publishing
 
-Use the `pnpm run publish` script to publish the extension to the VSCode and OVSX marketplaces.
+Use the `bun run publish` script to publish the extension to the VSCode and OVSX marketplaces.
 
 ## Logging into gcloud
 

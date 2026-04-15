@@ -53,6 +53,31 @@
 				"command": "opencode.restartserver",
 				"title": "Restart OpenCode Server",
 				"category": "OpenCode"
+			},
+			{
+				"command": "opencode.modelConfig",
+				"title": "Model Configuration",
+				"category": "OpenCode"
+			},
+			{
+				"command": "opencode.config.setModel",
+				"title": "Set Model",
+				"category": "OpenCode"
+			},
+			{
+				"command": "opencode.config.setApiEndpoint",
+				"title": "Set API Endpoint",
+				"category": "OpenCode"
+			},
+			{
+				"command": "opencode.config.setTemperature",
+				"title": "Set Temperature",
+				"category": "OpenCode"
+			},
+			{
+				"command": "opencode.config.setMaxTokens",
+				"title": "Set Max Tokens",
+				"category": "OpenCode"
 			}
 		],
 		"configuration": {
@@ -117,6 +142,26 @@
 					"type": "string",
 					"default": "",
 					"description": "OpenCode Zen API key."
+				},
+				"opencode.modelConfig.model": {
+					"type": "string",
+					"default": "",
+					"description": "Selected AI model for OpenCode."
+				},
+				"opencode.modelConfig.apiEndpoint": {
+					"type": "string",
+					"default": "",
+					"description": "Custom API endpoint URL."
+				},
+				"opencode.modelConfig.temperature": {
+					"type": "number",
+					"default": 0.7,
+					"description": "Temperature parameter for model responses (0.0-2.0)."
+				},
+				"opencode.modelConfig.maxTokens": {
+					"type": "number",
+					"default": 8192,
+					"description": "Maximum tokens for model responses."
 				}
 			}
 		},
@@ -127,8 +172,38 @@
 					"when": "editorTextFocus",
 					"group": "navigation@9"
 				}
+			],
+			"commandPalette": [
+				{
+					"command": "opencode.modelConfig",
+					"when": "false"
+				}
+			],
+			"opencode/modelConfig": [
+				{
+					"command": "opencode.config.setModel",
+					"label": "Model Selection"
+				},
+				{
+					"command": "opencode.config.setApiEndpoint",
+					"label": "API Endpoint"
+				},
+				{
+					"command": "opencode.config.setTemperature",
+					"label": "Temperature"
+				},
+				{
+					"command": "opencode.config.setMaxTokens",
+					"label": "Max Tokens"
+				}
 			]
 		},
+		"submenus": [
+			{
+				"id": "opencode.modelConfig",
+				"label": "Model Configuration"
+			}
+		],
 		"views": {
 			"opencode": [
 				{

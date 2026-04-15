@@ -1,0 +1,203 @@
+.settings-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.4);
+	z-index: 9999;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.settings-panel {
+	background: var(--sidebar-background);
+	border: 1px solid var(--border-color);
+	border-radius: 6px;
+	box-shadow: var(--shadow-subtle);
+	min-width: 360px;
+	max-width: 480px;
+	max-height: 80vh;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+}
+
+.settings-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: var(--spacing-md);
+	border-bottom: 1px solid var(--border-color);
+}
+
+.settings-title {
+	margin: 0;
+	font-size: var(--font-size-base);
+	font-weight: 600;
+	color: var(--foreground);
+}
+
+.settings-close {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	padding: 0;
+	border: none;
+	border-radius: 4px;
+	background: transparent;
+	color: var(--description-foreground);
+	cursor: pointer;
+}
+
+.settings-close:hover {
+	background: var(--hover-background);
+	color: var(--foreground);
+}
+
+.settings-close:focus-visible {
+	outline: 2px solid var(--focus-border);
+	outline-offset: 1px;
+}
+
+.settings-content {
+	flex: 1;
+	overflow-y: auto;
+	padding: var(--spacing-md);
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-md);
+}
+
+.settings-section {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-xs);
+}
+
+.settings-label {
+	font-size: var(--font-size-small);
+	font-weight: 500;
+	color: var(--foreground);
+}
+
+.settings-select {
+	width: 100%;
+	padding: var(--spacing-sm);
+	border: 1px solid var(--border-color);
+	border-radius: 4px;
+	background: var(--input-background);
+	color: var(--input-foreground);
+	font-family: var(--font-family);
+	font-size: var(--font-size-base);
+	cursor: pointer;
+}
+
+.settings-select:focus {
+	outline: 1px solid var(--focus-border);
+	outline-offset: -1px;
+}
+
+.settings-input {
+	width: 100%;
+	padding: var(--spacing-sm);
+	border: 1px solid var(--border-color);
+	border-radius: 4px;
+	background: var(--input-background);
+	color: var(--input-foreground);
+	font-family: var(--font-family);
+	font-size: var(--font-size-base);
+	box-sizing: border-box;
+}
+
+.settings-input:focus {
+	outline: 1px solid var(--focus-border);
+	outline-offset: -1px;
+}
+
+.settings-input::placeholder {
+	color: var(--input-placeholder-foreground);
+}
+
+.settings-hint {
+	font-size: var(--font-size-small);
+	color: var(--description-foreground);
+}
+
+.settings-current {
+	padding: var(--spacing-sm);
+	background: var(--card-background);
+	border-radius: 4px;
+	font-size: var(--font-size-small);
+}
+
+.settings-current-label {
+	color: var(--description-foreground);
+}
+
+.settings-current-value {
+	color: var(--foreground);
+	font-weight: 500;
+}
+
+.settings-footer {
+	display: flex;
+	justify-content: flex-end;
+	gap: var(--spacing-sm);
+	padding: var(--spacing-md);
+	border-top: 1px solid var(--border-color);
+}
+
+.settings-button {
+	padding: var(--padding-button);
+	border: none;
+	border-radius: 4px;
+	font-family: var(--font-family);
+	font-size: var(--font-size-small);
+	cursor: pointer;
+	transition: background-color 0.1s ease;
+}
+
+.settings-button--secondary {
+	background: var(--button-secondary-background);
+	color: var(--button-secondary-foreground);
+}
+
+.settings-button--secondary:hover {
+	background: var(--button-secondary-hover-background);
+}
+
+.settings-button--primary {
+	background: var(--focus-border);
+	color: white;
+}
+
+.settings-button--primary:hover {
+	opacity: 0.9;
+}
+
+.settings-button:focus-visible {
+	outline: 2px solid var(--focus-border);
+	outline-offset: 1px;
+}
+
+/* Scrollbar styling */
+.settings-content::-webkit-scrollbar {
+	width: 8px;
+}
+
+.settings-content::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.settings-content::-webkit-scrollbar-thumb {
+	background: var(--scrollbar-slider-background);
+	border-radius: 4px;
+}
+
+.settings-content::-webkit-scrollbar-thumb:hover {
+	background: var(--scrollbar-slider-hover-background);
+}

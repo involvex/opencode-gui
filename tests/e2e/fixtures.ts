@@ -236,10 +236,7 @@ async function startOpenCodeServer(
 export const test = base.extend<OpenCodeFixtures, OpenCodeWorkerFixtures>({
 	// Share the server across all tests in a worker
 	opencodeServer: [
-		async (
-			_: Record<string, never>,
-			use: (r: OpenCodeServer) => Promise<void>,
-		) => {
+		async ({}, use: (r: OpenCodeServer) => Promise<void>) => {
 			// Use sandbox directory for tests by default
 			const defaultRoot = path.join(process.cwd(), 'tests', 'sandbox')
 			const workspaceRoot = process.env.OPENCODE_WORKSPACE_ROOT || defaultRoot

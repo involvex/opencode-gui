@@ -12,6 +12,8 @@ import type {TiptapEditorMethods} from './components/TiptapEditor'
 import {PermissionPrompt} from './components/PermissionPrompt'
 import {ContextIndicator} from './components/ContextIndicator'
 import type {FilePartInput} from '@opencode-ai/sdk/v2/client'
+import type {SettingsData} from './components/SettingsPanel'
+import {SettingsPanel} from './components/SettingsPanel'
 import {MessageList} from './components/MessageList'
 import type {Session, Permission} from './types'
 import {useOpenCode} from './hooks/useOpenCode'
@@ -91,6 +93,11 @@ function App() {
 	// In-flight message tracking for outbox pattern
 	const [inFlightMessage, setInFlightMessage] =
 		createSignal<InFlightMessage | null>(null)
+
+	// Settings panel state
+	const [isSettingsOpen, setIsSettingsOpen] = createSignal(false)
+	const [currentProvider, setCurrentProvider] = createSignal('openai')
+	const [currentModel, setCurrentModel] = createSignal('gpt-4o')
 
 	// Editor methods for managing content
 	let editorMethods: TiptapEditorMethods | null = null
@@ -983,6 +990,22 @@ function App() {
 		await sync.bootstrap()
 	}
 
+	// Settings handlers
+	const handleOpenSettings = () => {
+		setIsSettingsOpen(true)
+	}
+
+	const handleSaveSettings = (settings: SettingsData) => {
+		setCurrentProvider(settings.provider)
+		setCurrentModel(settings.model)
+		vscode.postMessage({
+			type: 'settings-changed',
+			provider: settings.provider,
+			model: settings.model,
+			apiEndpoint: settings.apiEndpoint,
+		})
+	}
+
 	return (
 		<div class={`app ${hasMessages() ? 'app--has-messages' : ''}`}>
 			<Show when={hostError()}>
@@ -1007,6 +1030,7 @@ function App() {
 				onSessionSelect={handleSessionSelect}
 				onNewSession={handleNewSession}
 				onRefreshSessions={refreshSessions}
+				onOpenSettings={handleOpenSettings}
 			/>
 
 			<Show when={!hasMessages()}>
@@ -1101,6 +1125,14 @@ function App() {
 					editorRef={handleEditorMethodsReady}
 				/>
 			</Show>
+
+			<SettingsPanel
+				isOpen={isSettingsOpen()}
+				onClose={() => setIsSettingsOpen(false)}
+				currentProvider={currentProvider()}
+				currentModel={currentModel()}
+				onSave={handleSaveSettings}
+			/>
 		</div>
 	)
 }

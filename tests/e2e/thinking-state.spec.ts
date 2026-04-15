@@ -23,7 +23,6 @@ import {test, expect} from './fixtures'
 test.describe('Thinking State Management', () => {
 	test('thinking indicator should persist until assistant response completes', async ({
 		openWebview,
-		_page,
 	}) => {
 		const webview = await openWebview()
 
@@ -179,7 +178,6 @@ test.describe('Thinking State Management', () => {
 
 	test('queued messages should be processed after first response', async ({
 		openWebview,
-		_page,
 	}) => {
 		const webview = await openWebview()
 
@@ -328,7 +326,6 @@ test.describe('Thinking State Management', () => {
 
 	test('should recover correctly after session.idle event', async ({
 		openWebview,
-		_page,
 	}) => {
 		const webview = await openWebview()
 

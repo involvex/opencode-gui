@@ -27,13 +27,13 @@ A VSCode sidebar extension for OpenCode - the AI coding agent. Simple chat inter
 ### Install Dependencies
 
 ```bash
-pnpm install
+bun install
 ```
 
 ### Build the Extension
 
 ```bash
-pnpm build
+bun run build
 ```
 
 This builds both:
@@ -46,7 +46,7 @@ This builds both:
 1. **Start watch mode** (in a terminal):
 
    ```bash
-   pnpm watch
+   bun run watch
    ```
 
 2. **Launch Extension Development Host**:
@@ -193,7 +193,7 @@ To publish a new version:
 1. Bump the version in `package.json`
 2. Set environment variable: `export OVSX_PAT=your_open_vsx_token`
 3. Login to VS Code Marketplace: `npx vsce login <publisher>`
-4. Run: `pnpm publish`
+4. Run: `bun run publish`
 
 This publishes to both VS Code Marketplace and Open VSX Registry.
 

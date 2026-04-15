@@ -156,6 +156,13 @@ export class OpenCodeViewProvider implements vscode.WebviewViewProvider {
 			case 'search-files':
 				await this._handleSearchFiles(message.query)
 				break
+			case 'settings-changed':
+				await this._handleSettingsChanged(
+					message.provider,
+					message.model,
+					message.apiEndpoint,
+				)
+				break
 		}
 	}
 
@@ -304,6 +311,36 @@ export class OpenCodeViewProvider implements vscode.WebviewViewProvider {
 		await this._globalState.update(LAST_AGENT_KEY, agent)
 		const logger = getLogger()
 		logger.info('[ViewProvider] Agent selection persisted:', agent)
+	}
+
+	private async _handleSettingsChanged(
+		provider: string,
+		model: string,
+		apiEndpoint?: string,
+	) {
+		const logger = getLogger()
+		const config = vscode.workspace.getConfiguration('opencode')
+
+		await config.update(
+			'modelConfig.model',
+			model,
+			vscode.ConfigurationTarget.Global,
+		)
+		logger.info('[ViewProvider] Model setting persisted:', model)
+
+		if (apiEndpoint !== undefined) {
+			await config.update(
+				'modelConfig.apiEndpoint',
+				apiEndpoint,
+				vscode.ConfigurationTarget.Global,
+			)
+			logger.info('[ViewProvider] API Endpoint setting persisted:', apiEndpoint)
+		}
+
+		// Notify user of successful save
+		vscode.window.showInformationMessage(
+			`Settings saved: ${provider} / ${model}`,
+		)
 	}
 
 	// SSE Proxy handlers using resilient SseClient

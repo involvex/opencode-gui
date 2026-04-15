@@ -2,8 +2,10 @@ import {
 	encodeFileMentionReference,
 	formatFileMentionLabel,
 } from '../utils/fileMentionReference'
+import {createSlashCommandSuggestion} from '../utils/slashCommandSuggestion'
 import {createFileMentionSuggestion} from '../utils/fileMentionSuggestion'
 import {createEffect, createSignal, on, onCleanup} from 'solid-js'
+import {SlashCommandExtension} from '../extensions/SlashCommand'
 import {createEditor, EditorContent} from 'tiptap-solid'
 import {FileMention} from '../extensions/FileMention'
 import Paragraph from '@tiptap/extension-paragraph'
@@ -77,6 +79,9 @@ export function TiptapEditor(props: TiptapEditorProps) {
 						},
 					} as any
 				})(),
+			}),
+			SlashCommandExtension.configure({
+				suggestion: createSlashCommandSuggestion(),
 			}),
 		],
 		autofocus: true,

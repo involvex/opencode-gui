@@ -235,6 +235,12 @@ export const WebviewMessageSchema = z.discriminatedUnion('type', [
 		type: z.literal('search-files'),
 		query: z.string(),
 	}),
+	z.object({
+		type: z.literal('settings-changed'),
+		provider: z.string(),
+		model: z.string(),
+		apiEndpoint: z.string().optional(),
+	}),
 ])
 export type WebviewMessage = z.infer<typeof WebviewMessageSchema>
 

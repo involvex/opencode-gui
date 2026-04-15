@@ -5,19 +5,19 @@
 1. **Install dependencies** (if you haven't already):
 
    ```bash
-   npm install
+   bun install
    ```
 
 2. **Build the extension**:
 
    ```bash
-   npm run build
+   bun run build
    ```
 
 3. **Start watch mode** (in a terminal):
 
    ```bash
-   npm run watch
+   bun run watch
    ```
 
    Keep this terminal running - it will rebuild automatically when you make changes.
@@ -66,7 +66,7 @@
 ## Building for Production
 
 ```bash
-npm run build
+bun run build
 ```
 
 This creates optimized builds in:
@@ -79,7 +79,7 @@ This creates optimized builds in:
 ### Extension doesn't appear in Activity Bar
 
 - Check the Debug Console in the main VSCode window for errors
-- Make sure `npm run build` completed successfully
+- Make sure `bun run build` completed successfully
 - Try closing and reopening the Extension Development Host window
 
 ### Webview shows blank/white screen
@@ -90,6 +90,6 @@ This creates optimized builds in:
 
 ### Hot reload not working
 
-- Make sure `npm run watch` is running (it starts automatically with F5)
+- Make sure `bun run watch` is running (it starts automatically with F5)
 - Check the Terminal panel in the main VSCode window
-- Try manually running `npm run watch` in a terminal
+- Try manually running `bun run watch` in a terminal

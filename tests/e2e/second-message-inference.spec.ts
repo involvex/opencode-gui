@@ -15,7 +15,6 @@ import {test, expect} from './fixtures'
 test.describe('Second Message Inference Bug', () => {
 	test('should generate assistant response for second message', async ({
 		openWebview,
-		_page,
 	}) => {
 		const webview = await openWebview()
 

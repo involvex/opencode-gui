@@ -16,7 +16,7 @@ The UI Kit allows you to develop and test UI components in isolation without nee
 ### Start the UI Kit
 
 ```bash
-npm run uikit
+bun run uikit
 ```
 
 This will open a browser window at `http://localhost:5173/src/webview/uikit.html` with hot reload enabled.

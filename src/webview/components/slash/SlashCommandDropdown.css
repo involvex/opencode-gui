@@ -1,0 +1,96 @@
+.slash-command-dropdown {
+	max-height: 320px;
+	overflow-y: auto;
+	background: var(--input-background);
+	border: 1px solid var(--border-color);
+	border-radius: 4px;
+	box-shadow: var(--shadow-subtle);
+	z-index: 1000;
+	min-width: 280px;
+	max-width: 400px;
+}
+
+.slash-command-dropdown:focus-visible {
+	outline: 1px solid var(--focus-border);
+	outline-offset: 0;
+}
+
+.slash-command-dropdown__empty {
+	padding: var(--spacing-md);
+	color: var(--description-foreground);
+	font-size: var(--font-size-small);
+	text-align: center;
+}
+
+.slash-command-dropdown__item {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-xs);
+	padding: var(--spacing-sm) var(--spacing-md);
+	cursor: pointer;
+	border-bottom: 1px solid var(--border-color-muted);
+	border-left: 2px solid transparent;
+	background-color: transparent;
+}
+
+.slash-command-dropdown__item:last-child {
+	border-bottom: none;
+}
+
+.slash-command-dropdown__item:hover {
+	background-color: var(--hover-background);
+}
+
+.slash-command-dropdown__item:focus-visible {
+	outline: 2px solid var(--focus-border);
+	outline-offset: -2px;
+}
+
+.slash-command-dropdown__item--selected {
+	background-color: var(--hover-background);
+	border-left-color: var(--focus-border);
+}
+
+.slash-command-dropdown__item-content {
+	display: flex;
+	align-items: baseline;
+	gap: var(--spacing-sm);
+}
+
+.slash-command-dropdown__command {
+	font-family: var(--editor-font-family);
+	font-size: var(--font-size-base);
+	font-weight: 500;
+	color: var(--foreground);
+}
+
+.slash-command-dropdown__description {
+	flex: 1;
+	font-size: var(--font-size-small);
+	color: var(--description-foreground);
+}
+
+.slash-command-dropdown__usage {
+	font-family: var(--editor-font-family);
+	font-size: var(--font-size-small);
+	color: var(--input-placeholder-foreground);
+	font-style: italic;
+}
+
+/* Scrollbar styling */
+.slash-command-dropdown::-webkit-scrollbar {
+	width: 8px;
+}
+
+.slash-command-dropdown::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.slash-command-dropdown::-webkit-scrollbar-thumb {
+	background: var(--scrollbar-slider-background);
+	border-radius: 4px;
+}
+
+.slash-command-dropdown::-webkit-scrollbar-thumb:hover {
+	background: var(--scrollbar-slider-hover-background);
+}
