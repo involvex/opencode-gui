@@ -166,7 +166,7 @@ async function launchVSCode(): Promise<void> {
 	// Start Vite dev server for webview HMR
 	console.log('Starting Vite dev server...')
 	const viteProcess = spawn(
-		'npx',
+		'bunx.exe',
 		['vite', 'dev', '--config', 'vite.config.ts'],
 		{
 			stdio: ['ignore', 'pipe', 'pipe'],
@@ -193,7 +193,7 @@ async function launchVSCode(): Promise<void> {
 	const launchArgs = [
 		'--no-sandbox',
 		'--disable-gpu-sandbox',
-		'--disable-web-security',
+		// '--disable-web-security',
 		'--disable-site-isolation-trials',
 		'--disable-features=IsolateOrigins,site-per-process',
 		'--disable-updates',
@@ -280,7 +280,7 @@ async function runLaunch(): Promise<void> {
 	}
 
 	const args = process.argv.slice(2).concat('--foreground')
-	const cmd = `cd '${process.cwd()}' && npx tsx scripts/dev.ts ${args.join(' ')}`
+	const cmd = `cd '${process.cwd()}' && bun run scripts/dev.ts ${args.join(' ')}`
 	execSync(`tmux new-session -d -s ${TMUX_SESSION} '${cmd}'`)
 
 	try {

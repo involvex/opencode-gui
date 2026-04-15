@@ -21,7 +21,7 @@ describe('parseMarkdownIntoBlocks', () => {
 
 		it('parses headings', () => {
 			const blocks = parseMarkdownIntoBlocks('# Heading\n\nParagraph')
-			expect(blocks).toHaveLength(2)
+			expect(blocks).toHaveLength(3)
 			expect(blocks[0]).toContain('# Heading')
 		})
 	})

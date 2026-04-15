@@ -63,6 +63,11 @@
 					"default": "",
 					"description": "OpenCode server URL (e.g., http://localhost:9090). Leave empty for auto-detect/spawn."
 				},
+				"opencode.serverPort": {
+					"type": "number",
+					"default": 0,
+					"description": "Port for the OpenCode server. Use 0 for auto-assign (recommended)."
+				},
 				"opencode.openaiApiKey": {
 					"type": "string",
 					"default": "",

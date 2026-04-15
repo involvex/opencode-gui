@@ -76,7 +76,8 @@ export class OpenCodeService {
 			const opencodeZenApiKey = config.get<string>('opencodeZenApiKey', '')
 
 			// Read server config from workspace opencode.json
-			let serverPort = 5000 // default
+			// Default to port 0 (OS auto-assigns a free port) to avoid conflicts
+			let serverPort = 0
 			try {
 				const opencodeConfigPath = workspaceRoot
 					? path.join(workspaceRoot, 'opencode.json')
@@ -93,9 +94,17 @@ export class OpenCodeService {
 				logger.warn('Could not read opencode.json server port', e)
 			}
 
+			// Also check VS Code settings for explicit port override
+			const settingsPort = config.get<number>('serverPort', 0)
+			if (settingsPort > 0) {
+				serverPort = settingsPort
+			}
+
+			logger.info(`Using server port: ${serverPort || 'auto'}`)
+
 			// Build options for createOpencode
 			const createOptions: Parameters<typeof createOpencode>[0] = {
-				timeout: 30000, // 30 seconds timeout
+				timeout: 30000, // 30 seconds timeout for server startup
 			}
 
 			// If server URL is provided, use it directly instead of spawning

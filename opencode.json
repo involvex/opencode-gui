@@ -1,9 +1,6 @@
 {
 	"$schema": "https://opencode.ai/config.json",
 	"share": "disabled",
-	"server": {
-		"port": 4096
-	},
 	"agent": {
 		"main": {
 			"description": "Primary coding agent"
