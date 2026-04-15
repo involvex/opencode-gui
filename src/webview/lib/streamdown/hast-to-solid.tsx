@@ -75,7 +75,7 @@ function convertProperties(
 function renderNode(
 	node: HastNode | ElementContent,
 	options: HastToSolidOptions,
-	key?: number,
+	_key?: number,
 ): JSX.Element | string | null {
 	if (isText(node as HastNode)) {
 		return (node as Text).value

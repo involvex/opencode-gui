@@ -5,7 +5,6 @@ import {MessagePartRenderer} from './MessagePartRenderer'
 import {isRenderablePart} from './MessagePartRenderer'
 import {Streamdown} from '../lib/streamdown'
 import {vscode} from '../utils/vscode'
-import {useSync} from '../state/sync'
 
 interface MessageItemProps {
 	message: Message
@@ -20,7 +19,6 @@ interface MessageItemProps {
 }
 
 export function MessageItem(props: MessageItemProps) {
-	const sync = useSync()
 	// TUI pattern: parts are passed as prop, already reactive
 	const isUser = () => props.message.type === 'user'
 	const hasAnyParts = () => props.parts.length > 0

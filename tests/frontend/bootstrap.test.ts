@@ -1,9 +1,3 @@
-import type {
-	Agent as SDKAgent,
-	Session as SDKSession,
-	Message as SDKMessage,
-	Part as SDKPart,
-} from '@opencode-ai/sdk/v2/client'
 import {
 	fetchBootstrapData,
 	type BootstrapContext,

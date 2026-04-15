@@ -4,7 +4,7 @@ import {
 	downloadAndUnzipVSCode,
 	resolveCliPathFromVSCodeExecutablePath,
 } from '@vscode/test-electron'
-import {spawn, execSync, type ChildProcess} from 'child_process'
+import {spawn, execSync} from 'child_process'
 import {chromium} from '@playwright/test'
 import * as fs from 'fs/promises'
 import {Command} from 'commander'

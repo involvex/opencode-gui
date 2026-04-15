@@ -15,9 +15,9 @@ import {
 	type ParentProps,
 } from 'solid-js'
 import {useOpenCode, type Event, type SSEStatus} from '../hooks/useOpenCode'
-import {type SyncState, type SyncStatus, createEmptyState} from './types'
 import {applyEvent, type EventHandlerContext} from './eventHandlers'
 import {fetchBootstrapData, commitBootstrapData} from './bootstrap'
+import {type SyncState, createEmptyState} from './types'
 import {createStore, produce} from 'solid-js/store'
 import type {Message, Permission} from '../types'
 import {logger} from '../utils/logger'

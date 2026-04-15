@@ -42,7 +42,7 @@ export class OpenCodeViewProvider implements vscode.WebviewViewProvider {
 
 	public resolveWebviewView(
 		webviewView: vscode.WebviewView,
-		context: vscode.WebviewViewResolveContext,
+		_webviewViewContext: vscode.WebviewViewResolveContext,
 		_token: vscode.CancellationToken,
 	) {
 		const logger = getLogger()

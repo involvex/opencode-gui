@@ -36,7 +36,7 @@ export function createFileMentionSuggestion(
 							name: path.split('/').pop() || path,
 						}))
 						resolve(items)
-					} catch (error) {
+					} catch {
 						resolve([])
 					}
 				}, 200)

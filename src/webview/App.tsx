@@ -7,21 +7,14 @@ import {
 	createEffect,
 	For,
 } from 'solid-js'
-import type {
-	Message,
-	Agent,
-	Session,
-	Permission,
-	FileChangesInfo,
-	MessagePart,
-} from './types'
-import {useOpenCode, type PromptPartInput} from './hooks/useOpenCode'
 import {FileChangesSummary} from './components/FileChangesSummary'
 import type {TiptapEditorMethods} from './components/TiptapEditor'
 import {PermissionPrompt} from './components/PermissionPrompt'
 import {ContextIndicator} from './components/ContextIndicator'
 import type {FilePartInput} from '@opencode-ai/sdk/v2/client'
 import {MessageList} from './components/MessageList'
+import type {Session, Permission} from './types'
+import {useOpenCode} from './hooks/useOpenCode'
 import {InputBar} from './components/InputBar'
 import {TopBar} from './components/TopBar'
 import {parseHostMessage} from './types'
@@ -199,7 +192,7 @@ function App() {
 					next.set(key, json)
 					return next
 				})
-			} catch (err) {
+			} catch {
 				// Editor might not be ready yet
 			}
 		}
@@ -368,7 +361,6 @@ function App() {
 
 	const sessionsToShow = createMemo(() => {
 		const root = sync.workspaceRoot()
-		const currentId = sync.currentSessionId()
 
 		return (
 			sessions()
@@ -997,6 +989,7 @@ function App() {
 				<div class="error-banner">
 					<span class="error-banner__message">{hostError()}</span>
 					<button
+						type="button"
 						class="error-banner__dismiss"
 						onClick={clearHostError}
 						aria-label="Dismiss error"

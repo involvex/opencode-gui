@@ -45,7 +45,7 @@ async function waitForPort(port: number, timeout: number): Promise<void> {
 				console.log(`[fixture] CDP port ${port} is ready`)
 				return
 			}
-		} catch (e) {
+		} catch {
 			// Port not ready yet
 		}
 		await new Promise(resolve => setTimeout(resolve, 500))
@@ -168,7 +168,7 @@ async function connectToWebview(
 				}
 			})
 			await new Promise(resolve => setTimeout(resolve, 2000)) // Wait for view to open
-		} catch (e) {
+		} catch {
 			console.log(
 				'[fixture] Could not execute command, webview might already be open',
 			)
@@ -275,7 +275,7 @@ export async function setupExtensionTests(options?: {
 	// Clean user data directory for fresh test
 	try {
 		await fs.rm(userDataDir, {recursive: true, force: true})
-	} catch (e) {
+	} catch {
 		// Ignore if doesn't exist
 	}
 
@@ -308,8 +308,8 @@ export async function teardownExtensionTests() {
 
 	try {
 		await sharedContext.browser.close()
-	} catch (e) {
-		console.error('[fixture] Error closing browser:', e)
+	} catch (_e) {
+		console.error('[fixture] Error closing browser:')
 	}
 
 	// Kill VSCode process
@@ -371,7 +371,7 @@ export async function getExtensionLogs(): Promise<string> {
 	const ctx = getExtensionContext()
 	try {
 		return await fs.readFile(ctx.vscode.extensionLogPath, 'utf-8')
-	} catch (e) {
+	} catch {
 		return ''
 	}
 }

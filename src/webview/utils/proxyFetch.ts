@@ -38,7 +38,7 @@ window.addEventListener('message', event => {
 
 // Clean up pending requests when webview unloads
 window.addEventListener('beforeunload', () => {
-	for (const [id, entry] of pendingFetches.entries()) {
+	for (const [, entry] of pendingFetches.entries()) {
 		entry.abortController.abort()
 		entry.reject(new Error('Webview unloaded before proxy fetch completed'))
 	}
@@ -100,7 +100,9 @@ export async function proxyFetch(
 
 		const headers: Record<string, string> = {}
 		if (reqHeaders instanceof Headers) {
-			reqHeaders.forEach((v, k) => (headers[k] = v))
+			reqHeaders.forEach((v, k) => {
+				headers[k] = v
+			})
 		} else if (Array.isArray(reqHeaders)) {
 			for (const [k, v] of reqHeaders) headers[k] = v
 		} else if (reqHeaders) {

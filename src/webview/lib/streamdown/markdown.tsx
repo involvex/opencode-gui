@@ -1,6 +1,5 @@
 import type {Options as RemarkRehypeOptions} from 'remark-rehype'
 import remarkRehype from 'remark-rehype'
-import type {Element, Nodes} from 'hast'
 import remarkParse from 'remark-parse'
 import remarkGfm from 'remark-gfm'
 import type {JSX} from 'solid-js'

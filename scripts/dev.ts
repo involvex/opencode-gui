@@ -6,7 +6,6 @@ import {
 } from '@vscode/test-electron'
 import {chromium, type Browser, type Page, type Frame} from '@playwright/test'
 import {spawn, execSync} from 'child_process'
-import * as fsPromises from 'fs/promises'
 import {Command} from 'commander'
 import * as path from 'path'
 import * as fs from 'fs'

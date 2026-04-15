@@ -398,7 +398,7 @@ function UIKit() {
 	})
 
 	// File changes for testing
-	const [fileChanges, setFileChanges] = createSignal<FileChangesInfo>({
+	const [fileChanges] = createSignal<FileChangesInfo>({
 		fileCount: 4,
 		additions: 127,
 		deletions: 43,
@@ -489,7 +489,7 @@ function UIKit() {
 
 	const handlePermissionResponse = (
 		permissionId: string,
-		response: 'once' | 'always' | 'reject',
+		_response: 'once' | 'always' | 'reject',
 	) => {
 		// Remove the permission from pending permissions
 		setPendingPermissions(prev => {
@@ -556,7 +556,7 @@ function UIKit() {
 
 	const [showTiptapTest, setShowTiptapTest] = createSignal(false)
 	const [showDropdownTest, setShowDropdownTest] = createSignal(false)
-	const [dropdownSelectedIndex, setDropdownSelectedIndex] = createSignal(0)
+	const [dropdownSelectedIndex] = createSignal(0)
 
 	const fakeFiles: FileItem[] = [
 		{path: 'src/index.ts', name: 'index.ts'},
@@ -634,6 +634,7 @@ function UIKit() {
 					<For each={controlButtons}>
 						{btn => (
 							<button
+								type="button"
 								onClick={btn.onClick}
 								style={{
 									padding: '6px 10px',
@@ -691,6 +692,7 @@ function UIKit() {
 							<div class="error-banner">
 								<span class="error-banner__message">{errorMessage()}</span>
 								<button
+									type="button"
 									class="error-banner__dismiss"
 									onClick={() => setErrorMessage(null)}
 									aria-label="Dismiss error"

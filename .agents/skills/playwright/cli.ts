@@ -15,7 +15,7 @@ import {
   readdirSync,
   writeFileSync,
 } from "node:fs";
-import { extname, join } from "node:path";
+import { join } from "node:path";
 import { cwd } from "node:process";
 import { createServer } from "node:net";
 

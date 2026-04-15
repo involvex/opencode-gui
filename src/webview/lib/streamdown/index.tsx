@@ -1,12 +1,4 @@
-import {
-	createSignal,
-	createMemo,
-	For,
-	Show,
-	createContext,
-	useContext,
-	JSX,
-} from 'solid-js'
+import {createMemo, For, Show, createContext, useContext, JSX} from 'solid-js'
 import {Markdown, type Components, type MarkdownOptions} from './markdown'
 import {parseMarkdownIntoBlocks} from './parse-blocks'
 import type {PluggableList} from 'unified'
@@ -82,7 +74,7 @@ export function Streamdown(props: StreamdownProps): JSX.Element {
 					}
 				>
 					<For each={blocks()}>
-						{(block, index) => (
+						{block => (
 							<Markdown
 								{...markdownOptions()}
 								children={block}

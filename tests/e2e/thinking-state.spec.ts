@@ -23,7 +23,7 @@ import {test, expect} from './fixtures'
 test.describe('Thinking State Management', () => {
 	test('thinking indicator should persist until assistant response completes', async ({
 		openWebview,
-		page,
+		_page,
 	}) => {
 		const webview = await openWebview()
 
@@ -136,11 +136,11 @@ test.describe('Thinking State Management', () => {
 		const webview = await openWebview()
 
 		// Intercept the message API to verify request/response cycle
-		let messageResolved = false
+		let _messageResolved = false
 		await page.route('**/session/*/message', async route => {
 			if (route.request().method() === 'POST') {
 				await route.continue()
-				messageResolved = true
+				_messageResolved = true
 			} else {
 				await route.continue()
 			}
@@ -179,7 +179,7 @@ test.describe('Thinking State Management', () => {
 
 	test('queued messages should be processed after first response', async ({
 		openWebview,
-		page,
+		_page,
 	}) => {
 		const webview = await openWebview()
 
@@ -328,7 +328,7 @@ test.describe('Thinking State Management', () => {
 
 	test('should recover correctly after session.idle event', async ({
 		openWebview,
-		page,
+		_page,
 	}) => {
 		const webview = await openWebview()
 
