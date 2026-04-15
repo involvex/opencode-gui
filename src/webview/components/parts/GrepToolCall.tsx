@@ -23,9 +23,11 @@ export function GrepToolCall(props: GrepToolCallProps) {
 		return matches ?? null
 	})
 
-	const permission = usePermission(props.part, () =>
-		props.pendingPermissions?.(),
-	)
+	const permissionAccessor = () => {
+		const perms = props.pendingPermissions
+		return perms ? perms() : undefined
+	}
+	const permission = usePermission(props.part, permissionAccessor)
 
 	const Header = () => (
 		<>

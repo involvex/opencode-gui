@@ -253,8 +253,10 @@ async function main() {
 		process.exit(1)
 	}
 
+	// Launch VS Code in tmux
+	console.log('Starting debug session...')
 	const args = process.argv.slice(2).concat('--foreground')
-	const cmd = `cd '${process.cwd()}' && npx tsx scripts/debug-extension.ts ${args.join(' ')}`
+	const cmd = `cd '${process.cwd()}' && bun run scripts/debug-extension.ts ${args.join(' ')}`
 	execSync(`tmux new-session -d -s ${TMUX_SESSION} '${cmd}'`)
 
 	// Wait for it to be ready

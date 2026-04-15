@@ -18,9 +18,11 @@ export function GenericToolCall(props: GenericToolCallProps) {
 	const state = () => props.part.state as ToolState
 	const tool = () => props.part.tool as string
 
-	const permission = usePermission(props.part, () =>
-		props.pendingPermissions?.(),
-	)
+	const permissionAccessor = () => {
+		const perms = props.pendingPermissions
+		return perms ? perms() : undefined
+	}
+	const permission = usePermission(props.part, permissionAccessor)
 
 	// Convert tool name to action form: "web_search" -> "Web searching"
 	const displayText = createMemo(() => {

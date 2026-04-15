@@ -18,9 +18,11 @@ export function TodoToolCall(props: TodoToolCallProps) {
 	const state = () => props.part.state as ToolState
 	const tool = () => props.part.tool as string
 
-	const permission = usePermission(props.part, () =>
-		props.pendingPermissions?.(),
-	)
+	const permissionAccessor = () => {
+		const perms = props.pendingPermissions
+		return perms ? perms() : undefined
+	}
+	const permission = usePermission(props.part, permissionAccessor)
 
 	const Header = () => (
 		<span class="tool-header-text">

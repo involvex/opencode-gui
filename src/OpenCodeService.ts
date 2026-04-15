@@ -61,11 +61,66 @@ export class OpenCodeService {
 
 			logger.info('Starting OpenCode server...')
 
-			this.opencode = await createOpencode({
-				hostname: '127.0.0.1',
-				port: 0,
+			// Read configuration from VS Code settings
+			const config = vscode.workspace.getConfiguration('opencode')
+			const serverUrl = config.get<string>('serverUrl', '')
+			const openaiApiKey = config.get<string>('openaiApiKey', '')
+			const anthropicApiKey = config.get<string>('anthropicApiKey', '')
+			const openrouterApiKey = config.get<string>('openrouterApiKey', '')
+			const cloudflareApiKey = config.get<string>('cloudflareApiKey', '')
+			const googleApiKey = config.get<string>('googleApiKey', '')
+			const kiloGatewayApiKey = config.get<string>('kiloGatewayApiKey', '')
+			const huggingfaceApiKey = config.get<string>('huggingfaceApiKey', '')
+			const ezifApiKey = config.get<string>('ezifApiKey', '')
+			const opencodeGoApiKey = config.get<string>('opencodeGoApiKey', '')
+			const opencodeZenApiKey = config.get<string>('opencodeZenApiKey', '')
+
+			// Build options for createOpencode
+			const createOptions: Parameters<typeof createOpencode>[0] = {
 				timeout: 15000,
-			})
+			}
+
+			// If server URL is provided, use it directly instead of spawning
+			if (serverUrl) {
+				createOptions.url = serverUrl
+			} else {
+				createOptions.hostname = '127.0.0.1'
+				createOptions.port = 0
+			}
+
+			// Pass API keys if provided in settings
+			if (openaiApiKey) {
+				process.env.OPENAI_API_KEY = openaiApiKey
+			}
+			if (anthropicApiKey) {
+				process.env.ANTHROPIC_API_KEY = anthropicApiKey
+			}
+			if (openrouterApiKey) {
+				process.env.OPENROUTER_API_KEY = openrouterApiKey
+			}
+			if (cloudflareApiKey) {
+				process.env.CLOUDFLARE_API_KEY = cloudflareApiKey
+			}
+			if (googleApiKey) {
+				process.env.GOOGLE_API_KEY = googleApiKey
+			}
+			if (kiloGatewayApiKey) {
+				process.env.KILO_GATEWAY_API_KEY = kiloGatewayApiKey
+			}
+			if (huggingfaceApiKey) {
+				process.env.HUGGINGFACE_API_KEY = huggingfaceApiKey
+			}
+			if (ezifApiKey) {
+				process.env.EZIF_API_KEY = ezifApiKey
+			}
+			if (opencodeGoApiKey) {
+				process.env.OPENCODE_GO_API_KEY = opencodeGoApiKey
+			}
+			if (opencodeZenApiKey) {
+				process.env.OPENCODE_ZEN_API_KEY = opencodeZenApiKey
+			}
+
+			this.opencode = await createOpencode(createOptions)
 
 			logger.info(`OpenCode server started at ${this.opencode.server.url}`)
 		} catch (error) {

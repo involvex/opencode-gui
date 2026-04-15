@@ -50,6 +50,66 @@
 				"category": "OpenCode"
 			}
 		],
+		"configuration": {
+			"title": "OpenCode",
+			"properties": {
+				"opencode.serverUrl": {
+					"type": "string",
+					"default": "",
+					"description": "OpenCode server URL (e.g., http://localhost:9090). Leave empty for auto-detect/spawn."
+				},
+				"opencode.openaiApiKey": {
+					"type": "string",
+					"default": "",
+					"description": "OpenAI API key for authentication."
+				},
+				"opencode.anthropicApiKey": {
+					"type": "string",
+					"default": "",
+					"description": "Anthropic API key for authentication."
+				},
+				"opencode.openrouterApiKey": {
+					"type": "string",
+					"default": "",
+					"description": "OpenRouter API key for authentication."
+				},
+				"opencode.cloudflareApiKey": {
+					"type": "string",
+					"default": "",
+					"description": "Cloudflare API key for Workers AI."
+				},
+				"opencode.googleApiKey": {
+					"type": "string",
+					"default": "",
+					"description": "Google API key for Vertex AI."
+				},
+				"opencode.kiloGatewayApiKey": {
+					"type": "string",
+					"default": "",
+					"description": "Kilo Gateway API key."
+				},
+				"opencode.huggingfaceApiKey": {
+					"type": "string",
+					"default": "",
+					"description": "Hugging Face API key."
+				},
+				"opencode.ezifApiKey": {
+					"type": "string",
+					"default": "",
+					"description": "ezif API key."
+				},
+				"opencode.opencodeGoApiKey": {
+					"type": "string",
+					"default": "",
+					"description": "OpenCode Go API key."
+				},
+				"opencode.opencodeZenApiKey": {
+					"type": "string",
+					"default": "",
+					"description": "OpenCode Zen API key."
+				}
+			}
+		},
 		"menus": {
 			"editor/context": [
 				{
@@ -64,7 +124,8 @@
 				{
 					"type": "webview",
 					"id": "opencode.chatView",
-					"name": ""
+					"name": "",
+					"icon": "media/icon.svg"
 				}
 			]
 		},

@@ -21,9 +21,11 @@ export function BashToolCall(props: BashToolCallProps) {
 	const state = () => props.part.state as ToolState
 	const inputs = () => getToolInputs(state(), props.part)
 
-	const permission = usePermission(props.part, () =>
-		props.pendingPermissions?.(),
-	)
+	const permissionAccessor = () => {
+		const perms = props.pendingPermissions
+		return perms ? perms() : undefined
+	}
+	const permission = usePermission(props.part, permissionAccessor)
 
 	// Show the actual bash command (e.g., "ls -la"), not the AI-generated description
 	const command = () => inputs().command as string | undefined

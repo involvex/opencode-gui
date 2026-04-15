@@ -18,9 +18,11 @@ export function TaskToolCall(props: TaskToolCallProps) {
 	const state = () => props.part.state as ToolState
 	const inputs = () => getToolInputs(state(), props.part)
 
-	const permission = usePermission(props.part, () =>
-		props.pendingPermissions?.(),
-	)
+	const permissionAccessor = () => {
+		const perms = props.pendingPermissions
+		return perms ? perms() : undefined
+	}
+	const permission = usePermission(props.part, permissionAccessor)
 
 	const isPending = () => props.part.state?.status === 'pending'
 

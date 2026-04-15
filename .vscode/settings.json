@@ -1,4 +1,30 @@
 {
-	"typescript.tsdk": "node_modules/typescript/lib",
-	"typescript.enablePromptUseWorkspaceTsdk": true
+	"js/ts.tsdk.path": "node_modules/typescript/lib",
+	"js/ts.tsdk.promptToUseWorkspaceVersion": true,
+	"eslint.enable": true,
+	"oxc.enable": false,
+	"oxc.enable.oxfmt": false,
+	"editor.formatOnSave": true,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"js/ts.format.enabled": true,
+	"npm.packageManager": "bun",
+	"statusbarQuickActions.settings.icons": {
+		"library": "material"
+	},
+	"statusbarQuickActions.buttons": [
+		{
+			"id": "package",
+			"text": "package",
+			"command": {
+				"type": "bun",
+				"script": "package"
+			},
+			"tooltip": "bun run package",
+			"enabled": true,
+			"alignment": "left",
+			"priority": 100
+		}
+	],
+	"statusbarQuickActions.settings.performance": {"enableVirtualization": false},
+	"statusbarQuickActions.settings.debug": true
 }

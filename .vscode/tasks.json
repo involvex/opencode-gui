@@ -2,13 +2,13 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"type": "npm",
-			"script": "build",
+			"type": "bun",
+			"script": "debug:extension",
 			"problemMatcher": [],
-			"label": "npm: build"
+			"label": "bun: debug extension"
 		},
 		{
-			"type": "npm",
+			"type": "bun",
 			"script": "watch",
 			"problemMatcher": {
 				"owner": "typescript",
@@ -28,11 +28,18 @@
 				}
 			},
 			"isBackground": true,
-			"label": "npm: watch",
+			"label": "bun: watch",
 			"group": {
 				"kind": "build",
 				"isDefault": true
 			}
+		},
+		{
+			"type": "bun",
+			"script": "build:extension",
+			"group": "build",
+			"label": "build:extension",
+			"problemMatcher": []
 		}
 	]
 }

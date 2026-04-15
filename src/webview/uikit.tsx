@@ -24,8 +24,18 @@ import './uikit.css'
 import './App.css'
 
 const fakeQueuedMessages: QueuedMessage[] = [
-	{id: 'q1', text: 'After that, can you add unit tests for the auth module?'},
-	{id: 'q2', text: 'Also update the README with the new API endpoints'},
+	{
+		id: 'q1',
+		text: 'After that, can you add unit tests for the auth module?',
+		agent: 'code',
+		attachments: [],
+	},
+	{
+		id: 'q2',
+		text: 'Also update the README with the new API endpoints',
+		agent: 'general',
+		attachments: [],
+	},
 ]
 
 // Fake data for UI development

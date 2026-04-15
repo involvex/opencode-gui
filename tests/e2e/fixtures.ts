@@ -120,7 +120,7 @@ async function startOpenCodeServer(
 			[
 				'serve',
 				'--port',
-				'0', // Let OS pick an available port
+				'5000', // Let OS pick an available port
 				'--hostname',
 				'127.0.0.1',
 				'--cors',

@@ -27,9 +27,11 @@ export function ListToolCall(props: ListToolCallProps) {
 		toRelativePath(inputs().path as string, props.workspaceRoot),
 	)
 
-	const permission = usePermission(props.part, () =>
-		props.pendingPermissions?.(),
-	)
+	const permissionAccessor = () => {
+		const perms = props.pendingPermissions
+		return perms ? perms() : undefined
+	}
+	const permission = usePermission(props.part, permissionAccessor)
 
 	const Header = () => (
 		<span class="tool-header-text">

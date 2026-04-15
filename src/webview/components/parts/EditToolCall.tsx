@@ -53,9 +53,11 @@ export function EditToolCall(props: EditToolCallProps) {
 		return {errors: errorCount, warnings: warningCount}
 	})
 
-	const permission = usePermission(props.part, () =>
-		props.pendingPermissions?.(),
-	)
+	const permissionAccessor = () => {
+		const perms = props.pendingPermissions
+		return perms ? perms() : undefined
+	}
+	const permission = usePermission(props.part, permissionAccessor)
 
 	const Header = () => (
 		<>

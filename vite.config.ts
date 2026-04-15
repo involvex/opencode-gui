@@ -6,6 +6,8 @@ export default defineConfig({
 	plugins: [solidPlugin()],
 	server: {
 		port: 5173,
+		host: true,
+		allowedHosts: true,
 		strictPort: true,
 		hmr: {
 			host: 'localhost',
@@ -17,6 +19,7 @@ export default defineConfig({
 	},
 	build: {
 		outDir: 'out',
+		emptyOutDir: true,
 		minify: false,
 		rollupOptions: {
 			input: {

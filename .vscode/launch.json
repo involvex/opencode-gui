@@ -7,7 +7,7 @@
 			"request": "launch",
 			"args": ["--extensionDevelopmentPath=${workspaceFolder}"],
 			"outFiles": ["${workspaceFolder}/dist/**/*.js"],
-			"preLaunchTask": "npm: build"
+			"preLaunchTask": "bun run build"
 		},
 		{
 			"name": "Run Extension (with Watch)",
@@ -15,7 +15,7 @@
 			"request": "launch",
 			"args": ["--extensionDevelopmentPath=${workspaceFolder}"],
 			"outFiles": ["${workspaceFolder}/dist/**/*.js"],
-			"preLaunchTask": "npm: watch"
+			"preLaunchTask": "bun: watch"
 		}
 	]
 }

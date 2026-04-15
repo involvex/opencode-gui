@@ -42,9 +42,11 @@ export function ReadToolCall(props: ReadToolCallProps) {
 		return undefined
 	})
 
-	const permission = usePermission(props.part, () =>
-		props.pendingPermissions?.(),
-	)
+	const permissionAccessor = () => {
+		const perms = props.pendingPermissions
+		return perms ? perms() : undefined
+	}
+	const permission = usePermission(props.part, permissionAccessor)
 
 	const Header = () => (
 		<span class="tool-header-text">
