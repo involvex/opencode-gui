@@ -49,6 +49,8 @@ export interface InitData {
 	currentSessionTitle?: string
 	currentSessionMessages?: Array<{id: string; role: string}>
 	defaultAgent?: string
+	currentProvider?: string
+	currentModel?: string
 }
 
 function createOpenCode() {
@@ -116,6 +118,8 @@ function createOpenCode() {
 						currentSessionTitle: data.currentSessionTitle,
 						currentSessionMessages: data.currentSessionMessages,
 						defaultAgent: data.defaultAgent,
+						currentProvider: data.currentProvider,
+						currentModel: data.currentModel,
 					})
 				}
 			}

@@ -275,4 +275,13 @@ export class OpenCodeService {
 	getServerUrl(): string | undefined {
 		return this.opencode?.server.url
 	}
+
+	getSettings(): {provider: string; model: string; apiEndpoint: string} {
+		const config = vscode.workspace.getConfiguration('opencode')
+		return {
+			provider: config.get<string>('modelConfig.provider', 'openai'),
+			model: config.get<string>('modelConfig.model', 'gpt-4o'),
+			apiEndpoint: config.get<string>('modelConfig.apiEndpoint', ''),
+		}
+	}
 }

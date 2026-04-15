@@ -2,6 +2,7 @@ import type {
 	Agent,
 	ContextInfo,
 	FileChangesInfo,
+	Message,
 	Permission,
 	Session,
 } from './types'
@@ -432,12 +433,9 @@ function UIKit() {
 				'call-1',
 				{
 					id: 'perm-1',
-					type: 'bash',
+					permission: 'Run bash command: npm run test -- --grep auth',
 					sessionID: 'session-1',
-					messageID: 'msg-2',
-					callID: 'call-1',
-					title: 'Run bash command: npm run test -- --grep auth',
-					metadata: {},
+					metadata: {} as Record<string, unknown>,
 					time: {created: Date.now()},
 				},
 			],
@@ -729,6 +727,7 @@ function UIKit() {
 							onSessionSelect={handleSessionSelect}
 							onNewSession={handleNewSession}
 							onRefreshSessions={async () => {}}
+							onOpenSettings={() => {}}
 						/>
 
 						{!hasMessages() && (
@@ -757,7 +756,7 @@ function UIKit() {
 							messages={messages()}
 							isThinking={isThinking()}
 							workspaceRoot="/Users/developer/project"
-							pendingPermissions={pendingPermissions()}
+							pendingPermissions={pendingPermissions}
 							onPermissionResponse={handlePermissionResponse}
 						/>
 

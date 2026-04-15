@@ -257,6 +257,7 @@ export class OpenCodeViewProvider implements vscode.WebviewViewProvider {
 			const currentSessionId =
 				this._openCodeService.getCurrentSessionId() ?? undefined
 			const currentSessionTitle = this._openCodeService.getCurrentSessionTitle()
+			const settings = this._openCodeService.getSettings()
 
 			let messages: IncomingMessage[] | undefined
 			if (currentSessionId) {
@@ -286,6 +287,8 @@ export class OpenCodeViewProvider implements vscode.WebviewViewProvider {
 				currentSessionTitle,
 				currentSessionMessages: messages,
 				defaultAgent: this._globalState.get<string>(LAST_AGENT_KEY),
+				currentProvider: settings.provider,
+				currentModel: settings.model,
 			})
 			this._webviewReady = true
 			this._flushPendingMessages()
@@ -320,6 +323,13 @@ export class OpenCodeViewProvider implements vscode.WebviewViewProvider {
 	) {
 		const logger = getLogger()
 		const config = vscode.workspace.getConfiguration('opencode')
+
+		await config.update(
+			'modelConfig.provider',
+			provider,
+			vscode.ConfigurationTarget.Global,
+		)
+		logger.info('[ViewProvider] Provider setting persisted:', provider)
 
 		await config.update(
 			'modelConfig.model',

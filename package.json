@@ -27,7 +27,7 @@
 		"format": "prettier . --write",
 		"google-login": "gcloud auth application-default login",
 		"lint": "eslint .",
-		"package": "vsce package --no-dependencies",
+		"package": "bunx @vscode/vsce package --no-dependencies",
 		"publish": "vsce publish --skip-duplicate --no-dependencies && source .env && ovsx publish -p \"$OPEN_VSX_KEY\" --no-dependencies",
 		"publish:pre": "vsce publish --pre-release --no-dependencies && source .env && ovsx publish --pre-release -p \"$OPEN_VSX_KEY\" --no-dependencies",
 		"test": "vitest run && playwright test",
@@ -142,6 +142,11 @@
 					"type": "string",
 					"default": "",
 					"description": "OpenCode Zen API key."
+				},
+				"opencode.modelConfig.provider": {
+					"type": "string",
+					"default": "openai",
+					"description": "Selected AI provider for OpenCode."
 				},
 				"opencode.modelConfig.model": {
 					"type": "string",

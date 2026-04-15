@@ -45,9 +45,9 @@ export const PROVIDERS: ProviderOption[] = [
 		models: [
 			{id: 'gemini-2.5-pro-preview-05-06', name: 'Gemini 2.5 Pro'},
 			{id: 'gemini-2.5-flash-preview-05-20', name: 'Gemini 2.5 Flash'},
-			{id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash'},
+			{id: 'gemini-flash-latest', name: 'Gemini Flash Latest'},
 			{id: 'gemini-1.5-pro', name: 'Gemini 1.5 Pro'},
-			{id: 'gemini-1.5-flash', name: 'Gemini 1.5 Flash'},
+			{id: 'gemini-3-flash-preview', name: 'Gemini 3 Flash Preview'},
 		],
 	},
 	{
@@ -71,8 +71,58 @@ export const PROVIDERS: ProviderOption[] = [
 	},
 	{
 		id: 'opencode',
-		name: 'OpenCode',
-		models: [{id: 'default', name: 'Default Model'}],
+		name: 'OpenCode Zen',
+		models: [
+			// Claude models
+			{id: 'claude-opus-4-6', name: 'Claude Opus 4.6'},
+			{id: 'claude-opus-4-5', name: 'Claude Opus 4.5'},
+			{id: 'claude-opus-4-1', name: 'Claude Opus 4.1'},
+			{id: 'claude-sonnet-4-6', name: 'Claude Sonnet 4.6'},
+			{id: 'claude-sonnet-4-5', name: 'Claude Sonnet 4.5'},
+			{id: 'claude-sonnet-4', name: 'Claude Sonnet 4'},
+			{id: 'claude-3-5-haiku', name: 'Claude 3.5 Haiku'},
+			{id: 'claude-haiku-4-5', name: 'Claude Haiku 4.5'},
+			// Gemini models
+			{id: 'gemini-3.1-pro', name: 'Gemini 3.1 Pro'},
+			{id: 'gemini-3-pro', name: 'Gemini 3 Pro'},
+			{id: 'gemini-3-flash', name: 'Gemini 3 Flash'},
+			// GPT-5 models
+			{id: 'gpt-5.4', name: 'GPT-5.4'},
+			{id: 'gpt-5.4-pro', name: 'GPT-5.4 Pro'},
+			{id: 'gpt-5.4-mini', name: 'GPT-5.4 Mini'},
+			{id: 'gpt-5.4-nano', name: 'GPT-5.4 Nano'},
+			{id: 'gpt-5.3-codex-spark', name: 'GPT-5.3 Codex Spark'},
+			{id: 'gpt-5.3-codex', name: 'GPT-5.3 Codex'},
+			{id: 'gpt-5.2', name: 'GPT-5.2'},
+			{id: 'gpt-5.2-codex', name: 'GPT-5.2 Codex'},
+			{id: 'gpt-5.1', name: 'GPT-5.1'},
+			{id: 'gpt-5.1-codex-max', name: 'GPT-5.1 Codex Max'},
+			{id: 'gpt-5.1-codex', name: 'GPT-5.1 Codex'},
+			{id: 'gpt-5.1-codex-mini', name: 'GPT-5.1 Codex Mini'},
+			{id: 'gpt-5', name: 'GPT-5'},
+			{id: 'gpt-5-codex', name: 'GPT-5 Codex'},
+			{id: 'gpt-5-nano', name: 'GPT-5 Nano'},
+			// GLM models
+			{id: 'glm-5.1', name: 'GLM 5.1'},
+			{id: 'glm-5', name: 'GLM 5'},
+			{id: 'glm-4.7', name: 'GLM 4.7'},
+			{id: 'glm-4.6', name: 'GLM 4.6'},
+			// Minimax models
+			{id: 'minimax-m2.5', name: 'Minimax 2.5'},
+			{id: 'minimax-m2.5-free', name: 'Minimax 2.5 Free'},
+			{id: 'minimax-m2.1', name: 'Minimax 2.1'},
+			// Kimi models
+			{id: 'kimi-k2.5', name: 'Kimi K2.5'},
+			{id: 'kimi-k2', name: 'Kimi K2'},
+			{id: 'kimi-k2-thinking', name: 'Kimi K2 Thinking'},
+			// Qwen models
+			{id: 'qwen3.6-plus', name: 'Qwen 3.6 Plus'},
+			{id: 'qwen3.5-plus', name: 'Qwen 3.5 Plus'},
+			// Other models
+			{id: 'trinity-large-preview-free', name: 'Trinity Large Preview Free'},
+			{id: 'big-pickle', name: 'Big Pickle'},
+			{id: 'nemotron-3-super-free', name: 'Nemotron 3 Super Free'},
+		],
 	},
 	{
 		id: 'kilo',
@@ -80,6 +130,8 @@ export const PROVIDERS: ProviderOption[] = [
 		models: [
 			{id: 'kilo-auto', name: 'Kilo Auto (Recommended)'},
 			{id: 'kilo-free', name: 'Kilo Free'},
+			{id: 'openrouter/elephant-alpha', name: 'Elephant Alpha'},
+			{id: 'openrouter/free', name: 'OpenRouter Free'},
 		],
 	},
 ]

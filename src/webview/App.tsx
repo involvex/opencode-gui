@@ -94,10 +94,23 @@ function App() {
 	const [inFlightMessage, setInFlightMessage] =
 		createSignal<InFlightMessage | null>(null)
 
-	// Settings panel state
+	// Settings panel state - load from initData when available
 	const [isSettingsOpen, setIsSettingsOpen] = createSignal(false)
 	const [currentProvider, setCurrentProvider] = createSignal('openai')
 	const [currentModel, setCurrentModel] = createSignal('gpt-4o')
+
+	// Load persisted settings from initData
+	createEffect(() => {
+		const init = initData()
+		if (!init) return
+
+		if (init.currentProvider) {
+			setCurrentProvider(init.currentProvider)
+		}
+		if (init.currentModel) {
+			setCurrentModel(init.currentModel)
+		}
+	})
 
 	// Editor methods for managing content
 	let editorMethods: TiptapEditorMethods | null = null

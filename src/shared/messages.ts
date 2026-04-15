@@ -149,6 +149,8 @@ export const HostMessageSchema = z.discriminatedUnion('type', [
 			currentSessionTitle: z.string().optional(),
 			currentSessionMessages: z.array(IncomingMessageSchema).optional(),
 			defaultAgent: z.string().optional(),
+			currentProvider: z.string().optional(),
+			currentModel: z.string().optional(),
 		})
 		.transform(v => ({
 			...v,
