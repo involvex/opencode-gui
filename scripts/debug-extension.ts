@@ -249,7 +249,7 @@ async function main() {
 	if (tmuxSessionExists()) {
 		console.log(`Session "${TMUX_SESSION}" already running.`)
 		console.log(`  Attach: tmux attach -t ${TMUX_SESSION}`)
-		console.log(`  Stop:   pnpm debug:extension --stop`)
+		console.log(`  Stop:   bun debug:extension --stop`)
 		process.exit(1)
 	}
 
@@ -264,7 +264,7 @@ async function main() {
 		console.log(`Debug session running in tmux "${TMUX_SESSION}"`)
 		console.log(`  CDP:    http://localhost:${port}`)
 		console.log(`  Attach: tmux attach -t ${TMUX_SESSION}`)
-		console.log(`  Stop:   pnpm debug:extension --stop`)
+		console.log(`  Stop:   bun debug:extension --stop`)
 	} catch {
 		console.error(
 			'Timed out waiting for VSCode to start. Check: tmux attach -t ' +

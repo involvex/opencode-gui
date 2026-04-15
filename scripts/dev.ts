@@ -96,7 +96,7 @@ async function connect(): Promise<{
 	const browser = await tryConnectToPort(CDP_PORT, 10000)
 	if (!browser) {
 		throw new Error(
-			`Could not connect to CDP at port ${CDP_PORT}. Is VSCode running? Start with: pnpm dev`,
+			`Could not connect to CDP at port ${CDP_PORT}. Is VSCode running? Start with: bun dev`,
 		)
 	}
 
@@ -273,10 +273,10 @@ async function launchVSCode(): Promise<void> {
 async function runLaunch(): Promise<void> {
 	if (tmuxSessionExists()) {
 		console.log(`Session "${TMUX_SESSION}" already running.`)
-		console.log(`  Exec:   pnpm dev exec "..."`)
-		console.log(`  Snap:   pnpm dev snapshot`)
+		console.log(`  Exec:   bun dev exec "..."`)
+		console.log(`  Snap:   bun dev snapshot`)
 		console.log(`  Attach: tmux attach -t ${TMUX_SESSION}`)
-		console.log(`  Stop:   pnpm dev stop`)
+		console.log(`  Stop:   bun dev stop`)
 		process.exit(1)
 	}
 
@@ -288,10 +288,10 @@ async function runLaunch(): Promise<void> {
 		await waitForPort(CDP_PORT, 60000)
 		console.log(`✅ VSCode running in tmux "${TMUX_SESSION}"`)
 		console.log(`   CDP:    http://localhost:${CDP_PORT}`)
-		console.log(`   Exec:   pnpm dev exec "..."`)
-		console.log(`   Snap:   pnpm dev snapshot`)
+		console.log(`   Exec:   bun dev exec "..."`)
+		console.log(`   Snap:   bun dev snapshot`)
 		console.log(`   Attach: tmux attach -t ${TMUX_SESSION}`)
-		console.log(`   Stop:   pnpm dev stop`)
+		console.log(`   Stop:    bun dev stop`)
 	} catch {
 		console.error(
 			'Timed out waiting for VSCode to start. Check: tmux attach -t ' +
