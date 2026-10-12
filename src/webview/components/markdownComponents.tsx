@@ -1,7 +1,7 @@
+import type {JSX} from 'solid-js'
 import {parseFileReferenceTarget} from '../../shared/fileReferences'
 import type {Components} from '../lib/streamdown'
 import {vscode} from '../utils/vscode'
-import type {JSX} from 'solid-js'
 
 export const messageMarkdownComponents: Components = {
 	a: props => {

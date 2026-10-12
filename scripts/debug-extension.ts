@@ -1,13 +1,13 @@
 #!/usr/bin/env tsx
 
+import {chromium} from '@playwright/test'
 import {
 	downloadAndUnzipVSCode,
 	resolveCliPathFromVSCodeExecutablePath,
 } from '@vscode/test-electron'
-import {chromium} from '@playwright/test'
 import {spawn} from 'child_process'
-import * as fs from 'fs/promises'
 import {Command} from 'commander'
+import * as fs from 'fs/promises'
 import * as path from 'path'
 
 const program = new Command()

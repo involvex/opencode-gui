@@ -1,14 +1,14 @@
 #!/usr/bin/env tsx
 
+import {chromium, type Browser, type Frame, type Page} from '@playwright/test'
 import {
 	downloadAndUnzipVSCode,
 	resolveCliPathFromVSCodeExecutablePath,
 } from '@vscode/test-electron'
-import {chromium, type Browser, type Page, type Frame} from '@playwright/test'
-import {spawn, execSync} from 'child_process'
+import {execSync, spawn} from 'child_process'
 import {Command} from 'commander'
-import * as path from 'path'
 import * as fs from 'fs'
+import * as path from 'path'
 
 const TMUX_SESSION = 'opencode-dev'
 const CDP_PORT = 9222

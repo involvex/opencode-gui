@@ -1,7 +1,7 @@
+import {describe, expect, it} from 'vitest'
 import {extractTextFromParts} from '../../src/webview/state/utils'
 import type {MessagePart} from '../../src/webview/types'
 import {GatekeeperHarness} from '../utils/Gatekeeper'
-import {describe, it, expect} from 'vitest'
 
 describe('Message Handling Tests', () => {
 	it('should extract text from text parts', () => {

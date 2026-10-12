@@ -1,6 +1,6 @@
+import type {SuggestionOptions} from '@tiptap/suggestion'
 import {SlashCommandDropdown} from '../components/slash/SlashCommandDropdown'
 import type {SlashCommandItem} from '../extensions/SlashCommand'
-import type {SuggestionOptions} from '@tiptap/suggestion'
 
 function createSuggestionItems(): SlashCommandItem[] {
 	return [

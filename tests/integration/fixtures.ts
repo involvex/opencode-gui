@@ -1,17 +1,17 @@
 import {
+	chromium,
+	type Browser,
+	type CDPSession,
+	type Page,
+} from '@playwright/test'
+import {
 	downloadAndUnzipVSCode,
 	resolveCliArgsFromVSCodeExecutablePath,
 } from '@vscode/test-electron'
-import {
-	chromium,
-	type Browser,
-	type Page,
-	type CDPSession,
-} from '@playwright/test'
 import {spawn, type ChildProcess} from 'child_process'
-import {beforeAll, afterAll} from 'vitest'
 import * as fs from 'fs/promises'
 import * as path from 'path'
+import {afterAll, beforeAll} from 'vitest'
 
 export interface VSCodeInstance {
 	process: ChildProcess

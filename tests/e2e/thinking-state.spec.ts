@@ -1,4 +1,4 @@
-import {test, expect} from './fixtures'
+import {expect, test} from './fixtures'
 
 /**
  * Tests for thinking state and message queue management.

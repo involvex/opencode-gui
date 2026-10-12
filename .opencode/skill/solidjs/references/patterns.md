@@ -193,9 +193,7 @@ function SearchResults() {
 ```tsx
 type State = 'idle' | 'loading' | 'success' | 'error'
 type Event =
-	| {type: 'FETCH'}
-	| {type: 'SUCCESS'; data: any}
-	| {type: 'ERROR'; error: Error}
+	{type: 'FETCH'} | {type: 'SUCCESS'; data: any} | {type: 'ERROR'; error: Error}
 
 function createMachine(initial: State) {
 	const [state, setState] = createSignal<State>(initial)

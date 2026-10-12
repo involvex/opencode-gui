@@ -1,9 +1,9 @@
-import {TiptapEditor, type TiptapEditorMethods} from './TiptapEditor'
 import {createSignal, For, onCleanup, onMount, Show} from 'solid-js'
-import {AgentSwitcher} from './AgentSwitcher'
 import type {QueuedMessage} from '../App'
-import {vscode} from '../utils/vscode'
 import type {Agent} from '../types'
+import {vscode} from '../utils/vscode'
+import {AgentSwitcher} from './AgentSwitcher'
+import {TiptapEditor, type TiptapEditorMethods} from './TiptapEditor'
 
 interface InputBarProps {
 	value: string

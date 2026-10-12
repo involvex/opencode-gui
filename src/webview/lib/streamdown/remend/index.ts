@@ -5,11 +5,11 @@ import {
 	handleIncompleteSingleAsteriskItalic,
 	handleIncompleteSingleUnderscoreItalic,
 } from './emphasis-handlers'
-import {handleIncompleteSetextHeading} from './setext-heading-handler'
-import {handleIncompleteStrikethrough} from './strikethrough-handler'
-import {handleIncompleteLinksAndImages} from './link-image-handler'
 import {handleIncompleteInlineCode} from './inline-code-handler'
 import {handleIncompleteBlockKatex} from './katex-handler'
+import {handleIncompleteLinksAndImages} from './link-image-handler'
+import {handleIncompleteSetextHeading} from './setext-heading-handler'
+import {handleIncompleteStrikethrough} from './strikethrough-handler'
 
 const remend = (text: string): string => {
 	if (!text || typeof text !== 'string') {

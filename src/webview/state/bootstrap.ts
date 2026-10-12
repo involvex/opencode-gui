@@ -1,24 +1,24 @@
 import type {
+	AssistantMessage,
 	Agent as SDKAgent,
-	Session as SDKSession,
 	Message as SDKMessage,
 	Part as SDKPart,
-	AssistantMessage,
 	PermissionRequest as SDKPermission,
+	Session as SDKSession,
 } from '@opencode-ai/sdk/v2/client'
+import {batch} from 'solid-js'
+import {produce, reconcile, type SetStoreFunction} from 'solid-js/store'
 import type {
-	Message,
-	MessagePart,
-	Session,
 	Agent,
-	Permission,
 	ContextInfo,
 	FileChangesInfo,
+	Message,
+	MessagePart,
+	Permission,
+	Session,
 } from '../types'
-import {produce, reconcile, type SetStoreFunction} from 'solid-js/store'
-import type {SyncState, SessionStatus} from './types'
+import type {SessionStatus, SyncState} from './types'
 import {extractTextFromParts} from './utils'
-import {batch} from 'solid-js'
 
 /** API response for session.messages endpoint */
 interface MessageWithParts {

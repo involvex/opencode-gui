@@ -1,6 +1,6 @@
-import {createSlashCommandSuggestion} from '../utils/slashCommandSuggestion'
-import type {SuggestionProps} from '@tiptap/suggestion'
 import {Mention} from '@tiptap/extension-mention'
+import type {SuggestionProps} from '@tiptap/suggestion'
+import {createSlashCommandSuggestion} from '../utils/slashCommandSuggestion'
 
 export interface SlashCommandItem {
 	id: string

@@ -1,8 +1,8 @@
-import {getToolInputs, usePermission, ErrorFooter} from './ToolCallHelpers'
-import type {MessagePart, Permission, ToolState} from '../../types'
 import {Show, createMemo, type Accessor} from 'solid-js'
-import {ToolCallTemplate} from './ToolCallTemplate'
+import type {MessagePart, Permission, ToolState} from '../../types'
+import {ErrorFooter, getToolInputs, usePermission} from './ToolCallHelpers'
 import {MagnifyingGlassIcon} from './ToolCallIcons'
+import {ToolCallTemplate} from './ToolCallTemplate'
 
 interface GrepToolCallProps {
 	part: MessagePart

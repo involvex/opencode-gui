@@ -3,8 +3,8 @@
  * These tests have access to the full VSCode API
  */
 
-import * as vscode from 'vscode'
 import * as assert from 'assert'
+import * as vscode from 'vscode'
 
 suite('OpenCode Extension Integration Tests', () => {
 	vscode.window.showInformationMessage('Start integration tests.')

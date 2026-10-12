@@ -1,15 +1,15 @@
-import {
-	getToolInputs,
-	toRelativePath,
-	splitFilePath,
-	usePermission,
-	ErrorFooter,
-} from './ToolCallHelpers'
-import type {MessagePart, Permission, ToolState} from '../../types'
 import {Show, createMemo, type Accessor} from 'solid-js'
+import type {MessagePart, Permission, ToolState} from '../../types'
 import {DiffViewer, getDiffStats} from './DiffViewer'
-import {ToolCallTemplate} from './ToolCallTemplate'
+import {
+	ErrorFooter,
+	getToolInputs,
+	splitFilePath,
+	toRelativePath,
+	usePermission,
+} from './ToolCallHelpers'
 import {FileDiffIcon} from './ToolCallIcons'
+import {ToolCallTemplate} from './ToolCallTemplate'
 
 interface EditToolCallProps {
 	part: MessagePart
@@ -39,8 +39,7 @@ export function EditToolCall(props: EditToolCallProps) {
 
 	const diagnosticsCount = createMemo(() => {
 		const diagnosticsMap = state().metadata?.diagnostics as
-			| Record<string, Array<{severity: number}>>
-			| undefined
+			Record<string, Array<{severity: number}>> | undefined
 		if (!diagnosticsMap) return null
 
 		const filePath = (inputs().filePath as string) || (inputs().path as string)

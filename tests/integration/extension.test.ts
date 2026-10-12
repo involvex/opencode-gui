@@ -1,12 +1,12 @@
+import {describe, expect, test} from 'vitest'
 import {
-	useExtensionFixture,
-	executeCommand,
-	sendMessageToWebview,
 	evaluateInWebview,
+	executeCommand,
 	getExtensionLogs,
 	getWebviewLogs,
+	sendMessageToWebview,
+	useExtensionFixture,
 } from './fixtures'
-import {describe, test, expect} from 'vitest'
 
 describe('OpenCode Extension Integration', () => {
 	// Setup fixture - launches VSCode with extension

@@ -1,6 +1,6 @@
-import type {Element, Text, Root, Comment, Doctype, ElementContent} from 'hast'
-import {Dynamic} from 'solid-js/web'
+import type {Comment, Doctype, Element, ElementContent, Root, Text} from 'hast'
 import {JSX} from 'solid-js'
+import {Dynamic} from 'solid-js/web'
 
 export type HastNode = Element | Text | Root | Comment | Doctype
 

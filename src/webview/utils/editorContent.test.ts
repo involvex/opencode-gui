@@ -1,6 +1,6 @@
-import {extractMentions} from './editorContent'
 import type {JSONContent} from '@tiptap/core'
-import {describe, it, expect} from 'vitest'
+import {describe, expect, it} from 'vitest'
+import {extractMentions} from './editorContent'
 
 describe('extractMentions', () => {
 	it('extracts file mentions from editor JSON', () => {

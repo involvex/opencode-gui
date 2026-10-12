@@ -1,28 +1,28 @@
+import {createSignal, For, Show} from 'solid-js'
+import {render} from 'solid-js/web'
+import type {QueuedMessage} from './App'
+import './App.css'
+import {ContextIndicator} from './components/ContextIndicator'
+import {FileChangesSummary} from './components/FileChangesSummary'
+import {
+	FileMentionDropdown,
+	type FileItem,
+} from './components/FileMentionDropdown'
+import {InputBar} from './components/InputBar'
+import {MessageList} from './components/MessageList'
+import {TiptapEditorTest} from './components/TiptapEditorTest'
+import {TopBar} from './components/TopBar'
+import {MockSyncProvider} from './state/MockSyncProvider'
 import type {
 	Agent,
 	ContextInfo,
 	FileChangesInfo,
 	Message,
+	MessagePart,
 	Permission,
 	Session,
 } from './types'
-import {
-	FileMentionDropdown,
-	type FileItem,
-} from './components/FileMentionDropdown'
-import {FileChangesSummary} from './components/FileChangesSummary'
-import {TiptapEditorTest} from './components/TiptapEditorTest'
-import {ContextIndicator} from './components/ContextIndicator'
-import {MockSyncProvider} from './state/MockSyncProvider'
-import {MessageList} from './components/MessageList'
-import {createSignal, For, Show} from 'solid-js'
-import {InputBar} from './components/InputBar'
-import {TopBar} from './components/TopBar'
-import type {MessagePart} from './types'
-import type {QueuedMessage} from './App'
-import {render} from 'solid-js/web'
 import './uikit.css'
-import './App.css'
 
 const fakeQueuedMessages: QueuedMessage[] = [
 	{

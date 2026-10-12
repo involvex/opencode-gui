@@ -1,5 +1,5 @@
-import type {SlashCommandItem} from '../../extensions/SlashCommand'
 import {createSignal, For, onMount, Show} from 'solid-js'
+import type {SlashCommandItem} from '../../extensions/SlashCommand'
 import './SlashCommandDropdown.css'
 
 export interface SlashCommandDropdownProps {

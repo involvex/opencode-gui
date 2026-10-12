@@ -1,20 +1,20 @@
+import {execFile} from 'child_process'
+import * as vscode from 'vscode'
+import {getLogger} from './extension'
+import {OpenCodeService} from './OpenCodeService'
+import {parseFileReferenceTarget} from './shared/fileReferences'
+import type {
+	HostMessage,
+	IncomingMessage,
+	WebviewMessage,
+} from './shared/messages'
+import {parseWebviewMessage} from './shared/messages'
 import {
 	SseClient,
 	SseConnectionState,
 	SseEvent,
 	SseLogger,
 } from './transport/SseClient'
-import type {
-	HostMessage,
-	WebviewMessage,
-	IncomingMessage,
-} from './shared/messages'
-import {parseFileReferenceTarget} from './shared/fileReferences'
-import {parseWebviewMessage} from './shared/messages'
-import {OpenCodeService} from './OpenCodeService'
-import {execFile} from 'child_process'
-import {getLogger} from './extension'
-import * as vscode from 'vscode'
 
 const LAST_AGENT_KEY = 'opencode.lastUsedAgent'
 

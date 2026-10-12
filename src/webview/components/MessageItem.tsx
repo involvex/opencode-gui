@@ -1,10 +1,9 @@
-import {messageMarkdownComponents} from './markdownComponents'
-import type {Message, Permission, MessagePart} from '../types'
 import {For, Show, createMemo, type Accessor} from 'solid-js'
-import {MessagePartRenderer} from './MessagePartRenderer'
-import {isRenderablePart} from './MessagePartRenderer'
 import {Streamdown} from '../lib/streamdown'
+import type {Message, MessagePart, Permission} from '../types'
 import {vscode} from '../utils/vscode'
+import {messageMarkdownComponents} from './markdownComponents'
+import {MessagePartRenderer, isRenderablePart} from './MessagePartRenderer'
 
 interface MessageItemProps {
 	message: Message

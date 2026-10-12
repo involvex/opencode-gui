@@ -1,7 +1,7 @@
+import * as vscode from 'vscode'
+import {OpenCodeService} from './OpenCodeService'
 import {OpenCodeViewProvider} from './OpenCodeViewProvider'
 import type {HostMessage} from './shared/messages'
-import {OpenCodeService} from './OpenCodeService'
-import * as vscode from 'vscode'
 
 let logger: vscode.LogOutputChannel
 

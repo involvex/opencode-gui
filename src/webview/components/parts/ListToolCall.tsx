@@ -1,13 +1,13 @@
+import {createMemo, type Accessor} from 'solid-js'
+import type {MessagePart, Permission, ToolState} from '../../types'
 import {
+	ErrorFooter,
 	getToolInputs,
 	toRelativePath,
 	usePermission,
-	ErrorFooter,
 } from './ToolCallHelpers'
-import type {MessagePart, Permission, ToolState} from '../../types'
-import {ToolCallTemplate} from './ToolCallTemplate'
-import {createMemo, type Accessor} from 'solid-js'
 import {FolderIcon} from './ToolCallIcons'
+import {ToolCallTemplate} from './ToolCallTemplate'
 
 interface ListToolCallProps {
 	part: MessagePart

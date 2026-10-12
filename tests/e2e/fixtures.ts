@@ -1,7 +1,7 @@
 import {test as base, type Page} from '@playwright/test'
 import {spawn, type ChildProcess} from 'child_process'
-import * as path from 'path'
 import * as fs from 'fs'
+import * as path from 'path'
 
 interface OpenCodeConfig {
 	serverUrl: string

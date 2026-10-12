@@ -1,11 +1,11 @@
 import type {
-	Message,
-	MessagePart,
-	Session,
 	Agent,
-	Permission,
 	ContextInfo,
 	FileChangesInfo,
+	Message,
+	MessagePart,
+	Permission,
+	Session,
 } from '../types'
 
 export type SessionStatus =

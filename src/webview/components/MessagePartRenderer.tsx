@@ -1,8 +1,8 @@
-import {ReasoningBlock} from './parts/ReasoningBlock'
+import type {Accessor} from 'solid-js'
 import type {MessagePart, Permission} from '../types'
+import {ReasoningBlock} from './parts/ReasoningBlock'
 import {TextBlock} from './parts/TextBlock'
 import {ToolCall} from './parts/ToolCall'
-import type {Accessor} from 'solid-js'
 
 // System subagent types that should be hidden from the UI
 const HIDDEN_SUBAGENT_TYPES = new Set(['compaction', 'title', 'summary'])

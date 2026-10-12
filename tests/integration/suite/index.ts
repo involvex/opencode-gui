@@ -3,9 +3,9 @@
  * This file runs INSIDE the VSCode extension host process
  */
 
-import * as path from 'path'
-import Mocha from 'mocha'
 import {glob} from 'glob'
+import Mocha from 'mocha'
+import * as path from 'path'
 
 export async function run(): Promise<void> {
 	// Create the mocha test

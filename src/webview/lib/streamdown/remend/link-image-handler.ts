@@ -1,5 +1,5 @@
-import {findMatchingClosingBracket, findMatchingOpeningBracket} from './utils'
 import {isInsideCodeBlock} from './code-block-utils'
+import {findMatchingClosingBracket, findMatchingOpeningBracket} from './utils'
 
 const handleIncompleteUrl = (
 	text: string,

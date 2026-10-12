@@ -5,22 +5,22 @@
  */
 
 import {
-	createSignal,
-	createEffect,
-	createMemo,
-	onCleanup,
 	batch,
 	createContext,
+	createEffect,
+	createMemo,
+	createSignal,
+	onCleanup,
 	useContext,
 	type ParentProps,
 } from 'solid-js'
-import {useOpenCode, type Event, type SSEStatus} from '../hooks/useOpenCode'
-import {applyEvent, type EventHandlerContext} from './eventHandlers'
-import {fetchBootstrapData, commitBootstrapData} from './bootstrap'
-import {type SyncState, createEmptyState} from './types'
 import {createStore, produce} from 'solid-js/store'
+import {useOpenCode, type Event, type SSEStatus} from '../hooks/useOpenCode'
 import type {Message, Permission} from '../types'
 import {logger} from '../utils/logger'
+import {commitBootstrapData, fetchBootstrapData} from './bootstrap'
+import {applyEvent, type EventHandlerContext} from './eventHandlers'
+import {createEmptyState, type SyncState} from './types'
 
 export type {SyncStatus} from './types'
 

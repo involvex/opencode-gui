@@ -5,16 +5,16 @@
  * parts directly from messages passed via props, rather than using the real SDK.
  */
 
+import {type ParentProps, createMemo, createSignal} from 'solid-js'
 import type {
+	Agent,
+	ContextInfo,
+	FileChangesInfo,
 	Message,
 	MessagePart,
 	Permission,
 	Session,
-	Agent,
-	ContextInfo,
-	FileChangesInfo,
 } from '../types'
-import {type ParentProps, createSignal, createMemo} from 'solid-js'
 import {SyncContext, type SyncContextValue} from './sync'
 
 interface MockSyncProviderProps extends ParentProps {

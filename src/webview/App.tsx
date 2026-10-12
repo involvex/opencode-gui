@@ -1,26 +1,34 @@
-import {
-	createSignal,
-	createMemo,
-	Show,
-	onMount,
-	onCleanup,
-	createEffect,
-	For,
-} from 'solid-js'
-import {FileChangesSummary} from './components/FileChangesSummary'
-import type {TiptapEditorMethods} from './components/TiptapEditor'
-import {PermissionPrompt} from './components/PermissionPrompt'
-import {ContextIndicator} from './components/ContextIndicator'
 import type {FilePartInput} from '@opencode-ai/sdk/v2/client'
+import {
+	createEffect,
+	createMemo,
+	createSignal,
+	For,
+	onCleanup,
+	onMount,
+	Show,
+} from 'solid-js'
+import {ContextIndicator} from './components/ContextIndicator'
+import {FileChangesSummary} from './components/FileChangesSummary'
+import {InputBar} from './components/InputBar'
+import {MessageList} from './components/MessageList'
+import {PermissionPrompt} from './components/PermissionPrompt'
 import type {SettingsData} from './components/SettingsPanel'
 import {SettingsPanel} from './components/SettingsPanel'
-import {MessageList} from './components/MessageList'
-import type {Session, Permission} from './types'
-import {useOpenCode} from './hooks/useOpenCode'
-import {InputBar} from './components/InputBar'
+import type {TiptapEditorMethods} from './components/TiptapEditor'
 import {TopBar} from './components/TopBar'
-import {parseHostMessage} from './types'
+import {useOpenCode} from './hooks/useOpenCode'
 import {useSync} from './state/sync'
+import type {Permission, Session} from './types'
+import {parseHostMessage} from './types'
+import {extractMentions} from './utils/editorContent'
+import {
+	encodeFileMentionReference,
+	parseFileMentionReference,
+} from './utils/fileMentionReference'
+import {Id} from './utils/id'
+import {logger} from './utils/logger'
+import {vscode} from './utils/vscode'
 
 export interface QueuedMessage {
 	id: string
@@ -48,14 +56,6 @@ interface SelectionAttachment {
 	startLine?: number
 	endLine?: number
 }
-import {
-	encodeFileMentionReference,
-	parseFileMentionReference,
-} from './utils/fileMentionReference'
-import {extractMentions} from './utils/editorContent'
-import {vscode} from './utils/vscode'
-import {logger} from './utils/logger'
-import {Id} from './utils/id'
 
 const NEW_SESSION_KEY = '__new__'
 

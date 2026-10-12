@@ -29,8 +29,7 @@ type CallRecord<TArgs extends any[] = any[], TReturn = any> = {
 	underlyingPromise?: Promise<TReturn>
 	underlyingPromiseReady?: Deferred<void>
 	resultContainer?:
-		| {success: true; value: TReturn}
-		| {success: false; error: any}
+		{success: true; value: TReturn} | {success: false; error: any}
 }
 
 export class CallHandle<TArgs extends any[] = any[], TReturn = any> {

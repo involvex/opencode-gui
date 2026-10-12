@@ -1,9 +1,9 @@
+import {describe, expect, it} from 'vitest'
 import {
 	encodeFileMentionReference,
 	formatFileMentionLabel,
 	parseFileMentionReference,
 } from './fileMentionReference'
-import {describe, expect, it} from 'vitest'
 
 describe('fileMentionReference', () => {
 	it('encodes range references', () => {

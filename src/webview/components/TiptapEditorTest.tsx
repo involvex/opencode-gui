@@ -1,8 +1,8 @@
-import {createEditor, EditorContent} from 'tiptap-solid'
-import Paragraph from '@tiptap/extension-paragraph'
 import Document from '@tiptap/extension-document'
+import Paragraph from '@tiptap/extension-paragraph'
 import Text from '@tiptap/extension-text'
 import {createSignal} from 'solid-js'
+import {createEditor, EditorContent} from 'tiptap-solid'
 
 export function TiptapEditorTest() {
 	const [content, setContent] = createSignal('')

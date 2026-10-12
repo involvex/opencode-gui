@@ -1,17 +1,17 @@
+import {describe, expect, it, vi} from 'vitest'
 import {
+	AgentSchema,
+	ContextInfoSchema,
+	FileChangesInfoSchema,
 	HostMessageSchema,
+	MessagePartSchema,
+	PermissionSchema,
+	SessionSchema,
+	ToolStateSchema,
 	WebviewMessageSchema,
 	parseHostMessage,
 	parseWebviewMessage,
-	MessagePartSchema,
-	ToolStateSchema,
-	AgentSchema,
-	SessionSchema,
-	PermissionSchema,
-	ContextInfoSchema,
-	FileChangesInfoSchema,
 } from './messages'
-import {describe, it, expect, vi} from 'vitest'
 
 describe('ToolStateSchema', () => {
 	it('parses valid tool state', () => {

@@ -1,10 +1,10 @@
 import {createOpencode, type OpencodeClient} from '@opencode-ai/sdk/v2'
 import type {Message} from '@opencode-ai/sdk/v2/client'
 import {spawnSync} from 'child_process'
-import {getLogger} from './extension'
-import * as vscode from 'vscode'
-import * as path from 'path'
 import * as fs from 'fs'
+import * as path from 'path'
+import * as vscode from 'vscode'
+import {getLogger} from './extension'
 
 const OPENCODE_INSTALL_URL = 'https://opencode.ai/install'
 

@@ -1,6 +1,6 @@
 import type {Plugin} from '@opencode-ai/plugin'
-import path from 'path'
 import fs from 'fs'
+import path from 'path'
 
 export const AgentsContextPlugin: Plugin = async ({directory}) => {
 	// Track which AGENTS.md files have been injected in this session

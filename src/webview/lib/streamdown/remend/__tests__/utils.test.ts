@@ -1,9 +1,9 @@
+import {describe, expect, it} from 'vitest'
 import {
 	findMatchingClosingBracket,
 	findMatchingOpeningBracket,
 	isWordChar,
 } from '../utils'
-import {describe, expect, it} from 'vitest'
 
 describe('isWordChar', () => {
 	it('should return false for empty string', () => {

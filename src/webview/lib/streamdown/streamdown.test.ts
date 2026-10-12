@@ -1,5 +1,5 @@
+import {describe, expect, it} from 'vitest'
 import {parseMarkdownIntoBlocks} from './parse-blocks'
-import {describe, it, expect} from 'vitest'
 import remend from './remend'
 
 describe('streamdown integration', () => {

@@ -1,9 +1,9 @@
+import {countSingleBackticks} from './code-block-utils'
 import {
 	inlineCodePattern,
 	inlineTripleBacktickPattern,
 	whitespaceOrMarkersPattern,
 } from './patterns'
-import {countSingleBackticks} from './code-block-utils'
 
 const handleInlineTripleBackticks = (text: string): string | null => {
 	const inlineTripleBacktickMatch = text.match(inlineTripleBacktickPattern)

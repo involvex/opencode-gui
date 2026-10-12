@@ -1,4 +1,4 @@
-import {test, expect} from './fixtures'
+import {expect, test} from './fixtures'
 
 test.describe('Attachment/Selection Parity', () => {
 	test('should display attachment chip when editor-selection message received', async ({

@@ -1,16 +1,16 @@
 import type {
+	AssistantMessage,
 	Event,
 	Part,
-	Session as SDKSession,
 	PermissionRequest as SDKPermission,
-	AssistantMessage,
+	Session as SDKSession,
 } from '@opencode-ai/sdk/v2/client'
+import {batch} from 'solid-js'
 import {produce, reconcile, type SetStoreFunction} from 'solid-js/store'
-import type {Message, MessagePart, Session, Permission} from '../types'
-import {binarySearch, findById, extractTextFromParts} from './utils'
+import type {Message, MessagePart, Permission, Session} from '../types'
 import {logger} from '../utils/logger'
 import type {SyncState} from './types'
-import {batch} from 'solid-js'
+import {binarySearch, extractTextFromParts, findById} from './utils'
 
 export interface EventHandlerContext {
 	store: SyncState

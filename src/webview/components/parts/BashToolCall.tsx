@@ -1,8 +1,8 @@
-import {getToolInputs, usePermission, ErrorFooter} from './ToolCallHelpers'
-import type {MessagePart, Permission, ToolState} from '../../types'
-import {ToolCallTemplate} from './ToolCallTemplate'
-import {TerminalIcon} from './ToolCallIcons'
 import {type Accessor} from 'solid-js'
+import type {MessagePart, Permission, ToolState} from '../../types'
+import {ErrorFooter, getToolInputs, usePermission} from './ToolCallHelpers'
+import {TerminalIcon} from './ToolCallIcons'
+import {ToolCallTemplate} from './ToolCallTemplate'
 
 interface BashToolCallProps {
 	part: MessagePart

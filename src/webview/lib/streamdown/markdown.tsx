@@ -1,12 +1,12 @@
+import remarkGfm from 'remark-gfm'
+import remarkParse from 'remark-parse'
 import type {Options as RemarkRehypeOptions} from 'remark-rehype'
 import remarkRehype from 'remark-rehype'
-import remarkParse from 'remark-parse'
-import remarkGfm from 'remark-gfm'
 import type {JSX} from 'solid-js'
 
-import {hastToSolid, type Components, type HastNode} from './hast-to-solid'
 import type {PluggableList} from 'unified'
 import {unified} from 'unified'
+import {hastToSolid, type Components, type HastNode} from './hast-to-solid'
 
 export type {Components}
 

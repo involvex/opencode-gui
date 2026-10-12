@@ -7,8 +7,8 @@ import {
 	type Component,
 	type JSX,
 } from 'solid-js'
-import {ChevronDownIcon, EnterIcon} from './ToolCallIcons'
 import type {Permission} from '../../types'
+import {ChevronDownIcon, EnterIcon} from './ToolCallIcons'
 
 export interface ToolCallTemplateProps {
 	icon: Component

@@ -1,4 +1,4 @@
-import {test, expect} from './fixtures'
+import {expect, test} from './fixtures'
 
 // Restrictive permission config for testing - ask for everything
 const restrictiveConfig = {

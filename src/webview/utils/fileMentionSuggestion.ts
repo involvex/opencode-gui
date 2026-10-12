@@ -1,10 +1,10 @@
+import type {SuggestionOptions} from '@tiptap/suggestion'
+import {render} from 'solid-js/web'
 import {
 	FileMentionDropdown,
 	type FileItem,
 	type FileMentionDropdownRef,
 } from '../components/FileMentionDropdown'
-import type {SuggestionOptions} from '@tiptap/suggestion'
-import {render} from 'solid-js/web'
 
 interface FileMentionSuggestionOptions {
 	searchFiles: (query: string) => Promise<string[]>

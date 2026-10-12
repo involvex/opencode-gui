@@ -1,4 +1,4 @@
-import {test, expect} from './fixtures'
+import {expect, test} from './fixtures'
 
 test.describe('Outbox and Idempotent Sends', () => {
 	test('should send message and show user message content', async ({

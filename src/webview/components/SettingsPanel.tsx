@@ -1,4 +1,4 @@
-import {createSignal, Show, For, createEffect, createMemo} from 'solid-js'
+import {createEffect, createMemo, createSignal, For, Show} from 'solid-js'
 import './SettingsPanel.css'
 
 // ===========================================

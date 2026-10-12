@@ -1,6 +1,5 @@
-import type {ToolState, MessagePart, Permission} from '../../types'
-import {createMemo} from 'solid-js'
-import {Show} from 'solid-js'
+import {createMemo, Show} from 'solid-js'
+import type {MessagePart, Permission, ToolState} from '../../types'
 
 export function toRelativePath(
 	absolutePath: string | undefined,

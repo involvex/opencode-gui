@@ -1,5 +1,5 @@
-import {parseFileReferenceTarget} from './fileReferences'
 import {describe, expect, it} from 'vitest'
+import {parseFileReferenceTarget} from './fileReferences'
 
 describe('parseFileReferenceTarget', () => {
 	it('returns null for non-file URLs', () => {

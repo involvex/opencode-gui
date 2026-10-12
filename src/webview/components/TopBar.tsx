@@ -1,7 +1,7 @@
-import {NewSessionButton} from './NewSessionButton'
-import {SessionSwitcher} from './SessionSwitcher'
 import type {SessionStatus} from '../state/types'
 import type {Session} from '../types'
+import {NewSessionButton} from './NewSessionButton'
+import {SessionSwitcher} from './SessionSwitcher'
 
 interface TopBarProps {
 	sessions: Session[]

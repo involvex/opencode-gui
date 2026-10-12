@@ -1,7 +1,7 @@
-import {messageMarkdownComponents} from '../markdownComponents'
+import {Show} from 'solid-js'
 import {Streamdown} from '../../lib/streamdown'
 import type {MessagePart} from '../../types'
-import {Show} from 'solid-js'
+import {messageMarkdownComponents} from '../markdownComponents'
 
 interface TextBlockProps {
 	part: MessagePart

@@ -1,9 +1,9 @@
+import {describe, expect, it} from 'vitest'
 import {
 	fetchBootstrapData,
 	type BootstrapContext,
 } from '../../src/webview/state/bootstrap'
 import {GatekeeperHarness} from '../utils/Gatekeeper'
-import {describe, it, expect} from 'vitest'
 
 type AppApi = {
 	agents(): Promise<{data?: SDKAgent[]}>

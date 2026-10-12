@@ -1,17 +1,17 @@
+import type {JSONContent} from '@tiptap/core'
+import Document from '@tiptap/extension-document'
+import Paragraph from '@tiptap/extension-paragraph'
+import Text from '@tiptap/extension-text'
+import {createEffect, createSignal, on, onCleanup} from 'solid-js'
+import {createEditor, EditorContent} from 'tiptap-solid'
+import {FileMention} from '../extensions/FileMention'
+import {SlashCommandExtension} from '../extensions/SlashCommand'
 import {
 	encodeFileMentionReference,
 	formatFileMentionLabel,
 } from '../utils/fileMentionReference'
-import {createSlashCommandSuggestion} from '../utils/slashCommandSuggestion'
 import {createFileMentionSuggestion} from '../utils/fileMentionSuggestion'
-import {createEffect, createSignal, on, onCleanup} from 'solid-js'
-import {SlashCommandExtension} from '../extensions/SlashCommand'
-import {createEditor, EditorContent} from 'tiptap-solid'
-import {FileMention} from '../extensions/FileMention'
-import Paragraph from '@tiptap/extension-paragraph'
-import Document from '@tiptap/extension-document'
-import type {JSONContent} from '@tiptap/core'
-import Text from '@tiptap/extension-text'
+import {createSlashCommandSuggestion} from '../utils/slashCommandSuggestion'
 import './TiptapEditor.css'
 
 export interface TiptapEditorMethods {

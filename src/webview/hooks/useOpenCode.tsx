@@ -1,36 +1,33 @@
 import {
 	createOpencodeClient,
-	type OpencodeClient,
-	type Event,
 	type Agent,
-	type Session,
-	type Message as SDKMessage,
-	type Part,
-	type TextPartInput,
-	type FilePartInput,
 	type AgentPartInput,
+	type Event,
+	type FilePartInput,
+	type OpencodeClient,
+	type Part,
+	type Message as SDKMessage,
+	type Session,
 	type SubtaskPartInput,
+	type TextPartInput,
 } from '@opencode-ai/sdk/v2/client'
 import {
-	createSignal,
-	onMount,
-	onCleanup,
 	createContext,
+	createSignal,
+	onCleanup,
+	onMount,
 	useContext,
 	type ParentProps,
 } from 'solid-js'
 
 import {proxyEventSource} from '../utils/proxyEventSource'
-import {hasVscodeApi, vscode} from '../utils/vscode'
 import {proxyFetch} from '../utils/proxyFetch'
+import {hasVscodeApi, vscode} from '../utils/vscode'
 
 // Re-export types for convenience
-export type {Event, Agent, Session, SDKMessage, Part}
+export type {Agent, Event, Part, SDKMessage, Session}
 export type PromptPartInput =
-	| TextPartInput
-	| FilePartInput
-	| AgentPartInput
-	| SubtaskPartInput
+	TextPartInput | FilePartInput | AgentPartInput | SubtaskPartInput
 
 export type SSEStatus = {
 	status: 'connecting' | 'connected' | 'reconnecting' | 'closed'

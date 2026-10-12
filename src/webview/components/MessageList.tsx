@@ -1,19 +1,19 @@
 import {
 	For,
 	Show,
-	createSignal,
-	onMount,
-	onCleanup,
 	createEffect,
 	createMemo,
+	createSignal,
 	on,
+	onCleanup,
+	onMount,
 	type Accessor,
 } from 'solid-js'
-import {EditableUserMessage} from './EditableUserMessage'
-import {ThinkingIndicator} from './ThinkingIndicator'
-import type {Message, Permission} from '../types'
-import {MessageItem} from './MessageItem'
 import {useSync} from '../state/sync'
+import type {Message, Permission} from '../types'
+import {EditableUserMessage} from './EditableUserMessage'
+import {MessageItem} from './MessageItem'
+import {ThinkingIndicator} from './ThinkingIndicator'
 
 interface MessageListProps {
 	messages: Message[]

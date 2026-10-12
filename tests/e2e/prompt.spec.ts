@@ -1,4 +1,4 @@
-import {test, expect} from './fixtures'
+import {expect, test} from './fixtures'
 
 test.describe('Prompt Sending', () => {
 	test('should show input textarea and submit button', async ({

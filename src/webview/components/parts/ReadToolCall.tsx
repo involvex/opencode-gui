@@ -1,14 +1,14 @@
-import {
-	getToolInputs,
-	toRelativePath,
-	splitFilePath,
-	usePermission,
-	ErrorFooter,
-} from './ToolCallHelpers'
-import type {MessagePart, Permission, ToolState} from '../../types'
 import {Show, createMemo, type Accessor} from 'solid-js'
-import {ToolCallTemplate} from './ToolCallTemplate'
+import type {MessagePart, Permission, ToolState} from '../../types'
+import {
+	ErrorFooter,
+	getToolInputs,
+	splitFilePath,
+	toRelativePath,
+	usePermission,
+} from './ToolCallHelpers'
 import {FileIcon} from './ToolCallIcons'
+import {ToolCallTemplate} from './ToolCallTemplate'
 
 interface ReadToolCallProps {
 	part: MessagePart

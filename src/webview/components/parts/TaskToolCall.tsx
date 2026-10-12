@@ -1,8 +1,8 @@
-import {getToolInputs, usePermission, ErrorFooter} from './ToolCallHelpers'
-import type {MessagePart, Permission, ToolState} from '../../types'
-import {ToolCallTemplate} from './ToolCallTemplate'
-import {GenericToolIcon} from './ToolCallIcons'
 import {Show, type Accessor} from 'solid-js'
+import type {MessagePart, Permission, ToolState} from '../../types'
+import {ErrorFooter, getToolInputs, usePermission} from './ToolCallHelpers'
+import {GenericToolIcon} from './ToolCallIcons'
+import {ToolCallTemplate} from './ToolCallTemplate'
 
 interface TaskToolCallProps {
 	part: MessagePart

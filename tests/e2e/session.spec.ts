@@ -1,4 +1,4 @@
-import {test, expect} from './fixtures'
+import {expect, test} from './fixtures'
 
 test.describe('Session Management', () => {
 	test('should display message list on load', async ({openWebview}) => {

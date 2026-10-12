@@ -1,9 +1,9 @@
+import {describe, expect, it} from 'vitest'
 import {
 	FileMention,
-	normalizeFileMentionLabel,
 	formatFileMentionText,
+	normalizeFileMentionLabel,
 } from './FileMention'
-import {describe, it, expect} from 'vitest'
 
 describe('FileMention', () => {
 	it('exports a Tiptap extension', () => {

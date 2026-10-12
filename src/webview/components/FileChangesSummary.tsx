@@ -1,5 +1,5 @@
-import type {FileChangesInfo} from '../types'
 import {Show} from 'solid-js'
+import type {FileChangesInfo} from '../types'
 
 interface FileChangesSummaryProps {
 	fileChanges: FileChangesInfo | null

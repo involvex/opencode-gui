@@ -1,5 +1,5 @@
-import {GatekeeperHarness} from './Gatekeeper'
 import {describe, expect, it} from 'vitest'
+import {GatekeeperHarness} from './Gatekeeper'
 
 type ServerApi = {
 	makeDummyCallToServer(args: {count: number}): Promise<number>

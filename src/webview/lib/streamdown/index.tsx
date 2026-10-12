@@ -1,11 +1,11 @@
-import {createMemo, For, Show, createContext, useContext, JSX} from 'solid-js'
+import {createContext, createMemo, For, JSX, Show, useContext} from 'solid-js'
+import type {PluggableList} from 'unified'
 import {Markdown, type Components, type MarkdownOptions} from './markdown'
 import {parseMarkdownIntoBlocks} from './parse-blocks'
-import type {PluggableList} from 'unified'
 import remend from './remend'
 
+export {Markdown, parseMarkdownIntoBlocks, remend}
 export type {Components}
-export {remend, parseMarkdownIntoBlocks, Markdown}
 
 export type StreamdownMode = 'static' | 'streaming'
 
@@ -46,20 +46,16 @@ export function Streamdown(props: StreamdownProps): JSX.Element {
 		return parseMarkdownIntoBlocks(processedContent())
 	})
 
-	const markdownOptions = createMemo(
-		(): MarkdownOptions => ({
-			components: props.components,
-			rehypePlugins: props.rehypePlugins,
-			remarkPlugins: props.remarkPlugins,
-		}),
-	)
+	const markdownOptions = createMemo((): MarkdownOptions => ({
+		components: props.components,
+		rehypePlugins: props.rehypePlugins,
+		remarkPlugins: props.remarkPlugins,
+	}))
 
-	const contextValue = createMemo(
-		(): StreamdownContextType => ({
-			mode: mode(),
-			isAnimating: mode() === 'streaming',
-		}),
-	)
+	const contextValue = createMemo((): StreamdownContextType => ({
+		mode: mode(),
+		isAnimating: mode() === 'streaming',
+	}))
 
 	return (
 		<StreamdownContext.Provider value={contextValue()}>

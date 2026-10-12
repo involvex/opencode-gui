@@ -1,8 +1,8 @@
-import {OpenCodeProvider} from './hooks/useOpenCode'
-import {SyncProvider} from './state/sync'
 import {render} from 'solid-js/web'
 import App from './App'
 import './App.css'
+import {OpenCodeProvider} from './hooks/useOpenCode'
+import {SyncProvider} from './state/sync'
 
 try {
 	render(

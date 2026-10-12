@@ -1,5 +1,5 @@
-import Mention from '@tiptap/extension-mention'
 import {mergeAttributes} from '@tiptap/core'
+import Mention from '@tiptap/extension-mention'
 
 export interface FileMentionOptions {
 	HTMLAttributes: Record<string, unknown>
