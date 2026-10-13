@@ -1,7 +1,7 @@
 {
-	"name": "awesome-opencode-vscode",
+	"name": "involvexs-awesome-opencode-gui",
 	"displayName": "OpenCode GUI",
-	"version": "0.4.3",
+	"version": "0.4.4",
 	"description": "OpenCode AI coding agent for VSCode GUI extension",
 	"categories": [
 		"Other",
@@ -278,5 +278,6 @@
 		"vscode": "^1.140.0"
 	},
 	"icon": "media/logo.png",
+	"displayname": "Awesome Opencode Gui",
 	"packagemanager": "bun@1.3.14"
 }
